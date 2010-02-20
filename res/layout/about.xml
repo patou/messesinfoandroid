@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:id="@+id/about" android:foreground="@drawable/background" android:foregroundGravity="fill">
+	<ImageView android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:src="@drawable/logo"
+		android:id="@+id/about_img1"  android:padding="10sp" android:layout_gravity="center_horizontal"/>
+	<TextView android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:text="@string/about_copyright"
+		android:gravity="left"  android:padding="10sp">
+	</TextView>
+	<TextView android:layout_width="wrap_content"
+		android:id="@+id/about_website"
+		android:layout_height="wrap_content" android:text="@string/about_website"
+		android:textSize="12sp" android:textStyle="bold"
+		android:layout_gravity="left"  android:padding="5sp">
+	</TextView>
+	<TextView android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:text="@string/about_sub_title"
+		android:textSize="14sp" android:textStyle="bold"
+		android:layout_gravity="left"  android:padding="10sp">
+	</TextView>
+	<TextView android:layout_width="wrap_content"
+		android:id="@+id/about_webcatho"
+		android:layout_height="wrap_content" android:text="@string/about_webcatho"
+		android:textSize="12sp" android:textStyle="bold"
+		android:layout_gravity="left"  android:padding="5sp">
+	</TextView>
+</LinearLayout>

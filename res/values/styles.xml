@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<style name="Theme.Light" parent="@android:Theme.Light">
+		<item name="android:windowBackground">@android:drawable/screen_background_light</item>
+		<item name="android:colorBackground">@color/background_light</item>
+		<item name="android:colorForeground">@color/bright_foreground_light</item>
+		<item name="android:colorForegroundInverse">@color/bright_foreground_light_inverse</item>
+
+		<item name="android:textColorPrimary">@color/primary_text_light</item>
+		<item name="android:textColorSecondary">@color/secondary_text_light</item>
+		<item name="android:textColorTertiary">@color/tertiary_text_light</item>
+		<item name="android:textColorPrimaryInverse">@color/primary_text_dark</item>
+		<item name="android:textColorSecondaryInverse">@color/secondary_text_dark</item>
+		<item name="android:textColorTertiaryInverse">@color/tertiary_text_dark</item>
+		<item name="android:textColorPrimaryDisableOnly">@color/primary_text_light_disable_only</item>
+		<item name="android:textColorPrimaryNoDisable">@color/primary_text_light_nodisable</item>
+		<item name="android:textColorSecondaryNoDisable">@color/secondary_text_light_nodisable</item>
+		<item name="android:textColorPrimaryInverseNoDisable">@color/primary_text_dark_nodisable</item>
+		<item name="android:textColorSecondaryInverseNoDisable">@color/secondary_text_dark_nodisable</item>
+		<item name="android:textColorHint">@color/hint_foreground_light</item>
+		<item name="android:textColorHintInverse">@color/hint_foreground_dark</item>
+
+		<item name="android:popupWindowStyle">@android:style/Widget.PopupWindow</item>
+
+		<item name="android:listViewStyle">@android:style/Widget.ListView.White</item>
+		<item name="android:listDivider">@android:drawable/divider_horizontal_bright</item>
+
+	</style>
+
+	<style name="MesseInfoTheme" parent="Theme.Light">
+		<item name="android:windowNoTitle">true</item>
+		<item name="android:listViewStyle">@style/MTListView</item>
+		
+		<!--
+			<item name="android:textViewStyle">@style/MTDefaultTextView</item>
+		-->
+		<item name="android:tabWidgetStyle">@style/MTDefaultTabWidget</item>
+		<item name="android:preferenceStyle">@style/MTPreference</item>
+	</style>
+
+	<style name="MTListView" parent="@android:style/Widget.ListView">
+		<item name="android:background">@color/transparent</item>
+		<item name="android:listSelector">@drawable/list_selector_background</item>
+		<item name="android:divider">@android:drawable/divider_horizontal_bright</item>
+	</style>
+
+	<style name="MTDefaultTextView" parent="@android:style/Widget.TextView">
+		<item name="android:textSize">14dip</item>
+		<item name="android:textColor">@color/black</item>
+	</style>
+
+	<style name="MTDefaultTabWidget" parent="@android:style/Widget.TabWidget">
+		<item name="android:textAppearance">@style/MTDefaultTextAppearanceTabWidget</item>
+	</style>
+
+	<style name="MTDefaultTextAppearanceTabWidget" parent="@android:style/TextAppearance.Widget.TabWidget">
+		<item name="android:textSize">14sp</item>
+		<item name="android:textColor">@android:color/black</item>
+	</style>
+
+	<style name="MTPreference" parent="@android:style/Preference">
+		<item name="android:layout">@layout/preference</item>
+	</style>
+
+</resources>

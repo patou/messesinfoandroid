@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  <PreferenceCategory android:title="@string/search_mass_place">
+  	<EditTextPreference android:key="search_mass_city" android:title="@string/search_mass_city_title" android:summary="@string/search_mass_empty"></EditTextPreference>
+  	<EditTextPreference android:key="search_mass_zip" android:title="@string/search_mass_zip_title" android:summary="@string/search_mass_empty"></EditTextPreference>
+  	<ListPreference android:key="search_mass_state" 
+  		android:title="@string/search_mass_state_title"
+  		android:entries="@array/search_mass_state_array"
+		android:entryValues="@array/search_mass_state_array_values"
+		android:summary="@string/search_mass_empty"></ListPreference>
+  </PreferenceCategory>
+  <PreferenceCategory android:title="@string/search_mass_options">
+  	<CheckBoxPreference android:key="search_mass_saturday" android:title="@string/search_mass_saturday_title" ></CheckBoxPreference>
+  	<CheckBoxPreference android:key="search_mass_sunday" android:title="@string/search_mass_sunday_title" ></CheckBoxPreference>
+  	<CheckBoxPreference android:key="search_mass_morning" android:title="@string/search_mass_morning_title" ></CheckBoxPreference>
+  	<CheckBoxPreference android:key="search_mass_afternoon" android:title="@string/search_mass_afternoon_title" ></CheckBoxPreference>
+  	<ListPreference android:key="search_mass_celebration" 
+  		android:title="@string/search_mass_celebration_title"
+  		android:entries="@array/search_mass_celebration_array"
+		android:entryValues="@array/search_mass_celebration_array_values"
+		android:summary="@string/search_mass_empty"></ListPreference>
+  </PreferenceCategory>
+  <PreferenceCategory>
+  <Preference android:key="search_mass_submit" android:title="@string/search_mass_submit_title">
+  </Preference>
+  <Preference android:key="search_mass_reset" android:title="@string/search_mass_reset_title">
+  </Preference>
+  </PreferenceCategory>
+</PreferenceScreen>

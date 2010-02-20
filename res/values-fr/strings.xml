@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">Messe Info</string>
+	<string name="menu_next_mass">Prochaine messe à côté d\'ici</string>
+	<string name="menu_search_mass">Rechercher une célébration</string>
+	<string name="menu_favorite">Mes églises favorites</string>
+	<string name="menu_church_book">Annuaire des églises</string>
+	<string name="menu_phone_messeinfo">Appeler messe info</string>
+	<string name="main_menu_about">A propos</string>
+	<string name="main_menu_website">Site web</string>
+	<string name="main_menu_contact">Nous écrire</string>
+	<string name="menu_list">Liste</string>
+	<string name="about_title">Messe Info</string>
+	<string name="about_sub_title">Développé par : Patrice de Saint Steban</string>
+	<string name="about_copyright">Un service offert par la Conférence des évêques de
+		France (CEF), plus d\'informations sur le site http://messesinfo.cef.fr
+	</string>
+	<string name="about_website">Plus d\'informations sur le site: http://androide.cef.fr</string>
+	<string name="about_webcatho">http://www.webcatho.fr</string>
+	<string name="search">Rechercher ...</string>
+	<string name="list_empty">Pas de résultat pour votre recherche</string>
+	<string name="list_favorites_empty">Ajoutez des églises à votre liste de favoris</string>
+	<string name="zoom_in">Zoom ++</string>
+	<string name="zoom_out">Zoom --</string>
+
+	<string name="search_mass_place">Lieu</string>
+	<string name="search_mass_options">Type de célébration</string>
+	<string name="search_mass_city_title">Commune</string>
+	<string name="search_mass_zip_title">Code postal</string>
+	<string name="search_mass_state_title">Département</string>
+	<string name="search_mass_celebration_title">Grandes fêtes</string>
+	<string name="search_mass_saturday_title">samedi</string>
+	<string name="search_mass_sunday_title">dimanche</string>
+	<string name="search_mass_morning_title">matin</string>
+	<string name="search_mass_afternoon_title">après-midi</string>
+	<string name="search_mass_empty">Cliquer pour remplir le champ</string>
+	<string name="search_mass_submit_title">Rechercher</string>
+	<string name="search_mass_reset_title">Réinitialiser</string>
+	<string name="search_mass_loading_title">Recherche en cours ...</string>
+	<string name="search_mass_loading">La recherche et l\'affichage peut prendre du temps
+		en fonction de votre connexion. Merci de patienter...</string>
+	<string name="list_search_help">Cherchez votre lieu de culte par commune et/ou code postal.\nPour les villes de Paris, Lyon et Marseille, il est possible de chercher par arrondissement en faisant suivre le nom de la ville par le numéro de l\'arrondissement.\n\nExemples :\n- paris 19\n- st malo\n- 94800</string>
+	<string name="list_search_loading">Recherche en cours ...</string>
+	<string name="loading">Chargement ...</string>
+	<string name="church_tab_information">Information</string>
+	<string name="church_tab_schedule">Horaires</string>
+	<string name="church_see_map">Voir sur le plan</string>
+	<string name="church_send_mail">Envoyer un mail</string>
+	<string name="church_view_site">Voir le site</string>
+	<string name="church_call_tel">Appeler</string>
+	<string name="church_send_fax">Fax</string>
+	<string name="schedules_empty">Pas d'horaires disponible</string>
+</resources>

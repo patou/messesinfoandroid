@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string-array name="search_mass_celebration_array">
+		<item>Saturday mass (or choose a special celebration)</item>
+		<item>Christmas time (all celebration)</item>
+		<item>... Christmas night (24th)</item>
+		<item>... Christmas vigil (24th)</item>
+		<item>... Christmas day (25th)</item>
+		<item>Easter time (all celebration)</item>
+		<item>... ash's Wednesday</item>
+		<item>... branch day</item>
+		<item>... penitence celebration</item>
+		<item>... chrimale mass</item>
+		<item>... holy Thursday</item>
+		<item>... holy Friday</item>
+		<item>... Easter vigil</item>
+		<item>... Easter mass</item>
+		<item>ASCENSION</item>
+		<item>PENTECOTE</item>
+		<item>ASSOMPTION (15th August)</item>
+		<item>Holy's day and death's day</item>
+		<item>... holy's day</item>
+		<item>... death's day</item>
+		<item>Special celebration</item>
+	</string-array>
+	<string-array name="search_mass_celebration_array_values">
+		<item>all,Aucune fête</item>
+		<item>3,4,5,19,Fêtes de Noël</item>
+		<item>3,Noël / messe du soir ou de la nuit</item>
+		<item>4,Noël / veillée suivie de la messe de la nuit</item>
+		<item>5,Noël / messe du jour</item>
+		<item>6,7,8,9,10,11,12,13,19,Fêtes de Pâques et Carême</item>
+		<item>6,19,Carême et Pâques / mercredi des cendres</item>
+		<item>7,Carême et Pâques / rameaux</item>
+		<item>8,19,Carême et Pâques / célébration pénitentielle</item>
+		<item>9,Carême et Pâques / messe chrismale</item>
+		<item>10,Carême et Pâques / jeudi saint</item>
+		<item>11,Carême et Pâques / vendredi saint</item>
+		<item>12,Carême et Pâques / veillée pascale</item>
+		<item>13,Carême et Pâques / messe de Pâques</item>
+		<item>14,Fête de l'Ascension</item>
+		<item>15,Fête de la Pentecôte</item>
+		<item>16,Fête de l'Assomption (15 août)</item>
+		<item>17,18,19,Fêtes de la Toussaint et jour des défunts</item>
+		<item>17,Toussaint</item>
+		<item>18,Jour des défunts</item>
+		<item>19,Célébrations exceptionnelles</item>
+	</string-array>
+	<string-array name="search_mass_state_array">
+		<item>01 - Ain </item>
+		<item>02 - Aisne</item>
+		<item>03 - Allier</item>
+		<item>04 - Alpes de Haute Provence </item>
+		<item>05 - Hautes Alpes</item>
+		<item>06 - Alpes Maritime</item>
+		<item>07 - Ardèche</item>
+		<item>08 - Ardennes</item>
+		<item>09 - Ariége</item>
+		<item>10 - Aube</item>
+		<item>11 - Aude </item>
+		<item>12 - Aveyron</item>
+		<item>13 - Bouches du Rhone</item>
+		<item>14 - Calvados</item>
+		<item>15 - Cantal</item>
+		<item>16 - Charente</item>
+		<item>17 - Charente Maritime</item>
+		<item>18 - Cher</item>
+		<item>19 - Corréze</item>
+		<item>20 - Corse</item>
+		<item>21 - Côte d'Or</item>
+		<item>22 - Côtes d'Armor</item>
+		<item>23 - Creuse</item>
+		<item>24 - Dordogne</item>
+		<item>25 - Doubs</item>
+		<item>26 - Drôme</item>
+		<item>27 - Eure</item>
+		<item>28 - Eure et Loir</item>	
+		<item>29 - Finistère</item>
+		<item>30 - Gard</item>
+		<item>31 - Haute Garonne</item>
+		<item>32 - Gers</item>
+		<item>33 - Gironde</item>
+		<item>34 - Hérault</item>
+		<item>35 - Ille et Vilaine</item>
+		<item>36 - Indre</item>
+		<item>37 - Indre et Loire</item>
+		<item>38 - Isère</item>
+		<item>39 - Jura</item>
+		<item>40 - Landes</item>
+		<item>41 - Loir et Cher</item>
+		<item>42 - Loire</item>
+		<item>43 - Haute Loire</item>
+		<item>44 - Loire Atlantique</item>
+		<item>45 - Loiret</item>
+		<item>46 - Lot</item>
+		<item>47 - Lot et Garonne</item>
+		<item>48 - Lozère</item>
+		<item>49 - Maine et Loire</item>
+		<item>50 - Manche</item>
+		<item>51 - Marne</item>
+		<item>52 - Haute Marne</item>
+		<item>53 - Mayenne</item>
+		<item>54 - Meurthe et Moselle</item>
+		<item>55 - Meuse</item>
+		<item>56 - Morbihan</item>
+		<item>57 - Moselle</item>
+		<item>58 - Nièvre</item>
+		<item>59 - Nord</item>
+		<item>60 - Oise</item>
+		<item>61 - Orne</item>
+		<item>62 - Pas de Calais</item>
+		<item>63 - Puy de Dôme</item>
+		<item>64 - Pyrénées Atlantiques</item>
+		<item>65 - Hautes Pyrénées</item>
+		<item>66 - Pyrénées Orientales</item>
+		<item>67 - Bas Rhin</item>
+		<item>68 - Haut Rhin</item>
+		<item>69 - Rhône</item>
+		<item>70 - Haute Saône</item>
+		<item>71 - Saône et Loire</item>
+		<item>72 - Sarthe</item>
+		<item>73 - Savoie</item>
+		<item>74 - Haute Savoie</item>
+		<item>75 - Paris</item>
+		<item>76 - Seine Maritime</item>
+		<item>77 - Seine et Marne</item>
+		<item>78 - Yvelines</item>
+		<item>79 - Deux Sévres</item>
+		<item>80 - Somme</item>
+		<item>81 - Tarn</item>
+		<item>82 - Tarn et Garonne</item>
+		<item>83 - Var</item>
+		<item>84 - Vaucluse</item>
+		<item>85 - Vendée</item>
+		<item>86 - Vienne</item>
+		<item>87 - Haute Vienne</item>
+		<item>88 - Vosges</item>
+		<item>89 - Yonne</item>
+		<item>90 - Territoire de Belfort</item>
+		<item>91 - Essonne</item>
+		<item>92 - Hauts de Seine</item>
+		<item>93 - Seine Saint Denis</item>
+		<item>94 - Val de Marne</item>
+		<item>95 - Val d'Oise</item>
+		<item>97 - D.O.M.</item>
+		<item>98 - Monaco</item>
+	</string-array>
+	<string-array name="search_mass_state_array_values">
+		<item>01</item>
+		<item>02</item>
+		<item>03</item>
+		<item>04</item>
+		<item>05</item>
+		<item>06</item>
+		<item>07</item>
+		<item>08</item>
+		<item>09</item>
+		<item>10</item>
+		<item>11</item>
+		<item>12</item>
+		<item>13</item>
+		<item>14</item>
+		<item>15</item>
+		<item>16</item>
+		<item>17</item>
+		<item>18</item>
+		<item>19</item>
+		<item>20</item>
+		<item>21</item>
+		<item>22</item>
+		<item>23</item>
+		<item>24</item>
+		<item>25</item>
+		<item>26</item>
+		<item>27</item>
+		<item>28</item>	
+		<item>29</item>
+		<item>30</item>
+		<item>31</item>
+		<item>32</item>
+		<item>33</item>
+		<item>34</item>
+		<item>35</item>
+		<item>36</item>
+		<item>37</item>
+		<item>38</item>
+		<item>39</item>
+		<item>40</item>
+		<item>41</item>
+		<item>42</item>
+		<item>43</item>
+		<item>44</item>
+		<item>45</item>
+		<item>46</item>
+		<item>47</item>
+		<item>48</item>
+		<item>49</item>
+		<item>50</item>
+		<item>51</item>
+		<item>52</item>
+		<item>53</item>
+		<item>54</item>
+		<item>55</item>
+		<item>56</item>
+		<item>57</item>
+		<item>58</item>
+		<item>59</item>
+		<item>60</item>
+		<item>61</item>
+		<item>62</item>
+		<item>63</item>
+		<item>64</item>
+		<item>65</item>
+		<item>66</item>
+		<item>67</item>
+		<item>68</item>
+		<item>69</item>
+		<item>70</item>
+		<item>71</item>
+		<item>72</item>
+		<item>73</item>
+		<item>74</item>
+		<item>75</item>
+		<item>76</item>
+		<item>77</item>
+		<item>78</item>
+		<item>79</item>
+		<item>80</item>
+		<item>81</item>
+		<item>82</item>
+		<item>83</item>
+		<item>84</item>
+		<item>85</item>
+		<item>86</item>
+		<item>87</item>
+		<item>88</item>
+		<item>89</item>
+		<item>90</item>
+		<item>91</item>
+		<item>92</item>
+		<item>93</item>
+		<item>94</item>
+		<item>95</item>
+		<item>97</item>
+		<item>98</item>
+	</string-array>
+</resources>
