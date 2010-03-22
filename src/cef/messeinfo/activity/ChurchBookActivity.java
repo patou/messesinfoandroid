@@ -3,18 +3,13 @@ package cef.messeinfo.activity;
 import java.util.List;
 import java.util.Map;
 
-import android.app.AlertDialog;
 import android.app.ListActivity;
-import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.webkit.WebView;
-import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;

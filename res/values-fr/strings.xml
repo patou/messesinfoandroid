@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="app_name">Messe Info</string>
-	<string name="menu_next_mass">Prochaine messe à côté d\'ici</string>
+	<string name="app_name">Messes Info</string>
+	<string name="menu_next_mass">Prochaines messes à côté d\'ici</string>
 	<string name="menu_search_mass">Rechercher une célébration</string>
 	<string name="menu_favorite">Mes églises favorites</string>
 	<string name="menu_church_book">Annuaire des églises</string>
-	<string name="menu_phone_messeinfo">Appeler messe info</string>
+	<string name="menu_quit">Quitter</string>
 	<string name="main_menu_about">A propos</string>
 	<string name="main_menu_website">Site web</string>
 	<string name="main_menu_contact">Nous écrire</string>
 	<string name="menu_list">Liste</string>
-	<string name="about_title">Messe Info</string>
+	<string name="about_title">Messes Info</string>
 	<string name="about_sub_title">Développé par : Patrice de Saint Steban</string>
 	<string name="about_copyright">Un service offert par la Conférence des évêques de
-		France (CEF), plus d\'informations sur le site http://messesinfo.cef.fr
+		France (CEF), plus d\'informations sur le site http://www.messesinfo.catholique.fr
 	</string>
-	<string name="about_website">Plus d\'informations sur le site: http://androide.cef.fr</string>
+	<string name="about_website">Plus d\'informations sur le site: http://android.catholique.fr</string>
 	<string name="about_webcatho">http://www.webcatho.fr</string>
 	<string name="search">Rechercher ...</string>
 	<string name="list_empty">Pas de résultat pour votre recherche</string>
@@ -49,5 +49,5 @@
 	<string name="church_view_site">Voir le site</string>
 	<string name="church_call_tel">Appeler</string>
 	<string name="church_send_fax">Fax</string>
-	<string name="schedules_empty">Pas d'horaires disponible</string>
+	<string name="schedules_empty">Pas d\'horaires disponible</string>
 </resources>

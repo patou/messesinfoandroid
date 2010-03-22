@@ -17,10 +17,8 @@ public class ChurchAdapter extends BaseAdapter {
     List<Map<String,String>> list = null;
     private ViewHolder holder;
     private LayoutInflater mInflater;
-    private Context mContext;
     
     public ChurchAdapter(Context context) {
-        mContext = context;
         mInflater = LayoutInflater.from(context);
     }
 

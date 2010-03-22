@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 
 import com.google.android.maps.GeoPoint;
 
@@ -24,26 +23,10 @@ public class ChurchItemizedOverlay extends ManagedOverlay {
         mOverlaysItem.add(item);
         populate();
 	}
-//	
-//	@Override
-//	protected OverlayItem createItem(int i) {
-//		return mOverlays.get(i);
-//	}
-//
-//	@Override
-//	public int size() {
-//		return mOverlaysItem.size();
-//	}
-//	
-//	public ManagedOverlayItem createItem(int index) {
-//	    Map<String,String> item = getChurchItem(index);
-//	    return createItem(item);
-//	}
 
 	public ManagedOverlayItem createItem(Map<String, String> item) {
 		int lat = (int) (Double.parseDouble(item.get("lat")) * 1E6);
         int lon = (int) (Double.parseDouble(item.get("lon")) * 1E6);
-        Log.e("messeinfo", lat + ":" + lon);
         GeoPoint point = new GeoPoint(lat,lon);
         ManagedOverlayItem overlayitem = new ManagedOverlayItem(point, item.get("nom"), item.get("paroisse") + " " + item.get("commune"));
         return overlayitem;

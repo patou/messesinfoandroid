@@ -225,7 +225,7 @@ public final class R {
         public static final int menu_favorite=0x7f080008;
         public static final int menu_list=0x7f080031;
         public static final int menu_next_mass=0x7f080006;
-        public static final int menu_phone_messeinfo=0x7f08000a;
+        public static final int menu_quit=0x7f08000a;
         public static final int menu_search_mass=0x7f080007;
         public static final int messeinfo_url=0x7f080003;
         public static final int photo_url=0x7f080002;
@@ -256,7 +256,6 @@ public final class R {
         public static final int MTDefaultTextAppearanceTabWidget=0x7f090005;
         public static final int MTDefaultTextView=0x7f090003;
         public static final int MTListView=0x7f090002;
-        public static final int MTPreference=0x7f090006;
         public static final int MesseInfoTheme=0x7f090001;
         public static final int Theme_Light=0x7f090000;
     }

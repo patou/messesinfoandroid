@@ -2,9 +2,9 @@
 <resources>
 <!--	<string name="maps_api">0rpQsam0k5frIM2-SRjWx7MWSCFLH38WF7l9-7A</string>-->
 	<string name="maps_api">0rpQsam0k5foFfWgP4hgPFIlmzUwNToZXYDXEew</string>
-	<string name="server_url">http://androide.cef.fr/server.php</string>
-	<string name="photo_url">http://androide.cef.fr/photo.php?code=</string>
-	<string name="messeinfo_url">http://messesinfo.cef.fr</string>
+	<string name="server_url">http://www.android.catholique.fr/server.php</string>
+	<string name="photo_url">http://www.android.catholique.fr/photo.php?code=</string>
+	<string name="messeinfo_url">http://www.messesinfo.catholique.fr</string>
 	<string name="webcatho_url">http://www.webcatho.fr</string>
 <!--		<string name="server_url">http://192.168.0.9/android/server.php</string>-->
 <!--	<string name="photo_url">http://192.168.0.9/android/photo.php?code=</string>-->

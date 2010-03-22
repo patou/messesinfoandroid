@@ -35,7 +35,6 @@
 			<item name="android:textViewStyle">@style/MTDefaultTextView</item>
 		-->
 		<item name="android:tabWidgetStyle">@style/MTDefaultTabWidget</item>
-		<item name="android:preferenceStyle">@style/MTPreference</item>
 	</style>
 
 	<style name="MTListView" parent="@android:style/Widget.ListView">
@@ -51,15 +50,11 @@
 
 	<style name="MTDefaultTabWidget" parent="@android:style/Widget.TabWidget">
 		<item name="android:textAppearance">@style/MTDefaultTextAppearanceTabWidget</item>
+		<item name="android:background">@color/transparent</item>
 	</style>
 
 	<style name="MTDefaultTextAppearanceTabWidget" parent="@android:style/TextAppearance.Widget.TabWidget">
 		<item name="android:textSize">14sp</item>
 		<item name="android:textColor">@android:color/black</item>
 	</style>
-
-	<style name="MTPreference" parent="@android:style/Preference">
-		<item name="android:layout">@layout/preference</item>
-	</style>
-
 </resources>

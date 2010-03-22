@@ -5,24 +5,24 @@
 	<string name="menu_search_mass">Search mass</string>
 	<string name="menu_favorite">Favorites churches</string>
 	<string name="menu_church_book">Book of churches</string>
-	<string name="menu_phone_messeinfo">Phone messe info</string>
+	<string name="menu_quit">Quit</string>
 	<string name="main_menu_about">About</string>
 	<string name="main_menu_website">Website</string>
 	<string name="main_menu_contact">Contact us</string>
-	<string name="main_menu_webcatho">webcatho</string>
+	<string name="main_menu_webcatho">Webcatho</string>
 	<string name="about_title">Mass Info</string>
 	<string name="about_sub_title">Developed by: Patrice de Saint Steban</string>
 	<string name="about_copyright">A service given by the french's bishop conference
-		(CEF), more information on the website http://messesinfo.cef.fr
+		(CEF), more information on the website http://www.messesinfo.catholique.fr
 	</string>
-	<string name="about_website">Find information on the site: http://androide.cef.fr</string>
+	<string name="about_website">Find information on the site: http://androide.catholique.fr</string>
 	<string name="about_webcatho">http://www.webcatho.fr</string>
 	
 	<string name="search">Search ...</string>
 	<string name="list_empty">No results for your query</string>
 	<string name="list_favorites_empty">Add some church in your favorites list</string>
 	<string name="search_mass_place">Place</string>
-	<string name="search_mass_options">Celebration's type</string>
+	<string name="search_mass_options">Celebration\'s type</string>
 	<string name="search_mass_city_title">City</string>
 	<string name="search_mass_zip_title">Zip code</string>
 	<string name="search_mass_state_title">State</string>

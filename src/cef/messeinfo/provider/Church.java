@@ -1,8 +1,8 @@
 package cef.messeinfo.provider;
 
-import cef.messeinfo.MesseInfo;
 import android.net.Uri;
 import android.provider.BaseColumns;
+import cef.messeinfo.MesseInfo;
 
 public class Church implements BaseColumns {
     public static final String CODE = "code";

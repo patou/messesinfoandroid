@@ -1,16 +1,18 @@
 package de.android1.overlaymanager.lazyload;
 
-import de.android1.overlaymanager.ManagedOverlay;
-import de.android1.overlaymanager.ManagedOverlayItem;
-import android.util.Log;
-import android.os.Handler;
-import android.os.Message;
-import android.widget.ImageView;
-import com.google.android.maps.Projection;
-import com.google.android.maps.GeoPoint;
-
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+import android.widget.ImageView;
+
+import com.google.android.maps.GeoPoint;
+import com.google.android.maps.Projection;
+
+import de.android1.overlaymanager.ManagedOverlay;
+import de.android1.overlaymanager.ManagedOverlayItem;
 
 public class LazyLoadManager {
 

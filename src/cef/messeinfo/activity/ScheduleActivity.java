@@ -48,6 +48,7 @@ public class ScheduleActivity extends ExpandableListActivity {
 						}
 					});
 				}
+				
 			}
 		}).start();
 	}

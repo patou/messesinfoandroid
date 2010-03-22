@@ -1,18 +1,18 @@
 package de.android1.overlaymanager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
-
-
-import java.util.List;
-import java.util.ArrayList;
 
 public class OverlayManager {
 

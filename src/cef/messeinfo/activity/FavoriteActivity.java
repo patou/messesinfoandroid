@@ -1,13 +1,10 @@
 package cef.messeinfo.activity;
 
 import android.app.ListActivity;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -53,7 +50,6 @@ public class FavoriteActivity extends ListActivity {
         Cursor cursor = adp.getCursor();
         cursor.moveToPosition(position);
         String code = cursor.getString(1);
-        Log.e("messeinfo", code);
         ChurchActivity.activityStart(this, code);
     }
 }

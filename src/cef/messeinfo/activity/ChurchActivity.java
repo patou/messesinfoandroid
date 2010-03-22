@@ -3,6 +3,8 @@ package cef.messeinfo.activity;
 import java.util.ArrayList;
 import java.util.Map;
 
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+
 import android.app.TabActivity;
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
@@ -33,6 +35,9 @@ import cef.messeinfo.client.Server;
 import cef.messeinfo.provider.Church;
 
 public class ChurchActivity extends TabActivity {
+	
+	GoogleAnalyticsTracker tracker;
+	
 	public static void activityStart(Context context, String code) {
 		Intent intent = new Intent(context, ChurchActivity.class);
 		intent.putExtra("code", code);
@@ -43,8 +48,11 @@ public class ChurchActivity extends TabActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.church_display);
+		
+		tracker = GoogleAnalyticsTracker.getInstance();
 
 		final String code = getIntent().getStringExtra("code");
+		tracker.trackPageView("/church/" + code);
 		TabHost tabs = getTabHost();
 		tabs.addTab(tabs.newTabSpec("information")
 				.setIndicator(getString(R.string.church_tab_information), getResources()
@@ -56,7 +64,6 @@ public class ChurchActivity extends TabActivity {
 				.setIndicator(getString(R.string.church_tab_schedule), getResources()
 				.getDrawable(R.drawable.sym_schedule))
 				.setContent(intentHoraires));
-		Log.e("messeinfo", code);
 		if (code != null)
 			new Thread(new Runnable() {
 
@@ -69,9 +76,6 @@ public class ChurchActivity extends TabActivity {
 						handler.post(new Runnable() {
 							@Override
 							public void run() {
-								// ImageView icon = (ImageView)
-								// findViewById(R.id.icon);
-
 								TextView nom = (TextView) findViewById(R.id.nom);
 								TextView commune = (TextView) findViewById(R.id.commune);
 								TextView paroisse = (TextView) findViewById(R.id.paroisse);
@@ -119,17 +123,6 @@ public class ChurchActivity extends TabActivity {
 										}
 									}
 								});
-								/*
-								 * WebView webview = (WebView)
-								 * findViewById(R.id.webview);
-								 * webview.loadUrl(item.get("url"));
-								 * webview.setWebViewClient(new WebViewClient(){
-								 * public void onPageFinished(WebView view,
-								 * String url) { super.onPageFinished(view,
-								 * url); view.scrollTo(10, 408); }; });
-								 */
-								// icon.setImageResource(R.drawable.church);
-								// icon.setImageResource(R.drawable.church);
 								nom.setText(name);
 								commune.setText(city);
 								paroisse.setText(paroisseName);
@@ -192,17 +185,6 @@ public class ChurchActivity extends TabActivity {
 								}
 								list.setAdapter(new ViewAdapter(getApplicationContext(), entries));
 								tabs.setCurrentTab(0);
-								/*
-								 * URL img; try { img = new
-								 * URL(getString(R.string.photo_url) + code);
-								 * InputStream is = (InputStream)
-								 * img.getContent(); final Drawable d =
-								 * Drawable.createFromStream(is, "src");
-								 * icon.setImageDrawable(d); } catch
-								 * (MalformedURLException e) {
-								 * e.printStackTrace(); } catch (IOException e)
-								 * { e.printStackTrace(); }
-								 */
 							}
 						});
 					}
@@ -227,8 +209,7 @@ public class ChurchActivity extends TabActivity {
 			public TextView data;
 			public ImageView actionIcon;
 
-			// Need to keep track of this too
-			ViewEntry entry;
+			public ViewEntry entry;
 		}
 
 		private ArrayList<ViewEntry> mEntries = null;
