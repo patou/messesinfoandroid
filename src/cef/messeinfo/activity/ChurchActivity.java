@@ -3,8 +3,6 @@ package cef.messeinfo.activity;
 import java.util.ArrayList;
 import java.util.Map;
 
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
-
 import android.app.TabActivity;
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
@@ -33,6 +31,8 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import cef.messeinfo.R;
 import cef.messeinfo.client.Server;
 import cef.messeinfo.provider.Church;
+
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 public class ChurchActivity extends TabActivity {
 	

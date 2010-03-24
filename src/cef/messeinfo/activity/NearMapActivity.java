@@ -30,6 +30,7 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 
+import de.android1.FixedMyLocationOverlay;
 import de.android1.overlaymanager.ManagedOverlay;
 import de.android1.overlaymanager.ManagedOverlayItem;
 import de.android1.overlaymanager.OverlayManager;
@@ -182,7 +183,7 @@ public class NearMapActivity extends MapActivity {
 	}
 
 	private void initMap() {
-		myLocationOverlay = new MyLocationOverlay(this, mapView);
+		myLocationOverlay = new FixedMyLocationOverlay(this, mapView);
 		
 		mapView.getOverlays().add(myLocationOverlay);
 		myLocationOverlay.runOnFirstFix(new Runnable() {

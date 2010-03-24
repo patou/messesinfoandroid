@@ -10,13 +10,12 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import cef.messeinfo.R;
-
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.widget.ImageView;
+import cef.messeinfo.R;
 
 public class DrawableManager {
     private final Map<String, Drawable> drawableMap;
