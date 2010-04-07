@@ -134,7 +134,7 @@ public class SearchMassActivity extends ExpandableListActivity {
 			View rv;
 			if (convertView == null) {
 				LayoutInflater vi = (LayoutInflater) m_context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				rv = vi.inflate(R.layout.schedule_row, null);
+				rv = vi.inflate(R.layout.schedule_search_row, null);
 			} else {
 				rv = convertView;
 			}
@@ -147,13 +147,10 @@ public class SearchMassActivity extends ExpandableListActivity {
 			rv.findViewById(R.id.schedule_color).setBackgroundColor(getLiturgicalColor(color));
 			((TextView) rv.findViewById(R.id.schedule_title)).setText((String) block.get(Schedule.HEURE));
 			
-			((TextView) rv.findViewById(R.id.schedule_speakers)).setText((String) block.get(Church.NOM));
-			TextView st = ((TextView) rv.findViewById(R.id.schedule_track));
-			st.setText((String) block.get(Church.PAROISSE));
+			((TextView) rv.findViewById(R.id.schedule_name)).setText((String) block.get(Church.NOM));
+			TextView st = ((TextView) rv.findViewById(R.id.schedule_label));
+			st.setText((String) block.get(Church.CP) + " " + (String) block.get(Church.COMMUNE));
 			// st.setTextColor(sri.getColor());
-			((TextView) rv.findViewById(R.id.schedule_room)).setText((String) block.get(Church.COMMUNE));
-			rv.findViewById(R.id.schedule_track).setVisibility(View.VISIBLE);
-			rv.findViewById(R.id.schedule_room).setVisibility(View.VISIBLE);
 			return rv;
 		}
 		

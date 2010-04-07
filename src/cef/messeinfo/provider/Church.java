@@ -10,6 +10,7 @@ public class Church implements BaseColumns {
     public static final String COMMUNE = "commune";
     public static final String PAROISSE = "paroisse";
     public static final String ADRESSE = "adresse";
+    public static final String CP = "cp";
     public static final String TEL = "tel";
     public static final String FAX = "fax";
     public static final String EMAIL = "email";

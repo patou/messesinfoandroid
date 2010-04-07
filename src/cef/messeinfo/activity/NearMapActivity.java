@@ -103,8 +103,9 @@ public class NearMapActivity extends MapActivity {
 					TextView nom = (TextView) findViewById(R.id.nom);
 					TextView commune = (TextView) findViewById(R.id.commune);
 					TextView paroisse = (TextView) findViewById(R.id.paroisse);
+					String cp = item.get(Church.CP);
 					nom.setText(item.get(Church.NOM));
-					commune.setText(item.get(Church.COMMUNE));
+					commune.setText(cp + " " + item.get(Church.COMMUNE));
 					paroisse.setText(item.get(Church.PAROISSE));
 					return true;
 				}

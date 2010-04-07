@@ -21,7 +21,7 @@ public class ChurchContentProvider extends ContentProvider {
     private static final String TAG = "NotePadProvider";
 
     private static final String DATABASE_NAME = "messeinfo.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String FAVORITE_TABLE_NAME = "church_favorite";
 
     private static HashMap<String, String> sMassFavoritesProjectionMap;

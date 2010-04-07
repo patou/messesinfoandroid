@@ -123,14 +123,18 @@ public class ChurchActivity extends TabActivity {
 										}
 									}
 								});
+								String cp = item.get(Church.CP);
 								nom.setText(name);
-								commune.setText(city);
+								commune.setText(cp + " " + city);
 								paroisse.setText(paroisseName);
 
 								ViewEntry entry = new ViewEntry();
 								String adresse = item.get(Church.ADRESSE);
 								if (TextUtils.isEmpty(adresse)) {
-									adresse = city;
+									adresse = cp + " " +  city;
+								}
+								else {
+									adresse += " " + cp + " " +  city;
 								}
 								entry.label = adresse;
 								entry.data = getString(R.string.church_see_map);

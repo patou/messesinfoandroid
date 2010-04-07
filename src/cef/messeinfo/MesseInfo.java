@@ -59,8 +59,8 @@ public class MesseInfo extends ListActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		tracker = GoogleAnalyticsTracker.getInstance();
 		if (savedInstanceState == null) {
-			tracker = GoogleAnalyticsTracker.getInstance();
 			tracker.start("UA-12886932-4", 20, this);
 			trackUserInformation();
 		}
@@ -235,6 +235,7 @@ public class MesseInfo extends ListActivity {
 	protected void onDestroy() {
 		super.onDestroy();
 		// Stop the tracker when it is no longer needed.
-		tracker.stop();
+		if (tracker != null)
+			tracker.stop();
 	}
 }
