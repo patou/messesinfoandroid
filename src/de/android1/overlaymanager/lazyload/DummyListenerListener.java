@@ -19,14 +19,12 @@
 
 package de.android1.overlaymanager.lazyload;
 
-import android.view.MotionEvent;
-
-import com.google.android.maps.GeoPoint;
-
-import de.android1.overlaymanager.ManagedOverlay;
 import de.android1.overlaymanager.ManagedOverlayGestureDetector;
-import de.android1.overlaymanager.ManagedOverlayItem;
 import de.android1.overlaymanager.ZoomEvent;
+import de.android1.overlaymanager.ManagedOverlay;
+import de.android1.overlaymanager.ManagedOverlayItem;
+import android.view.MotionEvent;
+import com.google.android.maps.GeoPoint;
 
 public class DummyListenerListener implements ManagedOverlayGestureDetector.OnOverlayGestureListener{
     @Override

@@ -24,8 +24,9 @@ public class FavoriteActivity extends ListActivity {
     private static final String[] PROJECTION = new String[] { Church._ID, // 0
             Church.CODE, // 1
             Church.NOM, // 2
-            Church.COMMUNE, // 3
-            Church.PAROISSE // 4
+            Church.CP, // 3
+            Church.COMMUNE, // 4
+            Church.PAROISSE // 5
     };
 
     @Override

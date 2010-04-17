@@ -18,6 +18,7 @@ public class Church implements BaseColumns {
     public static final String LIBRE = "libre";
     public static final String LON = "lon";
     public static final String LAT = "lat";
+    public static final String FAVORITE = "favorite";
     public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.messeinfo.church_favorite";
     public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.messeinfo.church_favorite";
     public static final String CONTENT_URI_NAME = "church_favorite";

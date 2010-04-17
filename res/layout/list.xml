@@ -11,6 +11,7 @@
         <EditText android:layout_height="wrap_content"
             android:id="@+id/searchField"
             android:hint="@string/search"
+            android:imeOptions="actionSearch"
             android:singleLine="true" android:layout_width="fill_parent"
             android:layout_marginLeft="48px"/>
         <ImageButton android:layout_height="wrap_content"

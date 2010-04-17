@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="app_name">Messes Info</string>
-	<string name="menu_next_mass">Prochaines messes à côté d\'ici</string>
-	<string name="menu_search_mass">Rechercher une célébration</string>
+	<string name="app_name">MessesInfo</string>
+	<string name="menu_next_mass">Églises à côté d\'ici</string>
+	<string name="menu_search_mass">Rechercher une messe</string>
 	<string name="menu_favorite">Mes églises favorites</string>
 	<string name="menu_church_book">Annuaire des églises</string>
 	<string name="menu_quit">Quitter</string>
@@ -10,18 +10,23 @@
 	<string name="main_menu_website">Site web</string>
 	<string name="main_menu_contact">Nous écrire</string>
 	<string name="menu_list">Liste</string>
+	<string name="map_menu_my_position">Ma position</string>
 	<string name="about_title">Messes Info</string>
 	<string name="about_sub_title">Développé par : Patrice de Saint Steban</string>
 	<string name="about_copyright">Un service offert par la Conférence des évêques de
-		France (CEF), plus d\'informations sur le site http://www.messesinfo.catholique.fr
+		France (CEF), plus d\'informations sur le site
+		http://www.messesinfo.catholique.fr
 	</string>
-	<string name="about_website">Plus d\'informations sur le site: http://android.catholique.fr</string>
+	<string name="about_website">Plus d\'informations sur le site:
+		http://android.catholique.fr</string>
 	<string name="about_webcatho">http://www.webcatho.fr</string>
 	<string name="search">Rechercher ...</string>
 	<string name="list_empty">Pas de résultat pour votre recherche</string>
-	<string name="list_favorites_empty">Ajoutez des églises à votre liste de favoris</string>
+	<string name="list_favorites_empty">Vous n\'avez pas encore de favoris.\n\nAjoutez des églises à votre liste de favoris en appuyant sur l\'étoile sur la fiche d\'information d\'une église
+	</string>
 	<string name="zoom_in">Zoom ++</string>
 	<string name="zoom_out">Zoom --</string>
+	<string name="zoom_in_for_display">Zoomez pour afficher des églises</string>
 
 	<string name="search_mass_place">Lieu</string>
 	<string name="search_mass_options">Type de célébration</string>
@@ -39,7 +44,11 @@
 	<string name="search_mass_loading_title">Recherche en cours ...</string>
 	<string name="search_mass_loading">La recherche et l\'affichage peut prendre du temps
 		en fonction de votre connexion. Merci de patienter...</string>
-	<string name="list_search_help">Cherchez votre lieu de culte par commune et/ou code postal.\nPour les villes de Paris, Lyon et Marseille, il est possible de chercher par arrondissement en faisant suivre le nom de la ville par le numéro de l\'arrondissement.\n\nExemples :\n- paris 19\n- st malo\n- 94800</string>
+	<string name="list_search_help">Cherchez votre lieu de culte par commune et/ou code
+		postal.\nPour les villes de Paris, Lyon et Marseille, il est possible
+		de chercher par arrondissement en faisant suivre le nom de la ville
+		par le numéro de l\'arrondissement.\n\nExemples :\n- paris 19\n- st
+		malo\n- 94800</string>
 	<string name="list_search_loading">Recherche en cours ...</string>
 	<string name="loading">Chargement ...</string>
 	<string name="church_tab_information">Information</string>
@@ -50,4 +59,10 @@
 	<string name="church_call_tel">Appeler</string>
 	<string name="church_send_fax">Fax</string>
 	<string name="schedules_empty">Pas d\'horaires disponible</string>
+	<string name="error_server">Le serveur de MessesInfo n\'est actuellement pas
+		disponible</string>
+	<string name="error_church_not_exist">Cette eglise n\'existe pas</string>
+	<string name="error_church_book">Une erreur empêche d\'afficher le résultat</string>
+	<string name="error_church_schedule">Une erreur empêche d\'afficher les horraires de messes</string>
+	<string name="error_search_schedule">Une erreur empêche d\'afficher les horraires de messes</string>
 </resources>

@@ -1,8 +1,8 @@
 package de.android1.overlaymanager.lazyload;
 
-import java.util.List;
-
 import com.google.android.maps.GeoPoint;
+
+import java.util.List;
 
 import de.android1.overlaymanager.ManagedOverlay;
 import de.android1.overlaymanager.ManagedOverlayItem;

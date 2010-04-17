@@ -1,25 +1,20 @@
 package de.android1.overlaymanager;
 
+import android.graphics.drawable.Drawable;
+import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.view.MotionEvent;
+import android.util.Log;
+import android.widget.ImageView;
+
+import com.google.android.maps.ItemizedOverlay;
+import com.google.android.maps.MapView;
+import com.google.android.maps.GeoPoint;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import android.graphics.Canvas;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.widget.ImageView;
-
-import com.google.android.maps.GeoPoint;
-import com.google.android.maps.ItemizedOverlay;
-import com.google.android.maps.MapView;
-
-import de.android1.overlaymanager.lazyload.DummyListenerListener;
-import de.android1.overlaymanager.lazyload.LazyLoadAnimation;
-import de.android1.overlaymanager.lazyload.LazyLoadCallback;
-import de.android1.overlaymanager.lazyload.LazyLoadException;
-import de.android1.overlaymanager.lazyload.LazyLoadListener;
-import de.android1.overlaymanager.lazyload.LazyLoadManager;
+import de.android1.overlaymanager.lazyload.*;
 
 public class ManagedOverlay extends ItemizedOverlay<ManagedOverlayItem> {
 
@@ -42,8 +37,8 @@ public class ManagedOverlay extends ItemizedOverlay<ManagedOverlayItem> {
     protected int lastZoomlevel = -1;
 
     private Rect touchableBounds = new Rect();
-    private int minTouchableWidth = 10;
-    private int minTouchableHeight = 10;
+    private int minTouchableWidth = 48;
+    private int minTouchableHeight = 48;
 
     protected ManagedOverlay(OverlayManager manager, String name, Drawable defaultMarker) {
         super(defaultMarker);
@@ -313,7 +308,7 @@ public class ManagedOverlay extends ItemizedOverlay<ManagedOverlayItem> {
         return getManager().getMapView();
     }
 
-    private LazyLoadManager getLazyLoadManager() {
+    protected LazyLoadManager getLazyLoadManager() {
         if (lazyLoadManager == null) {
             lazyLoadManager = new LazyLoadManager(this);
         }
@@ -330,5 +325,9 @@ public class ManagedOverlay extends ItemizedOverlay<ManagedOverlayItem> {
         public void onFocusChanged(com.google.android.maps.ItemizedOverlay itemizedOverlay, com.google.android.maps.OverlayItem overlayItem) {
             this.onFocusChanged((ManagedOverlay) itemizedOverlay, (ManagedOverlayItem) overlayItem);
         }
+    }
+    
+    public void close() {
+    	getLazyLoadManager().close();
     }
 }

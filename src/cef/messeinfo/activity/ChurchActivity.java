@@ -3,6 +3,8 @@ package cef.messeinfo.activity;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.xmlrpc.android.XMLRPCException;
+
 import android.app.TabActivity;
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
@@ -12,7 +14,6 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +29,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import cef.messeinfo.MesseInfo;
 import cef.messeinfo.R;
 import cef.messeinfo.client.Server;
 import cef.messeinfo.provider.Church;
@@ -35,268 +37,282 @@ import cef.messeinfo.provider.Church;
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 public class ChurchActivity extends TabActivity {
-	
-	GoogleAnalyticsTracker tracker;
-	
-	public static void activityStart(Context context, String code) {
-		Intent intent = new Intent(context, ChurchActivity.class);
-		intent.putExtra("code", code);
-		context.startActivity(intent);
+
+    private static final String HORAIRE = "horaire";
+    private static final String INFORMATION = "information";
+    GoogleAnalyticsTracker tracker;
+
+    public static void activityStart(Context context, String code) {
+	Intent intent = new Intent(context, ChurchActivity.class);
+	intent.putExtra(Church.CODE, code);
+	context.startActivity(intent);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+	super.onCreate(savedInstanceState);
+	setContentView(R.layout.church_display);
+	final String code = getIntent().getStringExtra("code");
+	MesseInfo.getTracker().trackPageView("/church/" + code);
+	TabHost tabs = getTabHost();
+	tabs.addTab(tabs.newTabSpec(INFORMATION).setIndicator(getString(R.string.church_tab_information),
+	        getResources().getDrawable(R.drawable.sym_action_sms)).setContent(R.id.information_tab));
+	Intent intentHoraires = new Intent(getApplicationContext(), ScheduleActivity.class);
+	intentHoraires.putExtra(Church.CODE, code);
+	tabs.addTab(tabs.newTabSpec(HORAIRE).setIndicator(getString(R.string.church_tab_schedule),
+	        getResources().getDrawable(R.drawable.sym_schedule)).setContent(intentHoraires));
+	if (code != null)
+
+	    new Thread(new Runnable() {
+
+		@Override
+		public void run() {
+		    try {
+			final Map<String, String> item = new Server(getString(R.string.server_url)).getChurchInfo(code);
+			Cursor cursor = getContentResolver().query(Uri.withAppendedPath(Church.CONTENT_URI, code), null, null, null, null);
+			final Boolean starred = cursor.getCount() > 0;
+			if (item != null) {
+			    runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+				    TextView nom = (TextView) findViewById(R.id.nom);
+				    TextView commune = (TextView) findViewById(R.id.commune);
+				    TextView paroisse = (TextView) findViewById(R.id.paroisse);
+				    CheckBox star = (CheckBox) findViewById(R.id.star);
+				    ListView list = (ListView) findViewById(R.id.list_contact);
+				    list.setEmptyView(findViewById(R.id.loading));
+				    list.setOnItemClickListener(new OnItemClickListener() {
+
+					@Override
+					public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+					    ListView listView = (ListView) parent;
+					    ViewAdapter adapter = (ViewAdapter) listView.getAdapter();
+					    ViewEntry entry = (ViewEntry) adapter.getItem(position);
+					    if (entry != null) {
+						Intent intent = entry.intent;
+						if (intent != null) {
+						    try {
+							startActivity(intent);
+						    } catch (ActivityNotFoundException e) {
+							Log.e("messeinfo", "No activity found for intent: " + intent);
+						    }
+						}
+					    }
+					}
+				    });
+				    ArrayList<ViewEntry> entries = new ArrayList<ViewEntry>();
+				    TabHost tabs = getTabHost();
+				    star.setChecked(starred);
+				    final String city = item.get(Church.COMMUNE);
+				    final String name = item.get(Church.NOM);
+				    final String paroisseName = item.get(Church.PAROISSE);
+				    final String cp = item.get(Church.CP);
+				    star.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					    if (isChecked) {
+						ContentValues values = new ContentValues();
+						values.put(Church.CODE, item.get(Church.CODE));
+						values.put(Church.NOM, name);
+						values.put(Church.COMMUNE, city);
+						values.put(Church.CP, cp);
+						values.put(Church.PAROISSE, paroisseName);
+						values.put(Church.LAT, item.get(Church.LAT));
+						values.put(Church.LON, item.get(Church.LON));
+						values.put(Church.FAVORITE, 1);
+						getContentResolver().insert(Church.CONTENT_URI, values);
+					    } else {
+						getContentResolver().delete(Uri.withAppendedPath(Church.CONTENT_URI, code), null, null);
+					    }
+					}
+				    });
+				    nom.setText(name);
+				    commune.setText(cp + " " + city);
+				    paroisse.setText(paroisseName);
+
+				    ViewEntry entry = new ViewEntry();
+				    String adresse = item.get(Church.ADRESSE);
+				    if (TextUtils.isEmpty(adresse)) {
+					adresse = cp + " " + city;
+				    } else {
+					adresse += " " + cp + " " + city;
+				    }
+				    entry.label = adresse;
+				    entry.data = getString(R.string.church_see_map);
+				    entry.actionIcon = R.drawable.sym_action_map;
+				    entry.intent = new Intent(Intent.ACTION_VIEW, Uri.fromParts("geo", item.get(Church.LAT) + ","
+					    + item.get(Church.LON) + "?z=12", null));
+				    entries.add(entry);
+				    String email = item.get(Church.EMAIL);
+				    if (!TextUtils.isEmpty(email)) {
+					entry = new ViewEntry();
+					entry.label = email;
+					entry.data = getString(R.string.church_send_mail);
+					entry.actionIcon = android.R.drawable.sym_action_email;
+					entry.intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", email, null));
+					entries.add(entry);
+				    }
+				    String internet = item.get(Church.INTERNET);
+				    if (!TextUtils.isEmpty(internet)) {
+					entry = new ViewEntry();
+					entry.label = internet;
+					entry.data = getString(R.string.church_view_site);
+					entry.actionIcon = R.drawable.sym_action_organization;
+					String url = internet;
+					if (!internet.startsWith("http://"))
+					    url = "http://" + internet;
+					entry.intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+					entries.add(entry);
+				    }
+				    String tel = item.get(Church.TEL);
+				    if (!TextUtils.isEmpty(tel)) {
+					entry = new ViewEntry();
+					entry.label = tel;
+					entry.data = getString(R.string.church_call_tel);
+					entry.actionIcon = android.R.drawable.sym_action_call;
+					entry.intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", tel.replaceAll("[^0-9()+]+", ""), null));
+					entries.add(entry);
+				    }
+				    String fax = item.get(Church.FAX);
+				    if (!TextUtils.isEmpty(fax)) {
+					entry = new ViewEntry();
+					entry.label = fax;
+					entry.data = getString(R.string.church_send_fax);
+					entry.actionIcon = android.R.drawable.sym_action_call;
+					entries.add(entry);
+				    }
+				    String libre = item.get(Church.LIBRE);
+				    if (!TextUtils.isEmpty(libre)) {
+					entry = new ViewEntry();
+					entry.label = libre;
+					entry.data = "";
+					entry.actionIcon = R.drawable.sym_note;
+					entries.add(entry);
+				    }
+				    list.setAdapter(new ViewAdapter(getApplicationContext(), entries));
+				    tabs.setCurrentTab(0);
+				}
+			    });
+			}
+		    } catch (XMLRPCException e1) {
+			e1.printStackTrace();
+			displayErrorMessage();
+		    }
+		}
+	    }).start();
+    }
+
+    protected void displayErrorMessage() {
+	runOnUiThread(new Runnable() {
+
+	    @Override
+	    public void run() {
+		((TextView) findViewById(R.id.loading)).setText(R.string.error_church_not_exist);
+	    }
+	});
+    }
+
+    final static class ViewEntry {
+	public String label = "";
+	public String data = "";
+	public int primaryIcon = -1;
+	public Intent intent;
+	public int actionIcon = -1;
+    }
+
+    private static final class ViewAdapter extends BaseAdapter {
+	/** Cache of the children views of a row */
+	static class ViewCache {
+	    public TextView label;
+	    public TextView data;
+	    public ImageView actionIcon;
+
+	    @SuppressWarnings("unused")
+            public ViewEntry entry;
+	}
+
+	private ArrayList<ViewEntry> mEntries = null;
+	protected LayoutInflater mInflater;
+	protected Context mContext;
+
+	ViewAdapter(Context context, ArrayList<ViewEntry> entries) {
+	    super();
+	    mEntries = entries;
+	    mContext = context;
+	    mInflater = LayoutInflater.from(context);
 	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.church_display);
-		
-		tracker = GoogleAnalyticsTracker.getInstance();
+	public View getView(int position, View convertView, ViewGroup parent) {
+	    ViewEntry entry = mEntries.get(position);
+	    View v;
 
-		final String code = getIntent().getStringExtra("code");
-		tracker.trackPageView("/church/" + code);
-		TabHost tabs = getTabHost();
-		tabs.addTab(tabs.newTabSpec("information")
-				.setIndicator(getString(R.string.church_tab_information), getResources()
-				.getDrawable(R.drawable.sym_action_sms))
-				.setContent(R.id.information_tab));
-		Intent intentHoraires = new Intent(getApplicationContext(), ScheduleActivity.class);
-		intentHoraires.putExtra("code", code);
-		tabs.addTab(tabs.newTabSpec("horaire")
-				.setIndicator(getString(R.string.church_tab_schedule), getResources()
-				.getDrawable(R.drawable.sym_schedule))
-				.setContent(intentHoraires));
-		if (code != null)
-			new Thread(new Runnable() {
+	    ViewCache views;
 
-				@Override
-				public void run() {
-					final Map<String, String> item = new Server(getString(R.string.server_url)).getChurchInfo(code);
-					Cursor cursor = getContentResolver().query(Uri.withAppendedPath(Church.CONTENT_URI, code), null, null, null, null);
-					final Boolean starred = cursor.getCount() > 0;
-					if (item != null) {
-						handler.post(new Runnable() {
-							@Override
-							public void run() {
-								TextView nom = (TextView) findViewById(R.id.nom);
-								TextView commune = (TextView) findViewById(R.id.commune);
-								TextView paroisse = (TextView) findViewById(R.id.paroisse);
-								CheckBox star = (CheckBox) findViewById(R.id.star);
-								ListView list = (ListView) findViewById(R.id.list_contact);
-								list.setEmptyView(findViewById(R.id.loading));
-								list.setOnItemClickListener(new OnItemClickListener() {
+	    // Check to see if we can reuse convertView
+	    if (convertView != null) {
+		v = convertView;
+		views = (ViewCache) v.getTag();
+	    } else {
+		// Create a new view if needed
+		v = mInflater.inflate(R.layout.list_item_text_icons, parent, false);
 
-									@Override
-									public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-										ListView listView = (ListView) parent;
-										ViewAdapter adapter = (ViewAdapter) listView.getAdapter();
-										ViewEntry entry = (ViewEntry) adapter.getItem(position);
-								        if (entry != null) {
-								            Intent intent = entry.intent;
-								            if (intent != null) {
-								                try {
-								                    startActivity(intent);
-								                } catch (ActivityNotFoundException e) {
-								                    Log.e("messeinfo", "No activity found for intent: " + intent);
-								                }
-								            }
-								        }
-									}
-								});
-								ArrayList<ViewEntry> entries = new ArrayList<ViewEntry>();
-								TabHost tabs = getTabHost();
-								star.setChecked(starred);
-								final String city = item.get(Church.COMMUNE);
-								final String name = item.get(Church.NOM);
-								final String paroisseName = item.get(Church.PAROISSE);
-								star.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+		// Cache the children
+		views = new ViewCache();
+		views.label = (TextView) v.findViewById(android.R.id.text1);
+		views.data = (TextView) v.findViewById(android.R.id.text2);
+		views.actionIcon = (ImageView) v.findViewById(R.id.icon1);
+		v.setTag(views);
+	    }
 
-									@Override
-									public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-										if (isChecked) {
-											ContentValues values = new ContentValues();
-											values.put(Church.CODE, item.get(Church.CODE));
-											values.put(Church.NOM, name);
-											values.put(Church.COMMUNE, city);
-											values.put(Church.PAROISSE, paroisseName);
-											getContentResolver().insert(Church.CONTENT_URI, values);
-										} else {
-											getContentResolver().delete(Uri.withAppendedPath(Church.CONTENT_URI, code), null, null);
-										}
-									}
-								});
-								String cp = item.get(Church.CP);
-								nom.setText(name);
-								commune.setText(cp + " " + city);
-								paroisse.setText(paroisseName);
+	    // Update the entry in the view cache
+	    views.entry = entry;
 
-								ViewEntry entry = new ViewEntry();
-								String adresse = item.get(Church.ADRESSE);
-								if (TextUtils.isEmpty(adresse)) {
-									adresse = cp + " " +  city;
-								}
-								else {
-									adresse += " " + cp + " " +  city;
-								}
-								entry.label = adresse;
-								entry.data = getString(R.string.church_see_map);
-								entry.actionIcon = R.drawable.sym_action_map;
-								entry.intent = new Intent(Intent.ACTION_VIEW, Uri.fromParts("geo", item.get(Church.LAT) + "," + item.get(Church.LON) + "?z=12", null));
-								entries.add(entry);
-								String email = item.get(Church.EMAIL);
-								if (!TextUtils.isEmpty(email)) {
-									entry = new ViewEntry();
-									entry.label = email;
-									entry.data = getString(R.string.church_send_mail);
-									entry.actionIcon = android.R.drawable.sym_action_email;
-									entry.intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", email, null));
-									entries.add(entry);
-								}
-								String internet = item.get(Church.INTERNET);
-								if (!TextUtils.isEmpty(internet)) {
-									entry = new ViewEntry();
-									entry.label = internet;
-									entry.data = getString(R.string.church_view_site);
-									entry.actionIcon = R.drawable.sym_action_organization;
-									String url = internet;
-									if (!internet.startsWith("http://"))
-										url = "http://" + internet;
-									entry.intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-									entries.add(entry);
-								}
-								String tel = item.get(Church.TEL);
-								if (!TextUtils.isEmpty(tel)) {
-									entry = new ViewEntry();
-									entry.label = tel;
-									entry.data = getString(R.string.church_call_tel);
-									entry.actionIcon = android.R.drawable.sym_action_call;
-									entry.intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", tel.replaceAll("[^0-9()+]+", ""), null));
-									entries.add(entry);
-								}
-								String fax = item.get(Church.FAX);
-								if (!TextUtils.isEmpty(fax)) {
-									entry = new ViewEntry();
-									entry.label = fax;
-									entry.data = getString(R.string.church_send_fax);
-									entry.actionIcon = android.R.drawable.sym_action_call;
-									entries.add(entry);
-								}
-								String libre = item.get(Church.LIBRE);
-								if (!TextUtils.isEmpty(libre)) {
-									entry = new ViewEntry();
-									entry.label = libre;
-									entry.data = "";
-									entry.actionIcon = R.drawable.sym_note;
-									entries.add(entry);
-								}
-								list.setAdapter(new ViewAdapter(getApplicationContext(), entries));
-								tabs.setCurrentTab(0);
-							}
-						});
-					}
-				}
-			}).start();
+	    // Bind the data to the view
+	    bindView(v, entry);
+	    return v;
 	}
 
-	private Handler handler = new Handler();
+	protected void bindView(View view, ViewEntry entry) {
+	    final Resources resources = mContext.getResources();
+	    ViewCache views = (ViewCache) view.getTag();
 
-	final static class ViewEntry {
-		public String label = "";
-		public String data = "";
-		public int primaryIcon = -1;
-		public Intent intent;
-		public int actionIcon = -1;
+	    // Set the label
+	    TextView label = views.label;
+	    label.setText(entry.label);
+
+	    // Set the data
+	    TextView data = views.data;
+	    if (data != null) {
+		data.setText(entry.data);
+	    }
+
+	    // Set the action icon
+	    ImageView action = views.actionIcon;
+	    if (entry.actionIcon != -1) {
+		action.setImageDrawable(resources.getDrawable(entry.actionIcon));
+		action.setVisibility(View.VISIBLE);
+	    } else {
+		// Things should still line up as if there was an icon, so make
+		// it invisible
+		action.setVisibility(View.INVISIBLE);
+	    }
 	}
-	
-	private static final class ViewAdapter extends BaseAdapter {
-		/** Cache of the children views of a row */
-		static class ViewCache {
-			public TextView label;
-			public TextView data;
-			public ImageView actionIcon;
 
-			public ViewEntry entry;
-		}
-
-		private ArrayList<ViewEntry> mEntries = null;
-		protected LayoutInflater mInflater;
-		protected Context mContext;
-
-		ViewAdapter(Context context, ArrayList<ViewEntry> entries) {
-			super();
-			mEntries = entries;
-			mContext = context;
-			mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			ViewEntry entry = mEntries.get(position);
-			View v;
-
-			ViewCache views;
-
-			// Check to see if we can reuse convertView
-			if (convertView != null) {
-				v = convertView;
-				views = (ViewCache) v.getTag();
-			} else {
-				// Create a new view if needed
-				v = mInflater.inflate(R.layout.list_item_text_icons, parent, false);
-
-				// Cache the children
-				views = new ViewCache();
-				views.label = (TextView) v.findViewById(android.R.id.text1);
-				views.data = (TextView) v.findViewById(android.R.id.text2);
-				views.actionIcon = (ImageView) v.findViewById(R.id.icon1);
-				v.setTag(views);
-			}
-
-			// Update the entry in the view cache
-			views.entry = entry;
-
-			// Bind the data to the view
-			bindView(v, entry);
-			return v;
-		}
-
-		protected void bindView(View view, ViewEntry entry) {
-			final Resources resources = mContext.getResources();
-			ViewCache views = (ViewCache) view.getTag();
-
-			// Set the label
-			TextView label = views.label;
-			label.setText(entry.label);
-
-			// Set the data
-			TextView data = views.data;
-			if (data != null) {
-				data.setText(entry.data);
-			}
-
-			// Set the action icon
-			ImageView action = views.actionIcon;
-			if (entry.actionIcon != -1) {
-				action.setImageDrawable(resources.getDrawable(entry.actionIcon));
-				action.setVisibility(View.VISIBLE);
-			} else {
-				// Things should still line up as if there was an icon, so make
-				// it invisible
-				action.setVisibility(View.INVISIBLE);
-			}
-		}
-
-		@Override
-		public int getCount() {
-			return mEntries.size();
-		}
-
-		@Override
-		public ViewEntry getItem(int location) {
-			return mEntries.get(location);
-		}
-
-		@Override
-		public long getItemId(int location) {
-			return location;
-		}
+	@Override
+	public int getCount() {
+	    return mEntries.size();
 	}
+
+	@Override
+	public ViewEntry getItem(int location) {
+	    return mEntries.get(location);
+	}
+
+	@Override
+	public long getItemId(int location) {
+	    return location;
+	}
+    }
 }

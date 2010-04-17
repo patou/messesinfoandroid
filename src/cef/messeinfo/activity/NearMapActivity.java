@@ -18,6 +18,7 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import cef.messeinfo.R;
 import cef.messeinfo.client.Server;
 import cef.messeinfo.maps.ChurchItemizedOverlay;
@@ -39,6 +40,7 @@ import de.android1.overlaymanager.lazyload.LazyLoadException;
 
 public class NearMapActivity extends MapActivity {
 	private static final int MENU_LIST = 0;
+	private static final int MENU_MY_POSITION = 1;
 	private MapView mapView;
 	private Location mLocation;
 	private ChurchItemizedOverlay mOverlay;
@@ -122,17 +124,26 @@ public class NearMapActivity extends MapActivity {
 						throws LazyLoadException {
 					List<ManagedOverlayItem> items = new LinkedList<ManagedOverlayItem>();
 						try {
-							Double top_lat = topLeft.getLatitudeE6() / 1E6;
-							Double top_lgt = topLeft.getLongitudeE6() / 1E6;
-							Double bottom_lat = bottomRight.getLatitudeE6() / 1E6;
-							Double bottom_lgt = bottomRight.getLongitudeE6() / 1E6;
-							List<Map<String, String>> result = server
-									.getNearChurch(top_lat, top_lgt,
-											bottom_lat, bottom_lgt);
-							if (result != null) {
-								for (Map<String, String> item : result) {
-									items.add(new ChurchPt(item));
-								}
+							if (overlay.getZoomlevel() > 12) {
+								Double top_lat = topLeft.getLatitudeE6() / 1E6;
+								Double top_lgt = topLeft.getLongitudeE6() / 1E6;
+								Double bottom_lat = bottomRight.getLatitudeE6() / 1E6;
+								Double bottom_lgt = bottomRight.getLongitudeE6() / 1E6;
+								List<Map<String, String>> result = server.getNearChurch(top_lat, top_lgt,
+										bottom_lat, bottom_lgt);
+								if (result != null) {
+									for (Map<String, String> item : result) {
+										items.add(new ChurchPt(item));
+									}
+								}							
+							}
+							else {
+								NearMapActivity.this.runOnUiThread(new Runnable() {
+									@Override
+									public void run() {
+										Toast.makeText(NearMapActivity.this, R.string.zoom_in_for_display, Toast.LENGTH_SHORT).show();
+									}
+								});
 							}
 						} catch (Exception e) {
 							throw new LazyLoadException(e.getMessage());
@@ -178,6 +189,7 @@ public class NearMapActivity extends MapActivity {
 			myLocationOverlay.enableMyLocation();
 		}
 		else {
+			mOverlay.close();
 			overlayManager.removeOverlay(mOverlay);
 			myLocationOverlay.disableMyLocation();
 		}
@@ -193,6 +205,7 @@ public class NearMapActivity extends MapActivity {
 			}
 		});
 		mapView.setBuiltInZoomControls(true);
+		mapView.getController().setZoom(14);
 	}
 	
 	@Override
@@ -211,7 +224,6 @@ public class NearMapActivity extends MapActivity {
 		mLocation.setLongitude(lgt);
 		mapView.getController().animateTo(location);
 		mapView.getController().setZoom(14);
-		// startSearchNextMass();
 	}
 
 	@Override
@@ -227,13 +239,15 @@ public class NearMapActivity extends MapActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		boolean supRetVal = super.onCreateOptionsMenu(menu);
+		menu.add(0, MENU_MY_POSITION, 0, getString(R.string.map_menu_my_position)).setIcon(R.drawable.mylocation);
 		return supRetVal;
 	}
 
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		switch (item.getItemId()) {
-		case MENU_LIST:
+		case MENU_MY_POSITION:
+		    	centerMap(myLocationOverlay.getMyLocation());
 			return true;
 		default:
 			break;

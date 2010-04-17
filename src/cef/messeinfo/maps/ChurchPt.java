@@ -39,6 +39,4 @@ public class ChurchPt extends ManagedOverlayItem {
 	public Map<String,String> getData() {
 		return data;
 	}
-    
-
 }

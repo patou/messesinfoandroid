@@ -48,7 +48,7 @@ public class ChurchAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
+	
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.list_church_item, null);
 

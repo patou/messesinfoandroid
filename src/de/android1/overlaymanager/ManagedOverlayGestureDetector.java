@@ -1,10 +1,10 @@
 package de.android1.overlaymanager;
 
-import android.content.Context;
-import android.os.Handler;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-
+import android.os.Handler;
+import android.content.Context;
+import android.util.Log;
 import com.google.android.maps.GeoPoint;
 
 public class ManagedOverlayGestureDetector extends GestureDetector {

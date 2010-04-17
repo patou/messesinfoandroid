@@ -1,11 +1,12 @@
 package de.android1.overlaymanager.lazyload;
 
-import java.io.InputStream;
-
+import android.widget.ImageView;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
+
+import java.io.InputStream;
 
 public class LazyLoadAnimation {
 

@@ -1,7 +1,6 @@
 package de.android1.overlaymanager.lazyload;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import android.os.Handler;
 import android.os.Message;
@@ -25,7 +24,8 @@ public class LazyLoadManager {
 
 
     protected ManagedOverlay overlay;
-
+    protected Boolean threadRunning = true;
+    private int threadPauseTime = 1000;
     protected LazyLoadAnimation lazyLoadAnimation;
     protected LazyLoadCallback lazyLoadCallback;
     protected LazyLoadListener lazyLoadListener;
@@ -83,55 +83,63 @@ public class LazyLoadManager {
     public synchronized void call(long delay) {
         this.run = true;
         this.delay = delay;
-
     }
 
     private synchronized void reset() {
         this.run = false;
         this.delay = 0;
     }
+    
+    public synchronized void close() {
+        this.threadRunning = false;
+    }
 
     public void invoke() {
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (true) {
-                    if (run) {
-                        Log.d(LOG_TAG, "Lazy Loading...");
-                        long mdelay = delay;
-                        reset();
-                        if (mdelay > 0)
-                            try {
-                                Log.d(LOG_TAG, "Waiting " + mdelay);
-                                TimeUnit.MILLISECONDS.sleep(mdelay);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        if (lazyLoadListener != null || lazyLoadAnimation != null) {
-                            lazyloadHandler.sendEmptyMessage(ON_BEGIN);
-                        }
-
-                        try {
-                            Projection p = overlay.getManager().getMapView().getProjection();
-                            GeoPoint topleft = p.fromPixels(0, 0);
-                            GeoPoint bottomright = p.fromPixels(overlay.getManager().getMapView().getWidth(), overlay.getManager().getMapView().getHeight());
-                            List<ManagedOverlayItem> newitems = overlay.getLazyLoadCallback().lazyload(topleft, bottomright, overlay);
-                            Message.obtain(lazyloadHandler, REFRESH_ITEMS, newitems).sendToTarget();
-
-                            if (overlay.getLazyLoadListener() != null || lazyLoadAnimation != null)
-                                lazyloadHandler.sendEmptyMessage(ON_SUCCESS);
-                            int size = 0;
-                            if (newitems != null)
-                                size = newitems.size();
-                            Log.d(LOG_TAG, "LazyLoad - Success (" + size + ") items loaded.");
-                        } catch (LazyLoadException e) {
-                            if (lazyLoadListener != null || lazyLoadAnimation != null) {
-                                Message.obtain(lazyloadHandler, ON_ERROR, e).sendToTarget();
-                            }
-                            Log.w(LOG_TAG, "LazyLoad - Exception:"+e);
-                        }
-
-                    }
+                while (threadRunning) {
+                	try {
+						Thread.sleep(getThreadPauseTime());
+	                    if (run) {
+	                        Log.d(LOG_TAG, "Lazy Loading...");
+	                        long mdelay = delay;
+	                        reset();
+	                        if (mdelay > 0)
+	                            try {
+	                                Log.d(LOG_TAG, "Waiting " + mdelay);
+	                                Thread.sleep(mdelay);
+	                            } catch (InterruptedException e) {
+	                                e.printStackTrace();
+	                            }
+	                        if (lazyLoadListener != null || lazyLoadAnimation != null) {
+	                            lazyloadHandler.sendEmptyMessage(ON_BEGIN);
+	                        }
+	
+	                        try {
+	                            Projection p = overlay.getManager().getMapView().getProjection();
+	                            GeoPoint topleft = p.fromPixels(0, 0);
+	                            GeoPoint bottomright = p.fromPixels(overlay.getManager().getMapView().getWidth(), overlay.getManager().getMapView().getHeight());
+	                            List<ManagedOverlayItem> newitems = overlay.getLazyLoadCallback().lazyload(topleft, bottomright, overlay);
+	                            Message.obtain(lazyloadHandler, REFRESH_ITEMS, newitems).sendToTarget();
+	
+	                            if (overlay.getLazyLoadListener() != null || lazyLoadAnimation != null)
+	                                lazyloadHandler.sendEmptyMessage(ON_SUCCESS);
+	                            int size = 0;
+	                            if (newitems != null)
+	                                size = newitems.size();
+	                            Log.d(LOG_TAG, "LazyLoad - Success (" + size + ") items loaded.");
+	                        } catch (LazyLoadException e) {
+	                            if (lazyLoadListener != null || lazyLoadAnimation != null) {
+	                                Message.obtain(lazyloadHandler, ON_ERROR, e).sendToTarget();
+	                            }
+	                            Log.w(LOG_TAG, "LazyLoad - Exception:"+e);
+	                        }
+	
+	                    }
+                	} catch (InterruptedException e1) {
+                		
+                	}
                 }
             }
         });
@@ -166,4 +174,12 @@ public class LazyLoadManager {
     public LazyLoadAnimation getLazyLoadAnimation() {
         return lazyLoadAnimation;
     }
+
+	public void setThreadPauseTime(int threadPauseTime) {
+		this.threadPauseTime = threadPauseTime;
+	}
+
+	public int getThreadPauseTime() {
+		return threadPauseTime;
+	}
 }

@@ -21,8 +21,8 @@ public class ChurchContentProvider extends ContentProvider {
     private static final String TAG = "NotePadProvider";
 
     private static final String DATABASE_NAME = "messeinfo.db";
-    private static final int DATABASE_VERSION = 2;
-    private static final String FAVORITE_TABLE_NAME = "church_favorite";
+    private static final int DATABASE_VERSION = 3;
+    private static final String CHURCH_TABLE_NAME = "church";
 
     private static HashMap<String, String> sMassFavoritesProjectionMap;
 
@@ -42,12 +42,16 @@ public class ChurchContentProvider extends ContentProvider {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL("CREATE TABLE " + FAVORITE_TABLE_NAME + " ("
+            db.execSQL("CREATE TABLE " + CHURCH_TABLE_NAME + " ("
                     + Church._ID + " INTEGER PRIMARY KEY,"
                     + Church.CODE + " VARCHAR(8),"
                     + Church.NOM + " VARCHAR(80),"
+                    + Church.CP + " VARCHAR(10),"
                     + Church.COMMUNE + " VARCHAR(80),"
-                    + Church.PAROISSE + " VARCHAR(80)"
+                    + Church.PAROISSE + " VARCHAR(80),"
+                    + Church.LAT + " REAL,"
+                    + Church.LON + " REAL,"
+                    + Church.FAVORITE + " INTEGER"
                     + ");");
         }
 
@@ -55,7 +59,8 @@ public class ChurchContentProvider extends ContentProvider {
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
                     + newVersion + ", which will destroy all old data");
-            db.execSQL("DROP TABLE IF EXISTS " + FAVORITE_TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + CHURCH_TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS favorite_church");
             onCreate(db);
         }
     }
@@ -75,12 +80,12 @@ public class ChurchContentProvider extends ContentProvider {
 
         switch (sUriMatcher.match(uri)) {
         case CHURCH_FAVORITE:
-            qb.setTables(FAVORITE_TABLE_NAME);
+            qb.setTables(CHURCH_TABLE_NAME);
             qb.setProjectionMap(sMassFavoritesProjectionMap);
             break;
 
         case CHURCH_FAVORITE_CODE:
-            qb.setTables(FAVORITE_TABLE_NAME);
+            qb.setTables(CHURCH_TABLE_NAME);
             qb.setProjectionMap(sMassFavoritesProjectionMap);
             qb.appendWhere(Church.CODE + "=");
             qb.appendWhereEscapeString(uri.getPathSegments().get(1));
@@ -140,6 +145,10 @@ public class ChurchContentProvider extends ContentProvider {
             values.put(Church.CODE, "");
         }
         
+        if (values.containsKey(Church.CP) == false) {
+            values.put(Church.CP, "");
+        }
+        
         if (values.containsKey(Church.COMMUNE) == false) {
             values.put(Church.COMMUNE, "");
         }
@@ -151,9 +160,25 @@ public class ChurchContentProvider extends ContentProvider {
         if (values.containsKey(Church.PAROISSE) == false) {
             values.put(Church.PAROISSE, "");
         }
+        
+        if (values.containsKey(Church.LON) == false) {
+            values.put(Church.LON, "");
+        }
+        
+        if (values.containsKey(Church.LAT) == false) {
+            values.put(Church.LAT, 0.0);
+        }
+        
+        if (values.containsKey(Church.LAT) == false) {
+            values.put(Church.LAT, 0.0);
+        }
+        
+        if (values.containsKey(Church.FAVORITE) == false) {
+            values.put(Church.FAVORITE, 1);
+        }
 
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        long rowId = db.insert(FAVORITE_TABLE_NAME, Church.CODE, values);
+        long rowId = db.insert(CHURCH_TABLE_NAME, Church.CODE, values);
         if (rowId > 0) {
             Uri churchUri = ContentUris.withAppendedId(Church.CONTENT_URI, rowId);
             getContext().getContentResolver().notifyChange(churchUri, null);
@@ -169,12 +194,13 @@ public class ChurchContentProvider extends ContentProvider {
         int count;
         switch (sUriMatcher.match(uri)) {
         case CHURCH_FAVORITE:
-            count = db.delete(FAVORITE_TABLE_NAME, where, whereArgs);
+            count = db.delete(CHURCH_TABLE_NAME, Church.FAVORITE + " = '1' "
+                    + (!TextUtils.isEmpty(where) ? " AND (" + where + ')' : ""), whereArgs);
             break;
 
         case CHURCH_FAVORITE_CODE:
             String churchCode =  uri.getPathSegments().get(1);
-            count = db.delete(FAVORITE_TABLE_NAME, Church.CODE + "= '" + churchCode + "' "
+            count = db.delete(CHURCH_TABLE_NAME, Church.CODE + "= '" + churchCode + "' AND " + Church.FAVORITE + " = '1' "
                     + (!TextUtils.isEmpty(where) ? " AND (" + where + ')' : ""), whereArgs);
             break;
 
@@ -192,12 +218,12 @@ public class ChurchContentProvider extends ContentProvider {
         int count;
         switch (sUriMatcher.match(uri)) {
         case CHURCH_FAVORITE:
-            count = db.update(FAVORITE_TABLE_NAME, values, where, whereArgs);
+            count = db.update(CHURCH_TABLE_NAME, values, where, whereArgs);
             break;
 
         case CHURCH_FAVORITE_CODE:
             String churchCode = uri.getPathSegments().get(1);
-            count = db.update(FAVORITE_TABLE_NAME, values, Church.CODE + "=" + churchCode
+            count = db.update(CHURCH_TABLE_NAME, values, Church.CODE + "=" + churchCode
                     + (!TextUtils.isEmpty(where) ? " AND (" + where + ')' : ""), whereArgs);
             break;
 
@@ -218,6 +244,7 @@ public class ChurchContentProvider extends ContentProvider {
         sMassFavoritesProjectionMap.put(Church._ID, Church._ID);
         sMassFavoritesProjectionMap.put(Church.CODE, Church.CODE);
         sMassFavoritesProjectionMap.put(Church.NOM, Church.NOM);
+        sMassFavoritesProjectionMap.put(Church.CP, Church.CP);
         sMassFavoritesProjectionMap.put(Church.COMMUNE, Church.COMMUNE);
         sMassFavoritesProjectionMap.put(Church.PAROISSE, Church.PAROISSE);
     }
