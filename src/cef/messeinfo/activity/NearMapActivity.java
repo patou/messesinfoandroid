@@ -224,6 +224,7 @@ public class NearMapActivity extends MapActivity {
 		mLocation.setLongitude(lgt);
 		mapView.getController().animateTo(location);
 		mapView.getController().setZoom(14);
+		mOverlay.invokeLazyLoad(50);
 	}
 
 	@Override

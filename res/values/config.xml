@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="maps_api">0rpQsam0k5fqxwyZTLyp0SEa0ijRLB_AOUYsYog</string>
-<!--	<string name="maps_api">0rpQsam0k5foFfWgP4hgPFIlmzUwNToZXYDXEew</string>-->
+<!--	<string name="maps_api">0rpQsam0k5fqxwyZTLyp0SEa0ijRLB_AOUYsYog</string>-->
+	<string name="maps_api">0rpQsam0k5foFfWgP4hgPFIlmzUwNToZXYDXEew</string>
 	<string name="server_url">http://www.android.catholique.fr/server.php</string>
 	<string name="photo_url">http://www.android.catholique.fr/photo.php?code=</string>
 	<string name="messeinfo_url">http://www.messesinfo.catholique.fr</string>

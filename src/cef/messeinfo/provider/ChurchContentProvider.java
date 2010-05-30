@@ -82,6 +82,7 @@ public class ChurchContentProvider extends ContentProvider {
         case CHURCH_FAVORITE:
             qb.setTables(CHURCH_TABLE_NAME);
             qb.setProjectionMap(sMassFavoritesProjectionMap);
+            qb.appendWhere(Church.FAVORITE + " = 1");
             break;
 
         case CHURCH_FAVORITE_CODE:
@@ -89,6 +90,7 @@ public class ChurchContentProvider extends ContentProvider {
             qb.setProjectionMap(sMassFavoritesProjectionMap);
             qb.appendWhere(Church.CODE + "=");
             qb.appendWhereEscapeString(uri.getPathSegments().get(1));
+            
             
             break;
 
