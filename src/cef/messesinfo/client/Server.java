@@ -1,4 +1,4 @@
-package cef.messeinfo.client;
+package cef.messesinfo.client;
 
 import java.net.URI;
 import java.util.HashMap;

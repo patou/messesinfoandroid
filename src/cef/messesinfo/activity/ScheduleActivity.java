@@ -1,24 +1,39 @@
-package cef.messeinfo.activity;
+package cef.messesinfo.activity;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.xmlrpc.android.XMLRPCException;
 
 import android.app.ExpandableListActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
-import cef.messeinfo.R;
-import cef.messeinfo.client.Server;
-import cef.messeinfo.provider.Schedule;
+import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
+import cef.messesinfo.R;
+import cef.messesinfo.client.Server;
+import cef.messesinfo.provider.Church;
+import cef.messesinfo.provider.Schedule;
 
 public class ScheduleActivity extends ExpandableListActivity {
 
+    private static final int MENU_EVENT = 4;
+    private static final int MENU_SHARE = 5;
+    
     private Server server;
     private TextView empty;
 
@@ -63,7 +78,68 @@ public class ScheduleActivity extends ExpandableListActivity {
 
 	    }
 	}).start();
+	registerForContextMenu(getExpandableListView());
+	getExpandableListView().setClickable(true);
     }
+    
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+	if (v.getId() == android.R.id.list) {
+	    ExpandableListView.ExpandableListContextMenuInfo info = (ExpandableListContextMenuInfo) menuInfo;
+	    int typeId = ExpandableListView.getPackedPositionType(info.packedPosition);
+	    if (typeId == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
+		int groupId = ExpandableListView.getPackedPositionGroup(info.packedPosition);
+		int childId = ExpandableListView.getPackedPositionChild(info.packedPosition);
+		Map<String, String> item = (Map<String, String>) getExpandableListAdapter().getChild(groupId, childId);
+		if (item != null) {
+		    menu.setHeaderTitle(item.get(Schedule.HEURE));
+		    menu.add(Menu.NONE, MENU_EVENT, Menu.NONE, R.string.menu_context_event);
+		    menu.add(Menu.NONE, MENU_SHARE, Menu.NONE, R.string.menu_context_event_share);
+		}
+	    }
+	}
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem menuItem) {
+	ExpandableListView.ExpandableListContextMenuInfo info = (ExpandableListContextMenuInfo) menuItem.getMenuInfo();
+	int typeId = ExpandableListView.getPackedPositionType(info.packedPosition);
+	if (typeId == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
+	    int groupId = ExpandableListView.getPackedPositionGroup(info.packedPosition);
+	    int childId = ExpandableListView.getPackedPositionChild(info.packedPosition);
+	    Map<String, String> item = (Map<String, String>) getExpandableListAdapter().getChild(groupId, childId);
+	    Map<String, Object> itemGroup = (Map<String, Object>) getExpandableListAdapter().getGroup(groupId);
+	    switch (menuItem.getItemId()) {
+	    case MENU_EVENT:
+		try {
+		    Intent intent = new Intent(Intent.ACTION_EDIT);
+		    intent.setType("vnd.android.cursor.item/event");
+		    intent.putExtra("title", item.get(Church.NOM));
+		    intent.putExtra("description", item.get(Church.PAROISSE) + "\n" + item.get(Church.COMMUNE));
+		    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH'h'mm", Locale.FRANCE);
+		    Date d = sdf.parse(item.get(Schedule.DATE) + " " + item.get(Schedule.HEURE));
+		    intent.putExtra("beginTime", d.getTime());
+		    d.setHours(d.getHours() + 1);
+		    intent.putExtra("endTime", d.getTime());
+		    startActivity(intent);
+		} catch (ParseException e) {
+		    e.printStackTrace();
+		}
+		break;
+	    case MENU_SHARE:
+		Intent i = new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT,
+			item.get(Schedule.HEURE) + "\n" + itemGroup.get(Schedule.NOM) + "\n" + item.get(Church.COMMUNE)).setType("text/plain").putExtra(Intent.EXTRA_SUBJECT,
+			item.get(Church.NOM));
+		startActivityForResult(Intent.createChooser(i, getString(R.string.menu_context_event_share)), 0);
+	    default:
+		break;
+	    }
+	    return true;
+	}
+	return false;
+    }
+
 
     private static class ViewGroupHolder {
 	TextView title;
@@ -224,7 +300,7 @@ public class ScheduleActivity extends ExpandableListActivity {
 
 	@Override
 	public boolean isChildSelectable(int groupId, int childPosition) {
-	    return false;
+	    return true;
 	}
 
 	public void setList(List<Map<String, Object>> list) {

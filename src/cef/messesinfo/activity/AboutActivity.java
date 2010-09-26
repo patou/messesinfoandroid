@@ -1,4 +1,4 @@
-package cef.messeinfo.activity;
+package cef.messesinfo.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,7 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import cef.messeinfo.R;
+import cef.messesinfo.R;
 
 public class AboutActivity extends Activity{
     public static final int MENU_CONTACT = 1;

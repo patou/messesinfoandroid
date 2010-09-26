@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="cef.messeinfo" android:versionName="1.1.0" android:versionCode="12" android:installLocation="preferExternal">
+	package="cef.messesinfo" android:versionName="1.2.0" android:versionCode="13" android:installLocation="preferExternal" >
 	<uses-sdk android:minSdkVersion="3"></uses-sdk>
 	<application android:icon="@drawable/icon" android:label="@string/app_name"
 		android:theme="@style/MesseInfoTheme" android:debuggable="false">
 		<uses-library android:name="com.google.android.maps"></uses-library>
-		<activity android:name=".MesseInfo" android:label="@string/app_name">
+		<activity android:name=".MessesInfo" android:label="@string/app_name">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
@@ -19,7 +19,7 @@
 		<activity android:name=".activity.AboutActivity"></activity>
 		<activity android:name=".activity.ChurchActivity"></activity>
 		<activity android:name=".activity.ScheduleActivity"></activity>
-		<provider android:authorities="cef.messeinfo"
+		<provider android:authorities="cef.messesinfo"
 			android:name=".provider.ChurchContentProvider"></provider>
 	</application>
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>

@@ -1,4 +1,4 @@
-package cef.messeinfo.client;
+package cef.messesinfo.client;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,7 +15,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.widget.ImageView;
-import cef.messeinfo.R;
+import cef.messesinfo.R;
 
 public class DrawableManager {
     private final Map<String, Drawable> drawableMap;

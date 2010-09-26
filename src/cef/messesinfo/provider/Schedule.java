@@ -1,4 +1,4 @@
-package cef.messeinfo.provider;
+package cef.messesinfo.provider;
 
 public class Schedule {
 	public static final String LIEU = "lieu";

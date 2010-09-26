@@ -13,6 +13,9 @@
 	<string name="main_menu_contact">Nous écrire</string>
 	<string name="menu_list">Liste</string>
 	<string name="menu_maps">Voir sur la carte</string>
+	<string name="menu_context_event">Ajouter au calendrier</string>
+	<string name="menu_context_event_share">Partager la messe</string>
+	<string name="menu_remove_favory">Retirer des favoris</string>
 	<string name="map_menu_my_position">Ma position</string>
 	<string name="map_menu_list">Liste</string>
 	<string name="menu_context_detail">Détails de l\'église</string>

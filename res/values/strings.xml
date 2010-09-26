@@ -18,6 +18,9 @@
 	<string name="menu_context_schedules">Mass schedules</string>
 	<string name="menu_context_center">Center on maps</string>
 	<string name="menu_maps">View on maps</string>
+	<string name="menu_context_event">Add to calendar</string>
+	<string name="menu_context_event_share">Share this mass</string>
+	<string name="menu_remove_favory">Remove from favory</string>
 	<string name="about_title">Mass Info</string>
 	<string name="about_sub_title">Developed by: Patrice de Saint Steban</string>
 	<string name="about_copyright">A service given by the french\'s bishop conference

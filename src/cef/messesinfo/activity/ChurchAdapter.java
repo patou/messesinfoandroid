@@ -1,4 +1,4 @@
-package cef.messeinfo.activity;
+package cef.messesinfo.activity;
 
 import java.util.List;
 import java.util.Map;
@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import cef.messeinfo.R;
-import cef.messeinfo.provider.Church;
+import cef.messesinfo.R;
+import cef.messesinfo.provider.Church;
 
 public class ChurchAdapter extends BaseAdapter {
     List<Map<String,String>> list = null;

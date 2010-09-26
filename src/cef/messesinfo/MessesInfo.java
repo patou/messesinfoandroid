@@ -1,4 +1,4 @@
-package cef.messeinfo;
+package cef.messesinfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,16 +21,16 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
-import cef.messeinfo.activity.AboutActivity;
-import cef.messeinfo.activity.FavoriteActivity;
-import cef.messeinfo.activity.NearMapActivity;
-import cef.messeinfo.activity.SearchChurchActivity;
-import cef.messeinfo.activity.SearchMassActivity;
-import cef.messeinfo.client.Server;
+import cef.messesinfo.activity.AboutActivity;
+import cef.messesinfo.activity.FavoriteActivity;
+import cef.messesinfo.activity.NearMapActivity;
+import cef.messesinfo.activity.SearchChurchActivity;
+import cef.messesinfo.activity.SearchMassActivity;
+import cef.messesinfo.client.Server;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
-public class MesseInfo extends ListActivity {
+public class MessesInfo extends ListActivity {
     /** Called when the activity is first created. */
 
     /** Attribute key for the list item text. */
@@ -49,7 +49,7 @@ public class MesseInfo extends ListActivity {
     public static final int MENU_WEBSITE = 2;
     public static final int MENU_ABOUT = 3;
     public static final int MENU_SHARE = 4;
-    public static final String AUTHORITY = "cef.messeinfo";
+    public static final String AUTHORITY = "cef.messesinfo";
 
     static GoogleAnalyticsTracker tracker = null;
 
@@ -143,19 +143,19 @@ public class MesseInfo extends ListActivity {
     protected void onListItemClick(ListView l, View v, int position, long id) {
 	switch (position) {
 	case MENULIST_NEXT_MASS:
-	    NearMapActivity.activityStart(MesseInfo.this);
+	    NearMapActivity.activityStart(MessesInfo.this);
 	    tracker.trackPageView("/near_map");
 	    break;
 	case MENULIST_SEARCH_MASS:
-	    SearchMassActivity.activityStart(MesseInfo.this);
+	    SearchMassActivity.activityStart(MessesInfo.this);
 	    tracker.trackPageView("/search_mass");
 	    break;
 	case MENULIST_FAVORITE:
-	    FavoriteActivity.activityStart(MesseInfo.this);
+	    FavoriteActivity.activityStart(MessesInfo.this);
 	    tracker.trackPageView("/favorite");
 	    break;
 	case MENULIST_CHURCH_BOOK:
-	    SearchChurchActivity.activityStart(MesseInfo.this);
+	    SearchChurchActivity.activityStart(MessesInfo.this);
 	    tracker.trackPageView("/church_book");
 	    break;
 	case MENULIST_QUIT:
@@ -209,7 +209,7 @@ public class MesseInfo extends ListActivity {
 	    startActivity(urlIntent);
 	    return true;
 	case MENU_ABOUT:
-	    AboutActivity.activityStart(MesseInfo.this);
+	    AboutActivity.activityStart(MessesInfo.this);
 	    tracker.trackPageView("/about");
 	    return true;
 	case MENU_SHARE:

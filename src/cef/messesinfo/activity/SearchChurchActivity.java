@@ -1,4 +1,4 @@
-package cef.messeinfo.activity;
+package cef.messesinfo.activity;
 
 import java.util.List;
 import java.util.Map;
@@ -9,19 +9,28 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
-import cef.messeinfo.MesseInfo;
-import cef.messeinfo.R;
-import cef.messeinfo.client.Server;
+import cef.messesinfo.MessesInfo;
+import cef.messesinfo.R;
+import cef.messesinfo.client.Server;
+import cef.messesinfo.provider.Church;
 
 public class SearchChurchActivity extends ListActivity {
+    private static final int MENU_DETAIL = 0;
+    private static final int MENU_SCHEDULE = 1;
+    private static final int MENU_CENTER = 2;
     List<Map<String, String>> list = null;
     private ChurchAdapter mAdapter;
     private EditText searchText;
@@ -62,6 +71,7 @@ public class SearchChurchActivity extends ListActivity {
 		return true;
 	    }
 	});
+	registerForContextMenu(getListView());
     }
 
     @Override
@@ -79,7 +89,7 @@ public class SearchChurchActivity extends ListActivity {
 
 	    @Override
 	    public void run() {
-		MesseInfo.getTracker().trackEvent("Application", "SearchChurch", search, 1);
+		MessesInfo.getTracker().trackEvent("Application", "SearchChurch", search, 1);
 		try {
 		    list = new Server(getString(R.string.server_url)).searchChurch(search, 0);
 		    runOnUiThread(new Runnable() {
@@ -104,5 +114,40 @@ public class SearchChurchActivity extends ListActivity {
 
 	    }
 	}).start();
+    }
+    
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+	if (v.getId() == android.R.id.list) {
+	    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+	    Map<String, String> item = list.get(info.position);
+	    menu.setHeaderTitle(item.get(Church.NOM));
+	    menu.add(Menu.NONE, MENU_DETAIL, Menu.NONE, R.string.menu_context_detail);
+	    menu.add(Menu.NONE, MENU_SCHEDULE, Menu.NONE, R.string.menu_context_schedules);
+	    menu.add(Menu.NONE, MENU_CENTER, Menu.NONE, R.string.menu_context_center);
+	}
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem menuItem) {
+	AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuItem.getMenuInfo();
+	int menuItemIndex = menuItem.getItemId();
+	Map<String, String> item = list.get(info.position);
+	String code = item.get(Church.CODE);
+	switch (menuItemIndex) {
+	case MENU_DETAIL:
+	    ChurchActivity.activityStart(this, code);
+	    break;
+	case MENU_SCHEDULE:
+	    ChurchActivity.activityStartSchedule(this, code);
+	    break;
+	case MENU_CENTER:
+	    NearMapActivity.activityStart(this, item.get(Church.LAT), item.get(Church.LON));
+	    break;
+	default:
+	    break;
+	}
+
+	return true;
     }
 }

@@ -1,4 +1,4 @@
-package cef.messeinfo.activity;
+package cef.messesinfo.activity;
 
 import java.io.Serializable;
 import java.util.List;
@@ -15,8 +15,8 @@ import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import cef.messeinfo.R;
-import cef.messeinfo.provider.Church;
+import cef.messesinfo.R;
+import cef.messesinfo.provider.Church;
 
 public class NearListActivity extends ListActivity {
     private static final int MENU_DETAIL = 0;

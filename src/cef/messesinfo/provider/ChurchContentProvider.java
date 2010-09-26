@@ -1,4 +1,4 @@
-package cef.messeinfo.provider;
+package cef.messesinfo.provider;
 
 import java.util.HashMap;
 
@@ -15,13 +15,13 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
-import cef.messeinfo.MesseInfo;
+import cef.messesinfo.MessesInfo;
 
 public class ChurchContentProvider extends ContentProvider {
     private static final String TAG = "NotePadProvider";
 
-    private static final String DATABASE_NAME = "messeinfo.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final String DATABASE_NAME = "messesinfo.db";
+    private static final int DATABASE_VERSION = 1;
     private static final String CHURCH_TABLE_NAME = "church";
 
     private static HashMap<String, String> sMassFavoritesProjectionMap;
@@ -60,7 +60,6 @@ public class ChurchContentProvider extends ContentProvider {
             Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
                     + newVersion + ", which will destroy all old data");
             db.execSQL("DROP TABLE IF EXISTS " + CHURCH_TABLE_NAME);
-            db.execSQL("DROP TABLE IF EXISTS favorite_church");
             onCreate(db);
         }
     }
@@ -239,8 +238,8 @@ public class ChurchContentProvider extends ContentProvider {
 
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        sUriMatcher.addURI(MesseInfo.AUTHORITY, Church.CONTENT_URI_NAME, CHURCH_FAVORITE);
-        sUriMatcher.addURI(MesseInfo.AUTHORITY, Church.CONTENT_URI_NAME + "/*", CHURCH_FAVORITE_CODE);
+        sUriMatcher.addURI(MessesInfo.AUTHORITY, Church.CONTENT_URI_NAME, CHURCH_FAVORITE);
+        sUriMatcher.addURI(MessesInfo.AUTHORITY, Church.CONTENT_URI_NAME + "/*", CHURCH_FAVORITE_CODE);
 
         sMassFavoritesProjectionMap = new HashMap<String, String>();
         sMassFavoritesProjectionMap.put(Church._ID, Church._ID);
@@ -249,6 +248,8 @@ public class ChurchContentProvider extends ContentProvider {
         sMassFavoritesProjectionMap.put(Church.CP, Church.CP);
         sMassFavoritesProjectionMap.put(Church.COMMUNE, Church.COMMUNE);
         sMassFavoritesProjectionMap.put(Church.PAROISSE, Church.PAROISSE);
+        sMassFavoritesProjectionMap.put(Church.LAT, Church.LAT);
+        sMassFavoritesProjectionMap.put(Church.LON, Church.LON);
     }
 
 }

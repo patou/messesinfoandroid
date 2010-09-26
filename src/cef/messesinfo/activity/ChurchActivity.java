@@ -1,4 +1,4 @@
-package cef.messeinfo.activity;
+package cef.messesinfo.activity;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -31,11 +31,11 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import cef.messeinfo.MesseInfo;
-import cef.messeinfo.R;
-import cef.messeinfo.client.Server;
-import cef.messeinfo.provider.Church;
-import cef.messeinfo.provider.Schedule;
+import cef.messesinfo.MessesInfo;
+import cef.messesinfo.R;
+import cef.messesinfo.client.Server;
+import cef.messesinfo.provider.Church;
+import cef.messesinfo.provider.Schedule;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
@@ -65,7 +65,7 @@ public class ChurchActivity extends TabActivity {
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.church_display);
 	final String code = getIntent().getStringExtra("code");
-	MesseInfo.getTracker().trackPageView("/church/" + code);
+	MessesInfo.getTracker().trackPageView("/church/" + code);
 	TabHost tabs = getTabHost();
 	tabs.addTab(tabs.newTabSpec(INFORMATION).setIndicator(getString(R.string.church_tab_information),
 	        getResources().getDrawable(R.drawable.sym_action_sms)).setContent(R.id.information_tab));

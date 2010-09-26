@@ -1,6 +1,10 @@
-package cef.messeinfo.activity;
+package cef.messesinfo.activity;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.xmlrpc.android.XMLRPCException;
@@ -9,24 +13,34 @@ import android.app.ExpandableListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
 import android.widget.TextView.OnEditorActionListener;
-import cef.messeinfo.MesseInfo;
-import cef.messeinfo.R;
-import cef.messeinfo.client.Server;
-import cef.messeinfo.provider.Church;
-import cef.messeinfo.provider.Schedule;
+import cef.messesinfo.MessesInfo;
+import cef.messesinfo.R;
+import cef.messesinfo.client.Server;
+import cef.messesinfo.provider.Church;
+import cef.messesinfo.provider.Schedule;
 
 public class SearchMassActivity extends ExpandableListActivity {
+    private static final int MENU_DETAIL = 0;
+    private static final int MENU_SCHEDULE = 1;
+    private static final int MENU_CENTER = 2;
+    private static final int MENU_EVENT = 4;
+    private static final int MENU_SHARE = 5;
 
     private Server server;
     private TextView empty;
@@ -71,6 +85,7 @@ public class SearchMassActivity extends ExpandableListActivity {
 		return true;
 	    }
 	});
+	registerForContextMenu(getExpandableListView());
     }
 
     @SuppressWarnings("unchecked")
@@ -93,7 +108,7 @@ public class SearchMassActivity extends ExpandableListActivity {
 	    @Override
 	    public void run() {
 		server = new Server(getString(R.string.server_url));
-		MesseInfo.getTracker().trackEvent("Application", "SearchMass", search, 1);
+		MessesInfo.getTracker().trackEvent("Application", "SearchMass", search, 1);
 		try {
 		    final List<Map<String, Object>> result = server.searchSchedule(search);
 		    if (result != null) {
@@ -121,6 +136,80 @@ public class SearchMassActivity extends ExpandableListActivity {
 		}
 	    }
 	}).start();
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+	if (v.getId() == android.R.id.list) {
+	    ExpandableListView.ExpandableListContextMenuInfo info = (ExpandableListContextMenuInfo) menuInfo;
+	    int typeId = ExpandableListView.getPackedPositionType(info.packedPosition);
+	    if (typeId == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
+		int groupId = ExpandableListView.getPackedPositionGroup(info.packedPosition);
+		int childId = ExpandableListView.getPackedPositionChild(info.packedPosition);
+		Map<String, String> item = (Map<String, String>) scheduleExpandableListAdapter.getChild(groupId, childId);
+		if (item != null) {
+		    menu.setHeaderTitle(item.get(Church.NOM));
+		    menu.add(Menu.NONE, MENU_DETAIL, Menu.NONE, R.string.menu_context_detail);
+		    menu.add(Menu.NONE, MENU_SCHEDULE, Menu.NONE, R.string.menu_context_schedules);
+		    if (item.containsKey(Church.LAT) && item.containsKey(Church.LON)) {
+			menu.add(Menu.NONE, MENU_CENTER, Menu.NONE, R.string.menu_context_center);
+		    }
+		    menu.add(Menu.NONE, MENU_EVENT, Menu.NONE, R.string.menu_context_event);
+		    menu.add(Menu.NONE, MENU_SHARE, Menu.NONE, R.string.menu_context_event_share);
+		}
+	    }
+	}
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem menuItem) {
+	ExpandableListView.ExpandableListContextMenuInfo info = (ExpandableListContextMenuInfo) menuItem.getMenuInfo();
+	int typeId = ExpandableListView.getPackedPositionType(info.packedPosition);
+	if (typeId == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
+	    int groupId = ExpandableListView.getPackedPositionGroup(info.packedPosition);
+	    int childId = ExpandableListView.getPackedPositionChild(info.packedPosition);
+	    Map<String, String> item = (Map<String, String>) scheduleExpandableListAdapter.getChild(groupId, childId);
+	    Map<String, Object> itemGroup = (Map<String, Object>) scheduleExpandableListAdapter.getGroup(groupId);
+	    String code = item.get(Church.CODE);
+	    switch (menuItem.getItemId()) {
+	    case MENU_DETAIL:
+		ChurchActivity.activityStart(this, code);
+		break;
+	    case MENU_SCHEDULE:
+		ChurchActivity.activityStartSchedule(this, code);
+		break;
+	    case MENU_CENTER:
+		if (item.containsKey(Church.LAT) && item.containsKey(Church.LON)) {
+		    NearMapActivity.activityStart(this, item.get(Church.LAT), item.get(Church.LON));
+		}
+		break;
+	    case MENU_EVENT:
+		try {
+		    Intent intent = new Intent(Intent.ACTION_EDIT);
+		    intent.setType("vnd.android.cursor.item/event");
+		    intent.putExtra("title", item.get(Church.NOM));
+		    intent.putExtra("description", item.get(Church.PAROISSE) + "\n" + item.get(Church.COMMUNE));
+		    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH'h'mm", Locale.FRANCE);
+		    Date d = sdf.parse(item.get(Schedule.DATE) + " " + item.get(Schedule.HEURE));
+		    intent.putExtra("beginTime", d.getTime());
+		    d.setHours(d.getHours() + 1);
+		    intent.putExtra("endTime", d.getTime());
+		    startActivity(intent);
+		} catch (ParseException e) {
+		    e.printStackTrace();
+		}
+		break;
+	    case MENU_SHARE:
+		Intent i = new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT,
+			item.get(Schedule.HEURE) + "\n" + itemGroup.get(Schedule.NOM) + "\n" + item.get(Church.COMMUNE)).setType("text/plain").putExtra(Intent.EXTRA_SUBJECT,
+			item.get(Church.NOM));
+		startActivityForResult(Intent.createChooser(i, getString(R.string.menu_context_event_share)), 0);
+	    default:
+		break;
+	    }
+	    return true;
+	}
+	return false;
     }
 
     private static class ViewGroupHolder {

@@ -1,8 +1,8 @@
-package cef.messeinfo.maps;
+package cef.messesinfo.maps;
 
 import java.util.Map;
 
-import cef.messeinfo.provider.Church;
+import cef.messesinfo.provider.Church;
 
 import com.google.android.maps.GeoPoint;
 

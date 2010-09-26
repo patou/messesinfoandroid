@@ -1,4 +1,4 @@
-package cef.messeinfo.maps;
+package cef.messesinfo.maps;
 
 import java.util.ArrayList;
 import java.util.Map;

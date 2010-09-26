@@ -1,4 +1,4 @@
-package cef.messeinfo.activity;
+package cef.messesinfo.activity;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -21,11 +21,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import cef.messeinfo.R;
-import cef.messeinfo.client.Server;
-import cef.messeinfo.maps.ChurchItemizedOverlay;
-import cef.messeinfo.maps.ChurchPt;
-import cef.messeinfo.provider.Church;
+import cef.messesinfo.R;
+import cef.messesinfo.client.Server;
+import cef.messesinfo.maps.ChurchItemizedOverlay;
+import cef.messesinfo.maps.ChurchPt;
+import cef.messesinfo.provider.Church;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -55,7 +55,7 @@ public class NearMapActivity extends MapActivity {
     private Server server;
     private LinearLayout panel;
     private Boolean load = true;
-    private cef.messeinfo.activity.NearMapActivity.ViewHolder holder;
+    private cef.messesinfo.activity.NearMapActivity.ViewHolder holder;
     protected Map<String, String> selectedItem;
 
     /**

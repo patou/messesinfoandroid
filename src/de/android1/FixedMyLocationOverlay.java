@@ -8,7 +8,7 @@ import android.graphics.Paint.Style;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 
-import cef.messeinfo.R;
+import cef.messesinfo.R;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;

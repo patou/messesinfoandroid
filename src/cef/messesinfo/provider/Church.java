@@ -1,8 +1,8 @@
-package cef.messeinfo.provider;
+package cef.messesinfo.provider;
 
 import android.net.Uri;
 import android.provider.BaseColumns;
-import cef.messeinfo.MesseInfo;
+import cef.messesinfo.MessesInfo;
 
 public class Church implements BaseColumns {
     public static final String CODE = "code";
@@ -19,8 +19,8 @@ public class Church implements BaseColumns {
     public static final String LON = "lon";
     public static final String LAT = "lat";
     public static final String FAVORITE = "favorite";
-    public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.messeinfo.church_favorite";
-    public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.messeinfo.church_favorite";
+    public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.messesinfo.church_favorite";
+    public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.messesinfo.church_favorite";
     public static final String CONTENT_URI_NAME = "church_favorite";
-    public static final Uri CONTENT_URI = Uri.parse("content://" + MesseInfo.AUTHORITY + "/" + CONTENT_URI_NAME);
+    public static final Uri CONTENT_URI = Uri.parse("content://" + MessesInfo.AUTHORITY + "/" + CONTENT_URI_NAME);
 }
