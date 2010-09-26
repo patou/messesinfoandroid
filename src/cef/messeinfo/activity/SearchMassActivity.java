@@ -80,7 +80,7 @@ public class SearchMassActivity extends ExpandableListActivity {
 	if (child != null) {
 	    String code = (String) child.get(Church.CODE);
 	    if (code != null)
-		ChurchActivity.activityStart(SearchMassActivity.this, code);
+		ChurchActivity.activityStartSchedule(SearchMassActivity.this, code);
 	}
 	return true;
     }

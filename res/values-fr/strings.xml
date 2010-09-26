@@ -6,11 +6,18 @@
 	<string name="menu_favorite">Mes églises favorites</string>
 	<string name="menu_church_book">Annuaire des églises</string>
 	<string name="menu_quit">Quitter</string>
+	<string name="menu_lectio">Lectio divina</string>
 	<string name="main_menu_about">A propos</string>
 	<string name="main_menu_website">Site web</string>
+	<string name="main_menu_share">Partager</string>
 	<string name="main_menu_contact">Nous écrire</string>
 	<string name="menu_list">Liste</string>
+	<string name="menu_maps">Voir sur la carte</string>
 	<string name="map_menu_my_position">Ma position</string>
+	<string name="map_menu_list">Liste</string>
+	<string name="menu_context_detail">Détails de l\'église</string>
+	<string name="menu_context_center">Centrer sur la carte</string>
+	<string name="menu_context_schedules">Horaires des messes</string>
 	<string name="about_title">Messes Info</string>
 	<string name="about_sub_title">Développé par : Patrice de Saint Steban</string>
 	<string name="about_copyright">Un service offert par la Conférence des évêques de
@@ -65,4 +72,8 @@
 	<string name="error_church_book">Une erreur empêche d\'afficher le résultat</string>
 	<string name="error_church_schedule">Une erreur empêche d\'afficher les horraires de messes</string>
 	<string name="error_search_schedule">Une erreur empêche d\'afficher les horraires de messes</string>
+	<string name="contact_messesinfo">Contactez MessesInfo</string>
+	<string name="messesinfo_email_subject">Contact depuis l\'application Android</string>
+	<string name="messesinfo_share">voir les horaires des messes autour market//details?id=cef.messeinfo</string>
+	<string name="messesinfo_share_subject">Messesinfo sur Android</string>
 </resources>

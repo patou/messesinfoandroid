@@ -13,26 +13,26 @@ import de.android1.overlaymanager.OverlayManager;
 
 public class ChurchItemizedOverlay extends ManagedOverlay {
 
-	private ArrayList<Map<String, String>> mOverlaysItem = new ArrayList<Map<String, String>>();
-	
-	public ChurchItemizedOverlay(OverlayManager manager, String name, Drawable drawable) {
-		super(manager, name, drawable);
-	}
+    private ArrayList<Map<String, String>> mOverlaysItem = new ArrayList<Map<String, String>>();
 
-	public void addChurchItem(Map<String, String> item) {
-        mOverlaysItem.add(item);
-        populate();
-	}
+    public ChurchItemizedOverlay(OverlayManager manager, String name, Drawable drawable) {
+	super(manager, name, drawable);
+    }
 
-	public ManagedOverlayItem createItem(Map<String, String> item) {
-		int lat = (int) (Double.parseDouble(item.get("lat")) * 1E6);
-        int lon = (int) (Double.parseDouble(item.get("lon")) * 1E6);
-        GeoPoint point = new GeoPoint(lat,lon);
-        ManagedOverlayItem overlayitem = new ManagedOverlayItem(point, item.get("nom"), item.get("paroisse") + " " + item.get("commune"));
-        return overlayitem;
-	}
+    public void addChurchItem(Map<String, String> item) {
+	mOverlaysItem.add(item);
+	populate();
+    }
+
+    public ManagedOverlayItem createItem(Map<String, String> item) {
+	int lat = (int) (Double.parseDouble(item.get("lat")) * 1E6);
+	int lon = (int) (Double.parseDouble(item.get("lon")) * 1E6);
+	GeoPoint point = new GeoPoint(lat, lon);
+	ManagedOverlayItem overlayitem = new ManagedOverlayItem(point, item.get("nom"), item.get("paroisse") + " " + item.get("commune"));
+	return overlayitem;
+    }
 
     public Map<String, String> getChurchItem(int index) {
-        return mOverlaysItem.get(index);
+	return mOverlaysItem.get(index);
     }
 }

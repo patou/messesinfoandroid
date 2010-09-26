@@ -17,6 +17,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -33,6 +35,7 @@ import cef.messeinfo.MesseInfo;
 import cef.messeinfo.R;
 import cef.messeinfo.client.Server;
 import cef.messeinfo.provider.Church;
+import cef.messeinfo.provider.Schedule;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
@@ -40,7 +43,9 @@ public class ChurchActivity extends TabActivity {
 
     private static final String HORAIRE = "horaire";
     private static final String INFORMATION = "information";
+    private static final int MENU_MAPS = 0;
     GoogleAnalyticsTracker tracker;
+    protected Map<String, String> selectedItem;
 
     public static void activityStart(Context context, String code) {
 	Intent intent = new Intent(context, ChurchActivity.class);
@@ -48,6 +53,13 @@ public class ChurchActivity extends TabActivity {
 	context.startActivity(intent);
     }
 
+    public static void activityStartSchedule(Context context, String code) {
+	Intent intent = new Intent(context, ChurchActivity.class);
+	intent.putExtra(Church.CODE, code);
+	intent.putExtra(Schedule.HORAIRE, true);
+	context.startActivity(intent);
+    }
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
@@ -61,6 +73,12 @@ public class ChurchActivity extends TabActivity {
 	intentHoraires.putExtra(Church.CODE, code);
 	tabs.addTab(tabs.newTabSpec(HORAIRE).setIndicator(getString(R.string.church_tab_schedule),
 	        getResources().getDrawable(R.drawable.sym_schedule)).setContent(intentHoraires));
+	if (getIntent().getBooleanExtra(Schedule.HORAIRE, false)) {
+	    tabs.setCurrentTab(1);
+	}
+	else {
+	    tabs.setCurrentTab(0);
+	}
 	if (code != null)
 
 	    new Thread(new Runnable() {
@@ -69,6 +87,7 @@ public class ChurchActivity extends TabActivity {
 		public void run() {
 		    try {
 			final Map<String, String> item = new Server(getString(R.string.server_url)).getChurchInfo(code);
+			ChurchActivity.this.selectedItem = item;
 			Cursor cursor = getContentResolver().query(Uri.withAppendedPath(Church.CONTENT_URI, code), null, null, null, null);
 			final Boolean starred = cursor.getCount() > 0;
 			if (item != null) {
@@ -191,7 +210,6 @@ public class ChurchActivity extends TabActivity {
 					entries.add(entry);
 				    }
 				    list.setAdapter(new ViewAdapter(getApplicationContext(), entries));
-				    tabs.setCurrentTab(0);
 				}
 			    });
 			}
@@ -212,6 +230,28 @@ public class ChurchActivity extends TabActivity {
 	    }
 	});
     }
+    
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+	menu.add(0, MENU_MAPS, 0, getString(R.string.menu_maps)).setIcon(android.R.drawable.ic_menu_mapmode);
+	return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+	switch (item.getItemId()) {
+	case MENU_MAPS:
+	    if (selectedItem != null) {
+		NearMapActivity.activityStart(this, this.selectedItem.get(Church.LAT), this.selectedItem.get(Church.LON));
+	    }
+	    return true;
+	default:
+	    break;
+	}
+	return false;
+    }
+
 
     final static class ViewEntry {
 	public String label = "";

@@ -6,22 +6,32 @@
 	<string name="menu_favorite">Favorites churches</string>
 	<string name="menu_church_book">Book of churches</string>
 	<string name="menu_quit">Quit</string>
+	<string name="menu_lectio">Lectio divina</string>
 	<string name="main_menu_about">About</string>
 	<string name="main_menu_website">Website</string>
 	<string name="main_menu_contact">Contact us</string>
+	<string name="main_menu_share">Share</string>
 	<string name="main_menu_webcatho">Webcatho</string>
 	<string name="map_menu_my_position">My Location</string>
+	<string name="map_menu_list">As list</string>
+	<string name="menu_context_detail">Detail of the church</string>
+	<string name="menu_context_schedules">Mass schedules</string>
+	<string name="menu_context_center">Center on maps</string>
+	<string name="menu_maps">View on maps</string>
 	<string name="about_title">Mass Info</string>
 	<string name="about_sub_title">Developed by: Patrice de Saint Steban</string>
 	<string name="about_copyright">A service given by the french\'s bishop conference
-		(CEF), more information on the website http://www.messesinfo.catholique.fr
+		(CEF), more information on the website
+		http://www.messesinfo.catholique.fr
 	</string>
-	<string name="about_website">Find information on the site: http://androide.catholique.fr</string>
+	<string name="about_website">Find information on the site:
+		http://androide.catholique.fr</string>
 	<string name="about_webcatho">http://www.webcatho.fr</string>
-	
+
 	<string name="search">Search ...</string>
 	<string name="list_empty">No results for your query</string>
-	<string name="list_favorites_empty">Add some church in your favorites list by clicking on the star in the church display view</string>
+	<string name="list_favorites_empty">Add some church in your favorites list by clicking
+		on the star in the church display view</string>
 	<string name="search_mass_place">Place</string>
 	<string name="search_mass_options">Celebration\'s type</string>
 	<string name="search_mass_city_title">City</string>
@@ -56,4 +66,9 @@
 	<string name="error_church_book">An error occurred</string>
 	<string name="error_church_schedule">An error occurred</string>
 	<string name="error_search_schedule">An error occurred</string>
+	<string name="contact_messesinfo">Contact MessesInfo</string>
+	<string name="messesinfo_email_subject">Contact from the Android application</string>
+	<string name="messesinfo_share">see church and mass with this application market//details?id=cef.messeinfo</string>
+	<string name="messesinfo_share_subject">Messesinfo for Android</string>
+	<string name="share_with">Share with</string>
 </resources>

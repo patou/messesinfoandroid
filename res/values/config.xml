@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<!--	<string name="maps_api">0rpQsam0k5fqxwyZTLyp0SEa0ijRLB_AOUYsYog</string>-->
-	<string name="maps_api">0rpQsam0k5foFfWgP4hgPFIlmzUwNToZXYDXEew</string>
+	<!-- Debug key -->
+	<string name="maps_api">0rpQsam0k5frbjyX65flUhlGGTw_ZIkf0rCd8Iw</string>
+	<!-- Release key -->
+<!--	<string name="maps_api">0rspQsam0k5foFfWgP4hgPFIlmzUwNToZXYDXEew</string>-->
 	<string name="server_url">http://www.android.catholique.fr/server.php</string>
 	<string name="photo_url">http://www.android.catholique.fr/photo.php?code=</string>
 	<string name="messeinfo_url">http://www.messesinfo.catholique.fr</string>
 	<string name="webcatho_url">http://www.webcatho.fr</string>
+	<string name="messesinfo_email">android@cef.fr</string>
+	<string name="lectio_package">geniphone.lectio</string>
 <!--		<string name="server_url">http://192.168.0.9/android/server.php</string>-->
 <!--	<string name="photo_url">http://192.168.0.9/android/photo.php?code=</string>-->
 </resources>

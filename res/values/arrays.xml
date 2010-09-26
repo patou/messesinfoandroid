@@ -7,7 +7,7 @@
 		<item>... Christmas vigil (24th)</item>
 		<item>... Christmas day (25th)</item>
 		<item>Easter time (all celebration)</item>
-		<item>... ash's Wednesday</item>
+		<item>... ash\'s Wednesday</item>
 		<item>... branch day</item>
 		<item>... penitence celebration</item>
 		<item>... chrimale mass</item>
@@ -18,9 +18,9 @@
 		<item>ASCENSION</item>
 		<item>PENTECOTE</item>
 		<item>ASSOMPTION (15th August)</item>
-		<item>Holy's day and death's day</item>
-		<item>... holy's day</item>
-		<item>... death's day</item>
+		<item>Holy\'s day and death\'s day</item>
+		<item>... holy\'s day</item>
+		<item>... death\'s day</item>
 		<item>Special celebration</item>
 	</string-array>
 	<string-array name="search_mass_celebration_array_values">
@@ -38,9 +38,9 @@
 		<item>11,Carême et Pâques / vendredi saint</item>
 		<item>12,Carême et Pâques / veillée pascale</item>
 		<item>13,Carême et Pâques / messe de Pâques</item>
-		<item>14,Fête de l'Ascension</item>
+		<item>14,Fête de l\'Ascension</item>
 		<item>15,Fête de la Pentecôte</item>
-		<item>16,Fête de l'Assomption (15 août)</item>
+		<item>16,Fête de l\'Assomption (15 août)</item>
 		<item>17,18,19,Fêtes de la Toussaint et jour des défunts</item>
 		<item>17,Toussaint</item>
 		<item>18,Jour des défunts</item>
@@ -67,8 +67,8 @@
 		<item>18 - Cher</item>
 		<item>19 - Corréze</item>
 		<item>20 - Corse</item>
-		<item>21 - Côte d'Or</item>
-		<item>22 - Côtes d'Armor</item>
+		<item>21 - Côte d\'Or</item>
+		<item>22 - Côtes d\'Armor</item>
 		<item>23 - Creuse</item>
 		<item>24 - Dordogne</item>
 		<item>25 - Doubs</item>
@@ -141,7 +141,7 @@
 		<item>92 - Hauts de Seine</item>
 		<item>93 - Seine Saint Denis</item>
 		<item>94 - Val de Marne</item>
-		<item>95 - Val d'Oise</item>
+		<item>95 - Val d\'Oise</item>
 		<item>97 - D.O.M.</item>
 		<item>98 - Monaco</item>
 	</string-array>

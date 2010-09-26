@@ -330,4 +330,8 @@ public class ManagedOverlay extends ItemizedOverlay<ManagedOverlayItem> {
     public void close() {
     	getLazyLoadManager().close();
     }
+    
+    public void start() {
+    	getLazyLoadManager().start();
+    }
 }

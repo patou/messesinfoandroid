@@ -15,9 +15,9 @@
 		<item>... vendredi Saint</item>
 		<item>... veillée pascale</item>
 		<item>... messe du jour de Pâques</item>
-		<item>Fête de l'ASCENSION</item>
+		<item>Fête de l\'ASCENSION</item>
 		<item>Fête de la PENTECOTE</item>
-		<item>Fête de l'ASSOMPTION (15 août)</item>
+		<item>Fête de l\'ASSOMPTION (15 août)</item>
 		<item>Fêtes de la TOUSSAINT et JOUR DES DEFUNTS</item>
 		<item>... fête de la Toussaint</item>
 		<item>... jour des défunts</item>
@@ -38,9 +38,9 @@
 		<item>11,Carême et Pâques / vendredi saint</item>
 		<item>12,Carême et Pâques / veillée pascale</item>
 		<item>13,Carême et Pâques / messe de Pâques</item>
-		<item>14,Fête de l'Ascension</item>
+		<item>14,Fête de l\'Ascension</item>
 		<item>15,Fête de la Pentecôte</item>
-		<item>16,Fête de l'Assomption (15 août)</item>
+		<item>16,Fête de l\'Assomption (15 août)</item>
 		<item>17,18,19,Fêtes de la Toussaint et jour des défunts</item>
 		<item>17,Toussaint</item>
 		<item>18,Jour des défunts</item>
@@ -67,8 +67,8 @@
 		<item>18 - Cher</item>
 		<item>19 - Corréze</item>
 		<item>20 - Corse</item>
-		<item>21 - Côte d'Or</item>
-		<item>22 - Côtes d'Armor</item>
+		<item>21 - Côte d\'Or</item>
+		<item>22 - Côtes d\'Armor</item>
 		<item>23 - Creuse</item>
 		<item>24 - Dordogne</item>
 		<item>25 - Doubs</item>
@@ -141,7 +141,7 @@
 		<item>92 - Hauts de Seine</item>
 		<item>93 - Seine Saint Denis</item>
 		<item>94 - Val de Marne</item>
-		<item>95 - Val d'Oise</item>
+		<item>95 - Val d\'Oise</item>
 		<item>97 - D.O.M.</item>
 		<item>98 - Monaco</item>
 	</string-array>
