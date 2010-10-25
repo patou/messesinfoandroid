@@ -40,6 +40,7 @@ import de.android1.overlaymanager.lazyload.LazyLoadCallback;
 import de.android1.overlaymanager.lazyload.LazyLoadException;
 
 public class NearMapActivity extends MapActivity {
+    private static final int INITIAL_ZOOM = 15;
     private static final int MENU_MY_POSITION = 0;
     private static final int MENU_LIST = 1;
     private static final int MENU_DETAIL = 0;
@@ -167,7 +168,7 @@ public class NearMapActivity extends MapActivity {
 	overlayManager = new OverlayManager(getApplication(), mapView);
 	mapView.getOverlays().add(myLocationOverlay);
 	mapView.setBuiltInZoomControls(true);
-	mapView.getController().setZoom(14);
+	mapView.getController().setZoom(INITIAL_ZOOM);
 	createOverlayManager();
     }
 
@@ -273,7 +274,7 @@ public class NearMapActivity extends MapActivity {
 	    @Override
 	    public void run() {
 		mapView.getController().animateTo(location);
-		mapView.getController().setZoom(14);
+		mapView.getController().setZoom(INITIAL_ZOOM);
 		overlayManager.populate();
 	    }
 	});

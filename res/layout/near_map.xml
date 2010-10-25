@@ -3,7 +3,7 @@
     android:id="@+id/mainlayout"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"  android:foreground="@drawable/background" android:foregroundGravity="fill">
+    android:layout_height="fill_parent">
 
     <com.google.android.maps.MapView
         android:id="@+id/mapview"

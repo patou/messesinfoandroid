@@ -7,23 +7,26 @@
     <LinearLayout android:layout_height="wrap_content"
         android:orientation="horizontal" android:id="@+id/searchBar"
         android:layout_width="fill_parent" android:gravity="right"
-        android:layout_marginLeft="5px" android:layout_marginTop="2px">
+        android:layout_marginLeft="5dip" android:layout_marginTop="2dip">
         <EditText android:layout_height="wrap_content"
             android:id="@+id/searchField"
             android:hint="@string/search"
             android:imeOptions="actionSearch"
             android:singleLine="true" android:layout_width="fill_parent"
-            android:layout_marginLeft="48px"/>
+            android:layout_marginLeft="96dip"/>
         <ImageButton android:layout_height="wrap_content"
-            android:id="@+id/searchButton" android:layout_width="48px"
+            android:id="@+id/nearButton" android:layout_width="48dip"
+            android:src="@drawable/target"></ImageButton>
+        <ImageButton android:layout_height="wrap_content"
+            android:id="@+id/searchButton" android:layout_width="48dip"
             android:src="@drawable/search"></ImageButton>
     </LinearLayout>
     <FrameLayout android:layout_height="fill_parent"
         android:layout_width="fill_parent">
         <ListView  android:id="@android:id/list"
             android:layout_height="fill_parent" android:layout_width="fill_parent"/>
-		<TextView android:id="@android:id/empty"
-			android:layout_width="fill_parent" android:layout_height="fill_parent"
+		<TextView android:id="@android:id/empty" android:isScrollContainer="true"  android:scrollbars="vertical"
+			android:layout_width="fill_parent" android:layout_height="fill_parent" 
 			android:gravity="left" android:layout_weight="1" android:text="@string/loading"
 			android:textSize="22dip" />
     </FrameLayout>

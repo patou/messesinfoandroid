@@ -17,6 +17,7 @@
 	<string name="menu_context_detail">Detail of the church</string>
 	<string name="menu_context_schedules">Mass schedules</string>
 	<string name="menu_context_center">Center on maps</string>
+	<string name="menu_context_near">Search near this church</string>
 	<string name="menu_maps">View on maps</string>
 	<string name="menu_context_event">Add to calendar</string>
 	<string name="menu_context_event_share">Share this mass</string>
@@ -51,7 +52,9 @@
 	<string name="search_mass_loading_title">Search in progress ...</string>
 	<string name="search_mass_loading">The search and the display can may take time.
 		Please wait...</string>
-	<string name="list_search_help">Search your church by the name, the city, the
+	<string name="list_search_church_help">Search your church by the name, the city, the
+		parish and/or zip code</string>
+	<string name="list_search_mass_help">Search your mass by the name, the city, the
 		parish and/or zip code</string>
 	<string name="list_search_loading">Search in progress ...</string>
 	<string name="loading">Loading ...</string>
@@ -74,4 +77,5 @@
 	<string name="messesinfo_share">see church and mass with this application market//details?id=cef.messeinfo</string>
 	<string name="messesinfo_share_subject">Messesinfo for Android</string>
 	<string name="share_with">Share with</string>
+	<string name="localisation_in_progress">geolocalisation in progress...</string>
 </resources>

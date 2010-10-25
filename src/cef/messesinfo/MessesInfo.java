@@ -104,6 +104,7 @@ public class MessesInfo extends ListActivity {
 		    tracker.trackEvent("Android", "Board", Build.BOARD, 1);
 		    tracker.trackEvent("Android", "Version", Build.VERSION.RELEASE, 1);
 		    HashMap<String, String> map = new HashMap<String, String>();
+		    map.put("type", "Android");
 		    map.put("version", Integer.toString(pi.versionCode));
 		    map.put("versionName", pi.versionName);
 		    map.put("device", Build.DEVICE);
@@ -246,7 +247,7 @@ public class MessesInfo extends ListActivity {
 	list.add(map4);
 	Map<String, Object> map5 = new HashMap<String, Object>();
 	map5.put(LABEL, getString(R.string.menu_quit));
-	map5.put(ICON, R.drawable.cross);
+	map5.put(ICON, R.drawable.cross_quit);
 	list.add(map5);
 	Map<String, Object> map6 = new HashMap<String, Object>();
 	map6.put(LABEL, getString(R.string.menu_lectio));

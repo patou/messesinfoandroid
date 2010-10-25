@@ -3,6 +3,7 @@ package cef.messesinfo.provider;
 public class Schedule {
 	public static final String LIEU = "lieu";
     public static final String DATE = "date";
+    public static final String FDATE = "fdate";
     public static final String HEURE = "heure";
     public static final String LANGUE = "langue";
     public static final String NOM = "nom";

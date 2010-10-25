@@ -12,7 +12,9 @@ import org.xmlrpc.android.XMLRPCException;
 import android.app.ExpandableListActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -32,6 +34,7 @@ import android.widget.TextView.OnEditorActionListener;
 import cef.messesinfo.MessesInfo;
 import cef.messesinfo.R;
 import cef.messesinfo.client.Server;
+import cef.messesinfo.maps.MyLocation;
 import cef.messesinfo.provider.Church;
 import cef.messesinfo.provider.Schedule;
 
@@ -39,6 +42,7 @@ public class SearchMassActivity extends ExpandableListActivity {
     private static final int MENU_DETAIL = 0;
     private static final int MENU_SCHEDULE = 1;
     private static final int MENU_CENTER = 2;
+    private static final int MENU_NEAR = 3;
     private static final int MENU_EVENT = 4;
     private static final int MENU_SHARE = 5;
 
@@ -46,7 +50,9 @@ public class SearchMassActivity extends ExpandableListActivity {
     private TextView empty;
     private EditText searchText;
     private View button;
+    private View nearButton;
     private ScheduleExpandableListAdapter scheduleExpandableListAdapter;
+    MyLocation myLocation = new MyLocation();
 
     public SearchMassActivity() {
 
@@ -68,20 +74,36 @@ public class SearchMassActivity extends ExpandableListActivity {
 	scheduleExpandableListAdapter = new ScheduleExpandableListAdapter(SearchMassActivity.this);
 	scheduleExpandableListAdapter.setList(null);
 	button = (ImageButton) findViewById(R.id.searchButton);
+	nearButton = (ImageButton) findViewById(R.id.nearButton);
 	empty = (TextView) findViewById(android.R.id.empty);
-	empty.setText(getString(R.string.list_search_help));
+	empty.setMovementMethod(ScrollingMovementMethod.getInstance());
+	empty.setText(getString(R.string.list_search_mass_help));
 	searchText = (EditText) findViewById(R.id.searchField);
 	searchText.setImeOptions(DEFAULT_KEYS_SEARCH_LOCAL);
 	button.setOnClickListener(new OnClickListener() {
 	    @Override
 	    public void onClick(View v) {
-		search();
+		search(searchText.getText().toString());
+	    }
+	});
+	nearButton.setOnClickListener(new OnClickListener() {
+	    @Override
+	    public void onClick(View v) {
+		empty.setText(getString(R.string.localisation_in_progress));
+		myLocation.getLocation(SearchMassActivity.this, new MyLocation.LocationResult() {
+		    
+		    @Override
+		    public void gotLocation(Location location) {
+			String search = searchText.getText().toString() + "> " + location.getLatitude() + ":" + location.getLongitude(); 
+			search(search);
+		    }
+		});
 	    }
 	});
 	searchText.setOnEditorActionListener(new OnEditorActionListener() {
 	    @Override
 	    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-		search();
+		search(searchText.getText().toString());
 		return true;
 	    }
 	});
@@ -100,9 +122,9 @@ public class SearchMassActivity extends ExpandableListActivity {
 	return true;
     }
 
-    private void search() {
+    private void search(final String search) {
+	scheduleExpandableListAdapter.setList(null);
 	empty.setText(getString(R.string.list_search_loading));
-	final String search = searchText.getText().toString().trim();
 	new Thread(new Runnable() {
 
 	    @Override
@@ -153,6 +175,7 @@ public class SearchMassActivity extends ExpandableListActivity {
 		    menu.add(Menu.NONE, MENU_SCHEDULE, Menu.NONE, R.string.menu_context_schedules);
 		    if (item.containsKey(Church.LAT) && item.containsKey(Church.LON)) {
 			menu.add(Menu.NONE, MENU_CENTER, Menu.NONE, R.string.menu_context_center);
+			menu.add(Menu.NONE, MENU_NEAR, Menu.NONE, R.string.menu_context_near);
 		    }
 		    menu.add(Menu.NONE, MENU_EVENT, Menu.NONE, R.string.menu_context_event);
 		    menu.add(Menu.NONE, MENU_SHARE, Menu.NONE, R.string.menu_context_event_share);
@@ -183,6 +206,12 @@ public class SearchMassActivity extends ExpandableListActivity {
 		    NearMapActivity.activityStart(this, item.get(Church.LAT), item.get(Church.LON));
 		}
 		break;
+	    case MENU_NEAR:
+		if (item.containsKey(Church.LAT) && item.containsKey(Church.LON)) {
+		    searchText.setText("> " + item.get(Church.CODE));
+		    search("> " + item.get(Church.LAT) + ":" + item.get(Church.LON));
+		}
+		break;
 	    case MENU_EVENT:
 		try {
 		    Intent intent = new Intent(Intent.ACTION_EDIT);
@@ -201,7 +230,7 @@ public class SearchMassActivity extends ExpandableListActivity {
 		break;
 	    case MENU_SHARE:
 		Intent i = new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT,
-			item.get(Schedule.HEURE) + "\n" + itemGroup.get(Schedule.NOM) + "\n" + item.get(Church.COMMUNE)).setType("text/plain").putExtra(Intent.EXTRA_SUBJECT,
+			item.get(Schedule.HEURE) + "\n" + item.get(Schedule.DATE) + "\n" + "\n" + item.get(Church.COMMUNE)).setType("text/plain").putExtra(Intent.EXTRA_SUBJECT,
 			item.get(Church.NOM));
 		startActivityForResult(Intent.createChooser(i, getString(R.string.menu_context_event_share)), 0);
 	    default:
@@ -231,7 +260,8 @@ public class SearchMassActivity extends ExpandableListActivity {
 
 	private ViewGroupHolder viewGroupHolder;
 	private ViewChildHolder viewChildHolder;
-
+	private Boolean dateDisplayType = true;
+	
 	public ScheduleExpandableListAdapter(Context context) {
 	    mInflater = LayoutInflater.from(context);
 	}
@@ -279,8 +309,12 @@ public class SearchMassActivity extends ExpandableListActivity {
 		color = Integer.parseInt(c);
 	    }
 	    viewChildHolder.color.setBackgroundColor(getLiturgicalColor(color));
-	    viewChildHolder.title.setText((String) block.get(Schedule.HEURE));
-
+	    if (dateDisplayType) {
+		viewChildHolder.title.setText((String) block.get(Schedule.HEURE));
+	    }
+	    else {
+		viewChildHolder.title.setText((String) block.get(Schedule.FDATE) + " - " + block.get(Schedule.HEURE));
+	    }
 	    viewChildHolder.name.setText((String) block.get(Church.NOM));
 	    viewChildHolder.label.setText((String) block.get(Church.CP) + " " + (String) block.get(Church.COMMUNE));
 	    return convertView;
@@ -364,8 +398,15 @@ public class SearchMassActivity extends ExpandableListActivity {
 
 	public void setList(List<Map<String, Object>> list) {
 	    this.list = list;
-	    if (list != null)
-		super.notifyDataSetChanged();
+	    if (list != null) {
+		if (list.size() > 0 && !list.get(0).containsKey(Schedule.DATE)) {
+		    dateDisplayType = false;
+		}
+		else {
+		    dateDisplayType = true;
+		}
+	    }
+	    super.notifyDataSetChanged();
 	}
 
 	public List<Map<String, Object>> getList() {

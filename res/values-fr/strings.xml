@@ -20,6 +20,7 @@
 	<string name="map_menu_list">Liste</string>
 	<string name="menu_context_detail">Détails de l\'église</string>
 	<string name="menu_context_center">Centrer sur la carte</string>
+	<string name="menu_context_near">Rechercher autour</string>
 	<string name="menu_context_schedules">Horaires des messes</string>
 	<string name="about_title">Messes Info</string>
 	<string name="about_sub_title">Développé par : Patrice de Saint Steban</string>
@@ -54,11 +55,18 @@
 	<string name="search_mass_loading_title">Recherche en cours ...</string>
 	<string name="search_mass_loading">La recherche et l\'affichage peut prendre du temps
 		en fonction de votre connexion. Merci de patienter...</string>
-	<string name="list_search_help">Cherchez votre lieu de culte par commune et/ou code
-		postal.\nPour les villes de Paris, Lyon et Marseille, il est possible
+	<string name="list_search_church_help">Cherchez votre lieu de culte par commune et/ou code
+		postal (ou le numéro de département), ou le nom d\'une église suivit de "à" (ou une virgule) et du nom de la commune.
+		\nPour les villes de Paris, Lyon et Marseille, il est possible
 		de chercher par arrondissement en faisant suivre le nom de la ville
-		par le numéro de l\'arrondissement.\n\nExemples :\n- paris 19\n- st
-		malo\n- 94800</string>
+		par le numéro de l\'arrondissement (ou en chiffre romain).\n\nExemples :\n- paris 19\n- st
+		malo\n- 94800\n- st ignace, Paris</string>
+	<string name="list_search_mass_help">Cherchez votre messe par commune et/ou code
+		postal (ou le numéro de département), ou le nom d\'une église suivit de "à" (ou une virgule) et du nom de la commune.
+		\nRechercher la messe par heure et jours, en entrant une heure (ie : 11h) et une date (7-11-2010) ou le jour dimanche (dim) ou samedi (sam).\nPour les villes de Paris, Lyon et Marseille, il est possible
+		de chercher par arrondissement en faisant suivre le nom de la ville
+		par le numéro de l\'arrondissement (ou en chiffre romain).\n\nExemples :\n- paris 19 11h\n- st
+		malo dim\n- 94800\n- nd à Marseille 7-11-2010</string>
 	<string name="list_search_loading">Recherche en cours ...</string>
 	<string name="loading">Chargement ...</string>
 	<string name="church_tab_information">Information</string>
@@ -79,4 +87,5 @@
 	<string name="messesinfo_email_subject">Contact depuis l\'application Android</string>
 	<string name="messesinfo_share">voir les horaires des messes autour market//details?id=cef.messeinfo</string>
 	<string name="messesinfo_share_subject">Messesinfo sur Android</string>
+	<string name="localisation_in_progress">géolocalisation en cours...</string>
 </resources>

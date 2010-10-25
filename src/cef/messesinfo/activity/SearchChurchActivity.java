@@ -8,7 +8,10 @@ import org.xmlrpc.android.XMLRPCException;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -25,13 +28,16 @@ import android.widget.TextView.OnEditorActionListener;
 import cef.messesinfo.MessesInfo;
 import cef.messesinfo.R;
 import cef.messesinfo.client.Server;
+import cef.messesinfo.maps.MyLocation;
 import cef.messesinfo.provider.Church;
 
 public class SearchChurchActivity extends ListActivity {
     private static final int MENU_DETAIL = 0;
     private static final int MENU_SCHEDULE = 1;
     private static final int MENU_CENTER = 2;
+    private static final int MENU_NEAR = 3;
     List<Map<String, String>> list = null;
+    MyLocation myLocation = new MyLocation();
     private ChurchAdapter mAdapter;
     private EditText searchText;
     private TextView empty;
@@ -54,20 +60,36 @@ public class SearchChurchActivity extends ListActivity {
 	setListAdapter(mAdapter);
 
 	ImageButton button = (ImageButton) findViewById(R.id.searchButton);
+	ImageButton nearButton = (ImageButton) findViewById(R.id.nearButton);
 	empty = (TextView) findViewById(android.R.id.empty);
-	empty.setText(getString(R.string.list_search_help));
+	empty.setMovementMethod(ScrollingMovementMethod.getInstance());
+	empty.setText(getString(R.string.list_search_church_help));
 	searchText = (EditText) findViewById(R.id.searchField);
 	searchText.setImeOptions(DEFAULT_KEYS_SEARCH_LOCAL);
 	button.setOnClickListener(new OnClickListener() {
 	    @Override
 	    public void onClick(View v) {
-		search();
+		search(searchText.getText().toString());
+	    }
+	});
+	nearButton.setOnClickListener(new OnClickListener() {
+	    @Override
+	    public void onClick(View v) {
+		empty.setText(getString(R.string.localisation_in_progress));
+		myLocation.getLocation(SearchChurchActivity.this, new MyLocation.LocationResult() {
+		    
+		    @Override
+		    public void gotLocation(Location location) {
+			String search = searchText.getText().toString() + "> " + location.getLatitude() + ":" + location.getLongitude(); 
+			search(search);
+		    }
+		});
 	    }
 	});
 	searchText.setOnEditorActionListener(new OnEditorActionListener() {
 	    @Override
 	    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-		search();
+		search(searchText.getText().toString());
 		return true;
 	    }
 	});
@@ -81,9 +103,8 @@ public class SearchChurchActivity extends ListActivity {
 	ChurchActivity.activityStart(this, code);
     }
 
-    private void search() {
+    private void search(final String search) {
 	empty.setText(getString(R.string.list_search_loading));
-	final String search = searchText.getText().toString();
 	mAdapter.setList(null);
 	new Thread(new Runnable() {
 
@@ -125,6 +146,7 @@ public class SearchChurchActivity extends ListActivity {
 	    menu.add(Menu.NONE, MENU_DETAIL, Menu.NONE, R.string.menu_context_detail);
 	    menu.add(Menu.NONE, MENU_SCHEDULE, Menu.NONE, R.string.menu_context_schedules);
 	    menu.add(Menu.NONE, MENU_CENTER, Menu.NONE, R.string.menu_context_center);
+	    menu.add(Menu.NONE, MENU_NEAR, Menu.NONE, R.string.menu_context_near);
 	}
     }
 
@@ -143,6 +165,10 @@ public class SearchChurchActivity extends ListActivity {
 	    break;
 	case MENU_CENTER:
 	    NearMapActivity.activityStart(this, item.get(Church.LAT), item.get(Church.LON));
+	    break;
+	case MENU_NEAR:
+	    searchText.setText("> " + item.get(Church.CP));
+	    search("> " + item.get(Church.LAT) + ":" + item.get(Church.LON));
 	    break;
 	default:
 	    break;

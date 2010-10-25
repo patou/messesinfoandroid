@@ -27,7 +27,7 @@ public class Server {
     public List<Map<String, String>> searchChurch(String query, int start) throws XMLRPCException {
 
 	List<Map<String, String>> list = null;
-	list = (List<Map<String, String>>) client.call("messesinfo.searchChurch", query, start);
+	list = (List<Map<String, String>>) client.call("messesinfobeta.searchChurch", query, start);
 	return list;
     }
 
@@ -40,7 +40,7 @@ public class Server {
     public List<Map<String, Object>> searchSchedule(String query) throws XMLRPCException {
 
 	List<Map<String, Object>> list = null;
-	list = (List<Map<String, Object>>) client.call("messesinfo.searchSchedule", query);
+	list = (List<Map<String, Object>>) client.call("messesinfobeta.searchSchedule", query);
 	return list;
     }
 
