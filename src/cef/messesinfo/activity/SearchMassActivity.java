@@ -115,7 +115,7 @@ public class SearchMassActivity extends ExpandableListActivity {
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
 	Map<String, Object> child = (Map<String, Object>) scheduleExpandableListAdapter.getChild(groupPosition, childPosition);
 	if (child != null) {
-	    String code = (String) child.get(Church.CODE);
+	    String code = (String) child.get(Church.ID);
 	    if (code != null)
 		ChurchActivity.activityStartSchedule(SearchMassActivity.this, code);
 	}
@@ -130,7 +130,7 @@ public class SearchMassActivity extends ExpandableListActivity {
 	    @Override
 	    public void run() {
 		server = new Server(getString(R.string.server_url));
-		MessesInfo.getTracker().trackEvent("Application", "SearchMass", search, 1);
+		MessesInfo.getTracker(SearchMassActivity.this).trackEvent("Application", "SearchMass", search, 1);
 		try {
 		    final List<Map<String, Object>> result = server.searchSchedule(search);
 		    if (result != null) {
@@ -170,10 +170,10 @@ public class SearchMassActivity extends ExpandableListActivity {
 		int childId = ExpandableListView.getPackedPositionChild(info.packedPosition);
 		Map<String, String> item = (Map<String, String>) scheduleExpandableListAdapter.getChild(groupId, childId);
 		if (item != null) {
-		    menu.setHeaderTitle(item.get(Church.NOM));
+		    menu.setHeaderTitle(item.get(Church.NAME));
 		    menu.add(Menu.NONE, MENU_DETAIL, Menu.NONE, R.string.menu_context_detail);
 		    menu.add(Menu.NONE, MENU_SCHEDULE, Menu.NONE, R.string.menu_context_schedules);
-		    if (item.containsKey(Church.LAT) && item.containsKey(Church.LON)) {
+		    if (item.containsKey(Church.LAT) && item.containsKey(Church.LNG)) {
 			menu.add(Menu.NONE, MENU_CENTER, Menu.NONE, R.string.menu_context_center);
 			menu.add(Menu.NONE, MENU_NEAR, Menu.NONE, R.string.menu_context_near);
 		    }
@@ -193,7 +193,7 @@ public class SearchMassActivity extends ExpandableListActivity {
 	    int childId = ExpandableListView.getPackedPositionChild(info.packedPosition);
 	    Map<String, String> item = (Map<String, String>) scheduleExpandableListAdapter.getChild(groupId, childId);
 	    Map<String, Object> itemGroup = (Map<String, Object>) scheduleExpandableListAdapter.getGroup(groupId);
-	    String code = item.get(Church.CODE);
+	    String code = item.get(Church.ID);
 	    switch (menuItem.getItemId()) {
 	    case MENU_DETAIL:
 		ChurchActivity.activityStart(this, code);
@@ -202,24 +202,24 @@ public class SearchMassActivity extends ExpandableListActivity {
 		ChurchActivity.activityStartSchedule(this, code);
 		break;
 	    case MENU_CENTER:
-		if (item.containsKey(Church.LAT) && item.containsKey(Church.LON)) {
-		    NearMapActivity.activityStart(this, item.get(Church.LAT), item.get(Church.LON));
+		if (item.containsKey(Church.LAT) && item.containsKey(Church.LNG)) {
+		    NearMapActivity.activityStart(this, item.get(Church.LAT), item.get(Church.LNG));
 		}
 		break;
 	    case MENU_NEAR:
-		if (item.containsKey(Church.LAT) && item.containsKey(Church.LON)) {
-		    searchText.setText("> " + item.get(Church.CODE));
-		    search("> " + item.get(Church.LAT) + ":" + item.get(Church.LON));
+		if (item.containsKey(Church.LAT) && item.containsKey(Church.LNG)) {
+		    searchText.setText("> " + item.get(Church.ID));
+		    search("> " + item.get(Church.LAT) + ":" + item.get(Church.LNG));
 		}
 		break;
 	    case MENU_EVENT:
 		try {
 		    Intent intent = new Intent(Intent.ACTION_EDIT);
 		    intent.setType("vnd.android.cursor.item/event");
-		    intent.putExtra("title", item.get(Church.NOM));
-		    intent.putExtra("description", item.get(Church.PAROISSE) + "\n" + item.get(Church.COMMUNE));
+		    intent.putExtra("title", item.get(Church.NAME));
+		    intent.putExtra("description", item.get(Church.COMMUNITY) + "\n" + item.get(Church.CITY));
 		    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH'h'mm", Locale.FRANCE);
-		    Date d = sdf.parse(item.get(Schedule.DATE) + " " + item.get(Schedule.HEURE));
+		    Date d = sdf.parse(item.get(Schedule.DATE) + " " + item.get(Schedule.TIME));
 		    intent.putExtra("beginTime", d.getTime());
 		    d.setHours(d.getHours() + 1);
 		    intent.putExtra("endTime", d.getTime());
@@ -230,8 +230,8 @@ public class SearchMassActivity extends ExpandableListActivity {
 		break;
 	    case MENU_SHARE:
 		Intent i = new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT,
-			item.get(Schedule.HEURE) + "\n" + item.get(Schedule.DATE) + "\n" + "\n" + item.get(Church.COMMUNE)).setType("text/plain").putExtra(Intent.EXTRA_SUBJECT,
-			item.get(Church.NOM));
+			item.get(Schedule.TIME) + "\n" + item.get(Schedule.DATE) + "\n" + "\n" + item.get(Church.CITY)).setType("text/plain").putExtra(Intent.EXTRA_SUBJECT,
+			item.get(Church.NAME));
 		startActivityForResult(Intent.createChooser(i, getString(R.string.menu_context_event_share)), 0);
 	    default:
 		break;
@@ -303,20 +303,20 @@ public class SearchMassActivity extends ExpandableListActivity {
 		viewChildHolder = (ViewChildHolder) convertView.getTag();
 	    }
 
-	    String c = (String) block.get(Schedule.COLOR);
+	    String c = (String) block.get(Schedule.LITURGICALTIMECODE);
 	    Integer color = 1;
 	    if (c != null) {
 		color = Integer.parseInt(c);
 	    }
 	    viewChildHolder.color.setBackgroundColor(getLiturgicalColor(color));
 	    if (dateDisplayType) {
-		viewChildHolder.title.setText((String) block.get(Schedule.HEURE));
+		viewChildHolder.title.setText((String) block.get(Schedule.TIME));
 	    }
 	    else {
-		viewChildHolder.title.setText((String) block.get(Schedule.FDATE) + " - " + block.get(Schedule.HEURE));
+		viewChildHolder.title.setText((String) block.get(Schedule.FDATE) + " - " + block.get(Schedule.TIME));
 	    }
-	    viewChildHolder.name.setText((String) block.get(Church.NOM));
-	    viewChildHolder.label.setText((String) block.get(Church.CP) + " " + (String) block.get(Church.COMMUNE));
+	    viewChildHolder.name.setText((String) block.get(Church.NAME));
+	    viewChildHolder.label.setText((String) block.get(Church.ZIPCODE) + " " + (String) block.get(Church.CITY));
 	    return convertView;
 	}
 
@@ -381,7 +381,7 @@ public class SearchMassActivity extends ExpandableListActivity {
 	    } else {
 		viewGroupHolder = (ViewGroupHolder) convertView.getTag();
 	    }
-	    viewGroupHolder.title.setText((String) block.get(Schedule.NOM));
+	    viewGroupHolder.title.setText((String) block.get(Schedule.LABEL));
 	    viewGroupHolder.nbItem.setText("(" + getChildrenCount(groupPosition) + " items)");
 	    return convertView;
 	}

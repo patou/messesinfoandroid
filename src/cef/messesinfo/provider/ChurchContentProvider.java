@@ -44,13 +44,13 @@ public class ChurchContentProvider extends ContentProvider {
         public void onCreate(SQLiteDatabase db) {
             db.execSQL("CREATE TABLE " + CHURCH_TABLE_NAME + " ("
                     + Church._ID + " INTEGER PRIMARY KEY,"
-                    + Church.CODE + " VARCHAR(8),"
-                    + Church.NOM + " VARCHAR(80),"
-                    + Church.CP + " VARCHAR(10),"
-                    + Church.COMMUNE + " VARCHAR(80),"
-                    + Church.PAROISSE + " VARCHAR(80),"
+                    + Church.ID + " VARCHAR(8),"
+                    + Church.NAME + " VARCHAR(80),"
+                    + Church.ZIPCODE + " VARCHAR(10),"
+                    + Church.CITY + " VARCHAR(80),"
+                    + Church.COMMUNITY + " VARCHAR(80),"
                     + Church.LAT + " REAL,"
-                    + Church.LON + " REAL,"
+                    + Church.LNG + " REAL,"
                     + Church.FAVORITE + " INTEGER"
                     + ");");
         }
@@ -87,7 +87,7 @@ public class ChurchContentProvider extends ContentProvider {
         case CHURCH_FAVORITE_CODE:
             qb.setTables(CHURCH_TABLE_NAME);
             qb.setProjectionMap(sMassFavoritesProjectionMap);
-            qb.appendWhere(Church.CODE + "=");
+            qb.appendWhere(Church.ID + "=");
             qb.appendWhereEscapeString(uri.getPathSegments().get(1));
             
             
@@ -142,28 +142,28 @@ public class ChurchContentProvider extends ContentProvider {
             values = new ContentValues();
         }
         // Make sure that the fields are all set
-        if (values.containsKey(Church.CODE) == false) {
-            values.put(Church.CODE, "");
+        if (values.containsKey(Church.ID) == false) {
+            values.put(Church.ID, "");
         }
         
-        if (values.containsKey(Church.CP) == false) {
-            values.put(Church.CP, "");
+        if (values.containsKey(Church.ZIPCODE) == false) {
+            values.put(Church.ZIPCODE, "");
         }
         
-        if (values.containsKey(Church.COMMUNE) == false) {
-            values.put(Church.COMMUNE, "");
+        if (values.containsKey(Church.CITY) == false) {
+            values.put(Church.CITY, "");
         }
         
-        if (values.containsKey(Church.NOM) == false) {
-            values.put(Church.NOM, "");
+        if (values.containsKey(Church.NAME) == false) {
+            values.put(Church.NAME, "");
         }
         
-        if (values.containsKey(Church.PAROISSE) == false) {
-            values.put(Church.PAROISSE, "");
+        if (values.containsKey(Church.COMMUNITY) == false) {
+            values.put(Church.COMMUNITY, "");
         }
         
-        if (values.containsKey(Church.LON) == false) {
-            values.put(Church.LON, "");
+        if (values.containsKey(Church.LNG) == false) {
+            values.put(Church.LNG, "");
         }
         
         if (values.containsKey(Church.LAT) == false) {
@@ -179,7 +179,7 @@ public class ChurchContentProvider extends ContentProvider {
         }
 
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        long rowId = db.insert(CHURCH_TABLE_NAME, Church.CODE, values);
+        long rowId = db.insert(CHURCH_TABLE_NAME, Church.ID, values);
         if (rowId > 0) {
             Uri churchUri = ContentUris.withAppendedId(Church.CONTENT_URI, rowId);
             getContext().getContentResolver().notifyChange(churchUri, null);
@@ -201,7 +201,7 @@ public class ChurchContentProvider extends ContentProvider {
 
         case CHURCH_FAVORITE_CODE:
             String churchCode =  uri.getPathSegments().get(1);
-            count = db.delete(CHURCH_TABLE_NAME, Church.CODE + "= '" + churchCode + "' AND " + Church.FAVORITE + " = '1' "
+            count = db.delete(CHURCH_TABLE_NAME, Church.ID + "= '" + churchCode + "' AND " + Church.FAVORITE + " = '1' "
                     + (!TextUtils.isEmpty(where) ? " AND (" + where + ')' : ""), whereArgs);
             break;
 
@@ -224,7 +224,7 @@ public class ChurchContentProvider extends ContentProvider {
 
         case CHURCH_FAVORITE_CODE:
             String churchCode = uri.getPathSegments().get(1);
-            count = db.update(CHURCH_TABLE_NAME, values, Church.CODE + "=" + churchCode
+            count = db.update(CHURCH_TABLE_NAME, values, Church.ID + "=" + churchCode
                     + (!TextUtils.isEmpty(where) ? " AND (" + where + ')' : ""), whereArgs);
             break;
 
@@ -243,13 +243,13 @@ public class ChurchContentProvider extends ContentProvider {
 
         sMassFavoritesProjectionMap = new HashMap<String, String>();
         sMassFavoritesProjectionMap.put(Church._ID, Church._ID);
-        sMassFavoritesProjectionMap.put(Church.CODE, Church.CODE);
-        sMassFavoritesProjectionMap.put(Church.NOM, Church.NOM);
-        sMassFavoritesProjectionMap.put(Church.CP, Church.CP);
-        sMassFavoritesProjectionMap.put(Church.COMMUNE, Church.COMMUNE);
-        sMassFavoritesProjectionMap.put(Church.PAROISSE, Church.PAROISSE);
+        sMassFavoritesProjectionMap.put(Church.ID, Church.ID);
+        sMassFavoritesProjectionMap.put(Church.NAME, Church.NAME);
+        sMassFavoritesProjectionMap.put(Church.ZIPCODE, Church.ZIPCODE);
+        sMassFavoritesProjectionMap.put(Church.CITY, Church.CITY);
+        sMassFavoritesProjectionMap.put(Church.COMMUNITY, Church.COMMUNITY);
         sMassFavoritesProjectionMap.put(Church.LAT, Church.LAT);
-        sMassFavoritesProjectionMap.put(Church.LON, Church.LON);
+        sMassFavoritesProjectionMap.put(Church.LNG, Church.LNG);
     }
 
 }

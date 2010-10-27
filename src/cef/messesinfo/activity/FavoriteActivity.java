@@ -33,13 +33,13 @@ public class FavoriteActivity extends ListActivity {
     }
 
     private static final String[] PROJECTION = new String[] { Church._ID, // 0
-	    Church.CODE, // 1
-	    Church.NOM, // 2
-	    Church.CP, // 3
-	    Church.COMMUNE, // 4
-	    Church.PAROISSE, // 5
+	    Church.ID, // 1
+	    Church.NAME, // 2
+	    Church.ZIPCODE, // 3
+	    Church.CITY, // 4
+	    Church.COMMUNITY, // 5
 	    Church.LAT, //6
-	    Church.LON //7
+	    Church.LNG //7
     };
 
     @Override
@@ -51,9 +51,9 @@ public class FavoriteActivity extends ListActivity {
 	}
 	setContentView(R.layout.list_favorite);
 	Cursor cursor = managedQuery(getIntent().getData(), PROJECTION, null, null, null);
-	SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.list_church_item, cursor, new String[] { Church.NOM, // 2
-		Church.COMMUNE, // 3
-		Church.PAROISSE }, new int[] { R.id.nom, R.id.commune, R.id.paroisse });
+	SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.list_church_item, cursor, new String[] { Church.NAME, // 2
+		Church.CITY, // 3
+		Church.COMMUNITY }, new int[] { R.id.nom, R.id.commune, R.id.paroisse });
 	setListAdapter(adapter);
 	registerForContextMenu(getListView());
     }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<!-- Debug key -->
-	<string name="maps_api">0rpQsam0k5frbjyX65flUhlGGTw_ZIkf0rCd8Iw</string>
+<!--	<string name="maps_api">0rpQsam0k5frbjyX65flUhlGGTw_ZIkf0rCd8Iw</string>-->
 	<!-- Release key -->
-<!--	<string name="maps_api">0rspQsam0k5foFfWgP4hgPFIlmzUwNToZXYDXEew</string>-->
+	<string name="maps_api">099CwnXtBpF6cXa_D4a5DIhRMJCPvIoSGJcCspQ</string>
 	<string name="server_url">http://www.android.catholique.fr/server.php</string>
 	<string name="photo_url">http://www.android.catholique.fr/photo.php?code=</string>
 	<string name="messeinfo_url">http://www.messesinfo.catholique.fr</string>

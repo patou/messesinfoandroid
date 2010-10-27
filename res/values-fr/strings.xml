@@ -81,8 +81,8 @@
 		disponible</string>
 	<string name="error_church_not_exist">Cette eglise n\'existe pas</string>
 	<string name="error_church_book">Une erreur empêche d\'afficher le résultat</string>
-	<string name="error_church_schedule">Une erreur empêche d\'afficher les horraires de messes</string>
-	<string name="error_search_schedule">Une erreur empêche d\'afficher les horraires de messes</string>
+	<string name="error_church_schedule">Une erreur empêche d\'afficher les horaires de messes</string>
+	<string name="error_search_schedule">Une erreur empêche d\'afficher les horaires de messes</string>
 	<string name="contact_messesinfo">Contactez MessesInfo</string>
 	<string name="messesinfo_email_subject">Contact depuis l\'application Android</string>
 	<string name="messesinfo_share">voir les horaires des messes autour market//details?id=cef.messeinfo</string>

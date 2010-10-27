@@ -54,7 +54,7 @@ public class NearListActivity extends ListActivity {
 	if (v.getId() == android.R.id.list) {
 	    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 	    Map<String, String> item = list.get(info.position);
-	    menu.setHeaderTitle(item.get(Church.NOM));
+	    menu.setHeaderTitle(item.get(Church.NAME));
 	    menu.add(Menu.NONE, MENU_DETAIL, Menu.NONE, R.string.menu_context_detail);
 	    menu.add(Menu.NONE, MENU_SCHEDULE, Menu.NONE, R.string.menu_context_schedules);
 	    menu.add(Menu.NONE, MENU_CENTER, Menu.NONE, R.string.menu_context_center);
@@ -66,7 +66,7 @@ public class NearListActivity extends ListActivity {
 	AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuItem.getMenuInfo();
 	int menuItemIndex = menuItem.getItemId();
 	Map<String, String> item = list.get(info.position);
-	String code = item.get(Church.CODE);
+	String code = item.get(Church.ID);
 	switch (menuItemIndex) {
 	case MENU_DETAIL:
 	    ChurchActivity.activityStart(this, code);
@@ -75,7 +75,7 @@ public class NearListActivity extends ListActivity {
 	    ChurchActivity.activityStartSchedule(this, code);
 	    break;
 	case MENU_CENTER:
-	    NearMapActivity.activityStart(this, item.get(Church.LAT), item.get(Church.LON));
+	    NearMapActivity.activityStart(this, item.get(Church.LAT), item.get(Church.LNG));
 	    break;
 	default:
 	    break;
@@ -87,7 +87,7 @@ public class NearListActivity extends ListActivity {
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
 	Map<String, String> item = list.get(position);
-	String code = item.get(Church.CODE);
+	String code = item.get(Church.ID);
 	ChurchActivity.activityStart(this, code);
     }
     

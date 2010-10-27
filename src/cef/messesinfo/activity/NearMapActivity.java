@@ -74,7 +74,7 @@ public class NearMapActivity extends MapActivity {
      * @param context
      */
     public static void activityStart(Context context, String latitude, String longitude) {
-	context.startActivity(new Intent(context, NearMapActivity.class).putExtra(Church.LAT, latitude).putExtra(Church.LON, longitude));
+	context.startActivity(new Intent(context, NearMapActivity.class).putExtra(Church.LAT, latitude).putExtra(Church.LNG, longitude));
     }
 
     @Override
@@ -92,7 +92,7 @@ public class NearMapActivity extends MapActivity {
 	    @Override
 	    public void onClick(View v) {
 		if (selectedItem != null) {
-		    ChurchActivity.activityStart(NearMapActivity.this, selectedItem.get(Church.CODE));
+		    ChurchActivity.activityStart(NearMapActivity.this, selectedItem.get(Church.ID));
 		}
 	    }
 	});
@@ -111,7 +111,7 @@ public class NearMapActivity extends MapActivity {
 	overlayManager.populate();
 	if (load) {
 	    if (getIntent().hasExtra(Church.LAT)) {
-		centerMap(ChurchPt.createGeoPt(getIntent().getStringExtra(Church.LAT), getIntent().getStringExtra(Church.LON)));
+		centerMap(ChurchPt.createGeoPt(getIntent().getStringExtra(Church.LAT), getIntent().getStringExtra(Church.LNG)));
 	    } else {
 		myLocationOverlay.enableMyLocation();
 		myLocationOverlay.runOnFirstFix(new Runnable() {
@@ -135,7 +135,7 @@ public class NearMapActivity extends MapActivity {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 	if (selectedItem != null) {
-	    menu.setHeaderTitle(selectedItem.get(Church.NOM));
+	    menu.setHeaderTitle(selectedItem.get(Church.NAME));
 	    menu.add(Menu.NONE, MENU_DETAIL, Menu.NONE, R.string.menu_context_detail);
 	    menu.add(Menu.NONE, MENU_SCHEDULE, Menu.NONE, R.string.menu_context_schedules);
 	    menu.add(Menu.NONE, MENU_CENTER, Menu.NONE, R.string.menu_context_center);
@@ -145,7 +145,7 @@ public class NearMapActivity extends MapActivity {
     @Override
     public boolean onContextItemSelected(MenuItem menuItem) {
 	int menuItemIndex = menuItem.getItemId();
-	String code = selectedItem.get(Church.CODE);
+	String code = selectedItem.get(Church.ID);
 	switch (menuItemIndex) {
 	case MENU_DETAIL:
 	    ChurchActivity.activityStart(this, code);
@@ -181,10 +181,10 @@ public class NearMapActivity extends MapActivity {
         	Map<String, String> item = pt.getData();
         	selectedItem = item;
         	panel.setVisibility(View.VISIBLE);
-        	String cp = item.get(Church.CP);
-        	holder.nom.setText(item.get(Church.NOM));
-        	holder.commune.setText(cp + " " + item.get(Church.COMMUNE));
-        	holder.paroisse.setText(item.get(Church.PAROISSE));
+        	String cp = item.get(Church.ZIPCODE);
+        	holder.nom.setText(item.get(Church.NAME));
+        	holder.commune.setText(cp + " " + item.get(Church.CITY));
+        	holder.paroisse.setText(item.get(Church.COMMUNITY));
         	return true;
             }
         };
@@ -199,7 +199,7 @@ public class NearMapActivity extends MapActivity {
         		Double top_lgt = topLeft.getLongitudeE6() / 1E6;
         		Double bottom_lat = bottomRight.getLatitudeE6() / 1E6;
         		Double bottom_lgt = bottomRight.getLongitudeE6() / 1E6;
-        		List<Map<String, String>> result = server.getNearChurch(top_lat, top_lgt, bottom_lat, bottom_lgt);
+        		List<Map<String, String>> result = server.getNearLocation(top_lat, top_lgt, bottom_lat, bottom_lgt);
         		if (result != null) {
         		    listChurch = result;
         		    for (Map<String, String> item : result) {

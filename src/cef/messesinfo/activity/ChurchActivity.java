@@ -49,13 +49,13 @@ public class ChurchActivity extends TabActivity {
 
     public static void activityStart(Context context, String code) {
 	Intent intent = new Intent(context, ChurchActivity.class);
-	intent.putExtra(Church.CODE, code);
+	intent.putExtra(Church.ID, code);
 	context.startActivity(intent);
     }
 
     public static void activityStartSchedule(Context context, String code) {
 	Intent intent = new Intent(context, ChurchActivity.class);
-	intent.putExtra(Church.CODE, code);
+	intent.putExtra(Church.ID, code);
 	intent.putExtra(Schedule.HORAIRE, true);
 	context.startActivity(intent);
     }
@@ -64,13 +64,13 @@ public class ChurchActivity extends TabActivity {
     protected void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.church_display);
-	final String code = getIntent().getStringExtra("code");
-	MessesInfo.getTracker().trackPageView("/church/" + code);
+	final String code = getIntent().getStringExtra(Church.ID);
+	MessesInfo.getTracker(this).trackPageView("/church/" + code);
 	TabHost tabs = getTabHost();
 	tabs.addTab(tabs.newTabSpec(INFORMATION).setIndicator(getString(R.string.church_tab_information),
 	        getResources().getDrawable(R.drawable.sym_action_sms)).setContent(R.id.information_tab));
 	Intent intentHoraires = new Intent(getApplicationContext(), ScheduleActivity.class);
-	intentHoraires.putExtra(Church.CODE, code);
+	intentHoraires.putExtra(Church.ID, code);
 	tabs.addTab(tabs.newTabSpec(HORAIRE).setIndicator(getString(R.string.church_tab_schedule),
 	        getResources().getDrawable(R.drawable.sym_schedule)).setContent(intentHoraires));
 	if (getIntent().getBooleanExtra(Schedule.HORAIRE, false)) {
@@ -86,10 +86,11 @@ public class ChurchActivity extends TabActivity {
 		@Override
 		public void run() {
 		    try {
-			final Map<String, String> item = new Server(getString(R.string.server_url)).getChurchInfo(code);
+			final Map<String, String> item = new Server(getString(R.string.server_url)).getLocationInfo(code);
 			ChurchActivity.this.selectedItem = item;
 			Cursor cursor = getContentResolver().query(Uri.withAppendedPath(Church.CONTENT_URI, code), null, null, null, null);
 			final Boolean starred = cursor.getCount() > 0;
+			cursor.close();
 			if (item != null) {
 			    runOnUiThread(new Runnable() {
 				@Override
@@ -122,23 +123,23 @@ public class ChurchActivity extends TabActivity {
 				    ArrayList<ViewEntry> entries = new ArrayList<ViewEntry>();
 				    TabHost tabs = getTabHost();
 				    star.setChecked(starred);
-				    final String city = item.get(Church.COMMUNE);
-				    final String name = item.get(Church.NOM);
-				    final String paroisseName = item.get(Church.PAROISSE);
-				    final String cp = item.get(Church.CP);
+				    final String city = item.get(Church.CITY);
+				    final String name = item.get(Church.NAME);
+				    final String paroisseName = item.get(Church.COMMUNITY);
+				    final String cp = item.get(Church.ZIPCODE);
 				    star.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 					@Override
 					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 					    if (isChecked) {
 						ContentValues values = new ContentValues();
-						values.put(Church.CODE, item.get(Church.CODE));
-						values.put(Church.NOM, name);
-						values.put(Church.COMMUNE, city);
-						values.put(Church.CP, cp);
-						values.put(Church.PAROISSE, paroisseName);
+						values.put(Church.ID, item.get(Church.ID));
+						values.put(Church.NAME, name);
+						values.put(Church.CITY, city);
+						values.put(Church.ZIPCODE, cp);
+						values.put(Church.COMMUNITY, paroisseName);
 						values.put(Church.LAT, item.get(Church.LAT));
-						values.put(Church.LON, item.get(Church.LON));
+						values.put(Church.LNG, item.get(Church.LNG));
 						values.put(Church.FAVORITE, 1);
 						getContentResolver().insert(Church.CONTENT_URI, values);
 					    } else {
@@ -151,7 +152,7 @@ public class ChurchActivity extends TabActivity {
 				    paroisse.setText(paroisseName);
 
 				    ViewEntry entry = new ViewEntry();
-				    String adresse = item.get(Church.ADRESSE);
+				    String adresse = item.get(Church.ADDRESS);
 				    if (TextUtils.isEmpty(adresse)) {
 					adresse = cp + " " + city;
 				    } else {
@@ -161,7 +162,7 @@ public class ChurchActivity extends TabActivity {
 				    entry.data = getString(R.string.church_see_map);
 				    entry.actionIcon = R.drawable.sym_action_map;
 				    entry.intent = new Intent(Intent.ACTION_VIEW, Uri.fromParts("geo", item.get(Church.LAT) + ","
-					    + item.get(Church.LON) + "?z=12", null));
+					    + item.get(Church.LNG) + "?z=12", null));
 				    entries.add(entry);
 				    String email = item.get(Church.EMAIL);
 				    if (!TextUtils.isEmpty(email)) {
@@ -172,7 +173,7 @@ public class ChurchActivity extends TabActivity {
 					entry.intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", email, null));
 					entries.add(entry);
 				    }
-				    String internet = item.get(Church.INTERNET);
+				    String internet = item.get(Church.URL);
 				    if (!TextUtils.isEmpty(internet)) {
 					entry = new ViewEntry();
 					entry.label = internet;
@@ -184,7 +185,7 @@ public class ChurchActivity extends TabActivity {
 					entry.intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 					entries.add(entry);
 				    }
-				    String tel = item.get(Church.TEL);
+				    String tel = item.get(Church.PHONE);
 				    if (!TextUtils.isEmpty(tel)) {
 					entry = new ViewEntry();
 					entry.label = tel;
@@ -201,7 +202,7 @@ public class ChurchActivity extends TabActivity {
 					entry.actionIcon = android.R.drawable.sym_action_call;
 					entries.add(entry);
 				    }
-				    String libre = item.get(Church.LIBRE);
+				    String libre = item.get(Church.MISCELLANEOUS);
 				    if (!TextUtils.isEmpty(libre)) {
 					entry = new ViewEntry();
 					entry.label = libre;
@@ -243,7 +244,7 @@ public class ChurchActivity extends TabActivity {
 	switch (item.getItemId()) {
 	case MENU_MAPS:
 	    if (selectedItem != null) {
-		NearMapActivity.activityStart(this, this.selectedItem.get(Church.LAT), this.selectedItem.get(Church.LON));
+		NearMapActivity.activityStart(this, this.selectedItem.get(Church.LAT), this.selectedItem.get(Church.LNG));
 	    }
 	    return true;
 	default:

@@ -8,6 +8,7 @@ import java.util.Map;
 import org.xmlrpc.android.XMLRPCException;
 
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -57,8 +58,7 @@ public class MessesInfo extends ListActivity {
     public void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
 	if (tracker == null) {
-	    tracker = GoogleAnalyticsTracker.getInstance();
-	    tracker.start("UA-12886932-4", 20, this);
+	   
 	    trackUserInformation();
 	}
 
@@ -94,6 +94,7 @@ public class MessesInfo extends ListActivity {
 		    PackageInfo pi;
 		    Server server = new Server(getString(R.string.server_url));
 		    pi = pm.getPackageInfo(getPackageName(), 0);
+		    GoogleAnalyticsTracker tracker = getTracker(MessesInfo.this);
 		    tracker.trackPageView("/home");
 		    tracker.trackEvent("Application", "Version", pi.versionName, pi.versionCode);
 		    tracker.trackEvent("Android", "Device", Build.DEVICE, 1);
@@ -264,7 +265,11 @@ public class MessesInfo extends ListActivity {
 	    tracker.stop();
     }
 
-    public static GoogleAnalyticsTracker getTracker() {
+    public static GoogleAnalyticsTracker getTracker(Context context) {
+	if (tracker == null) {
+	    tracker = GoogleAnalyticsTracker.getInstance();
+	    tracker.start("UA-12886932-4", 20, context);
+	}
 	return tracker;
     }
 }

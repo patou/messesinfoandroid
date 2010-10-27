@@ -31,7 +31,7 @@ public class ChurchPt extends ManagedOverlayItem {
      * @return
      */
     private static String buildSnippet(Map<String, String> data) {
-	return data.get(Church.ADRESSE) + " " + data.get(Church.COMMUNE);
+	return data.get(Church.ADDRESS) + " " + data.get(Church.CITY);
     }
 
     /**
@@ -40,7 +40,7 @@ public class ChurchPt extends ManagedOverlayItem {
      * @return
      */
     private static String buildTitle(Map<String, String> data) {
-	return data.get(Church.NOM);
+	return data.get(Church.NAME);
     }
 
     /**
@@ -49,7 +49,7 @@ public class ChurchPt extends ManagedOverlayItem {
      * @return
      */
     public static GeoPoint createGeoPt(Map<String, String> data) {
-	return createGeoPt(data.get(Church.LAT), data.get(Church.LON));
+	return createGeoPt(data.get(Church.LAT), data.get(Church.LNG));
     }
     
     /**

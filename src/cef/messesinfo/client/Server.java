@@ -24,10 +24,10 @@ public class Server {
      * @return
      * @throws XMLRPCException
      */
-    public List<Map<String, String>> searchChurch(String query, int start) throws XMLRPCException {
+    public List<Map<String, String>> searchLocation(String query, int start, int limit) throws XMLRPCException {
 
 	List<Map<String, String>> list = null;
-	list = (List<Map<String, String>>) client.call("messesinfobeta.searchChurch", query, start);
+	list = (List<Map<String, String>>) client.call("massinfov2.searchLocation", query, start, limit);
 	return list;
     }
 
@@ -40,7 +40,7 @@ public class Server {
     public List<Map<String, Object>> searchSchedule(String query) throws XMLRPCException {
 
 	List<Map<String, Object>> list = null;
-	list = (List<Map<String, Object>>) client.call("messesinfobeta.searchSchedule", query);
+	list = (List<Map<String, Object>>) client.call("massinfov2.searchSchedule", query, 0, 50);
 	return list;
     }
 
@@ -53,35 +53,35 @@ public class Server {
      * @return
      * @throws XMLRPCException
      */
-    public List<Map<String, String>> getNearChurch(Double top_lat, Double top_lon, Double bottom_lat, Double bottom_lon) throws XMLRPCException {
+    public List<Map<String, String>> getNearLocation(Double top_lat, Double top_lon, Double bottom_lat, Double bottom_lon) throws XMLRPCException {
 
 	List<Map<String, String>> list = null;
-	list = (List<Map<String, String>>) client.call("messesinfo.getNearChurch", top_lat, top_lon, bottom_lat, bottom_lon);
+	list = (List<Map<String, String>>) client.call("massinfov2.getNearLocation", top_lat, top_lon, bottom_lat, bottom_lon);
 	return list;
     }
 
     /**
      * Get the list of schedule of a church
-     * @param code
+     * @param id
      * @return
      * @throws XMLRPCException
      */
-    public List<Map<String, Object>> getSchedule(String code) throws XMLRPCException {
+    public List<Map<String, Object>> getLocationSchedule(String id, int start, int limit) throws XMLRPCException {
 
 	List<Map<String, Object>> list = null;
-	list = (List<Map<String, Object>>) client.call("messesinfo.getSchedule", code);
+	list = (List<Map<String, Object>>) client.call("massinfov2.getLocationSchedule", id, start, limit);
 	return list;
     }
 
     /**
      * Get all information for a given church
-     * @param code
+     * @param id
      * @return
      * @throws XMLRPCException
      */
-    public Map<String, String> getChurchInfo(String code) throws XMLRPCException {
+    public Map<String, String> getLocationInfo(String id) throws XMLRPCException {
 	Map<String, String> item = null;
-	item = (Map<String, String>) client.call("messesinfo.getChurchInfo", code);
+	item = (Map<String, String>) client.call("massinfov2.getLocationInfo", id);
 	return item;
     }
 

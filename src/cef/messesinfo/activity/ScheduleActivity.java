@@ -45,7 +45,7 @@ public class ScheduleActivity extends ExpandableListActivity {
     protected void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.expandable_list);
-	final String code = getIntent().getStringExtra("code");
+	final String code = getIntent().getStringExtra(Church.ID);
 	empty = (TextView) findViewById(android.R.id.empty);
 	new Thread(new Runnable() {
 
@@ -53,7 +53,7 @@ public class ScheduleActivity extends ExpandableListActivity {
 	    public void run() {
 		server = new Server(getString(R.string.server_url));
 		try {
-		    final List<Map<String, Object>> result = server.getSchedule(code);
+		    final List<Map<String, Object>> result = server.getLocationSchedule(code, 0, 25);
 		    if (result != null) {
 			runOnUiThread(new Runnable() {
 
@@ -93,7 +93,7 @@ public class ScheduleActivity extends ExpandableListActivity {
 		int childId = ExpandableListView.getPackedPositionChild(info.packedPosition);
 		Map<String, String> item = (Map<String, String>) getExpandableListAdapter().getChild(groupId, childId);
 		if (item != null) {
-		    menu.setHeaderTitle(item.get(Schedule.HEURE));
+		    menu.setHeaderTitle(item.get(Schedule.TIME));
 		    menu.add(Menu.NONE, MENU_EVENT, Menu.NONE, R.string.menu_context_event);
 		    menu.add(Menu.NONE, MENU_SHARE, Menu.NONE, R.string.menu_context_event_share);
 		}
@@ -115,10 +115,10 @@ public class ScheduleActivity extends ExpandableListActivity {
 		try {
 		    Intent intent = new Intent(Intent.ACTION_EDIT);
 		    intent.setType("vnd.android.cursor.item/event");
-		    intent.putExtra("title", item.get(Church.NOM));
-		    intent.putExtra("description", item.get(Church.PAROISSE) + "\n" + item.get(Church.COMMUNE));
+		    intent.putExtra("title", item.get(Church.NAME));
+		    intent.putExtra("description", item.get(Church.COMMUNITY) + "\n" + item.get(Church.CITY));
 		    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH'h'mm", Locale.FRANCE);
-		    Date d = sdf.parse(item.get(Schedule.DATE) + " " + item.get(Schedule.HEURE));
+		    Date d = sdf.parse(item.get(Schedule.DATE) + " " + item.get(Schedule.TIME));
 		    intent.putExtra("beginTime", d.getTime());
 		    d.setHours(d.getHours() + 1);
 		    intent.putExtra("endTime", d.getTime());
@@ -129,8 +129,8 @@ public class ScheduleActivity extends ExpandableListActivity {
 		break;
 	    case MENU_SHARE:
 		Intent i = new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT,
-			item.get(Schedule.HEURE) + "\n" + itemGroup.get(Schedule.NOM) + "\n" + item.get(Church.COMMUNE)).setType("text/plain").putExtra(Intent.EXTRA_SUBJECT,
-			item.get(Church.NOM));
+			item.get(Schedule.TIME) + "\n" + itemGroup.get(Schedule.LABEL) + "\n" + item.get(Church.CITY)).setType("text/plain").putExtra(Intent.EXTRA_SUBJECT,
+			item.get(Church.NAME));
 		startActivityForResult(Intent.createChooser(i, getString(R.string.menu_context_event_share)), 0);
 	    default:
 		break;
@@ -214,16 +214,16 @@ public class ScheduleActivity extends ExpandableListActivity {
 		viewChildHolder = (ViewChildHolder) convertView.getTag();
 	    }
 
-	    String c = (String) block.get(Schedule.COLOR);
+	    String c = (String) block.get(Schedule.LITURGICALTIMECODE);
 	    Integer color = 1;
 	    if (c != null) {
 		color = Integer.parseInt(c);
 	    }
 	    viewChildHolder.color.setBackgroundColor(getLiturgicalColor(color));
-	    viewChildHolder.title.setText((String) block.get(Schedule.HEURE));
+	    viewChildHolder.title.setText((String) block.get(Schedule.TIME));
 
-	    viewChildHolder.name.setText((String) block.get(Schedule.LIBRE));
-	    viewChildHolder.label.setText((String) block.get(Schedule.LIBELLE) + " " + (String) block.get(Schedule.LANGUE));
+	    viewChildHolder.name.setText((String) block.get(Schedule.MISCELLANEOUS));
+	    viewChildHolder.label.setText((String) block.get(Schedule.LABEL) + " " + (String) block.get(Schedule.LANGUAGE));
 	    return convertView;
 	}
 
@@ -288,7 +288,7 @@ public class ScheduleActivity extends ExpandableListActivity {
 	    } else {
 		viewGroupHolder = (ViewGroupHolder) convertView.getTag();
 	    }
-	    viewGroupHolder.title.setText((String) block.get(Schedule.NOM));
+	    viewGroupHolder.title.setText((String) block.get(Schedule.LABEL));
 	    viewGroupHolder.nbItem.setText("(" + getChildrenCount(groupPosition) + " items)");
 	    return convertView;
 	}

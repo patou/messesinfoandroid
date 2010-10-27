@@ -99,7 +99,7 @@ public class SearchChurchActivity extends ListActivity {
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
 	Map<String, String> item = list.get(position);
-	String code = item.get("code");
+	String code = item.get(Church.ID);
 	ChurchActivity.activityStart(this, code);
     }
 
@@ -110,9 +110,9 @@ public class SearchChurchActivity extends ListActivity {
 
 	    @Override
 	    public void run() {
-		MessesInfo.getTracker().trackEvent("Application", "SearchChurch", search, 1);
+		MessesInfo.getTracker(SearchChurchActivity.this).trackEvent("Application", "SearchChurch", search, 1);
 		try {
-		    list = new Server(getString(R.string.server_url)).searchChurch(search, 0);
+		    list = new Server(getString(R.string.server_url)).searchLocation(search, 0, 25);
 		    runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
@@ -142,7 +142,7 @@ public class SearchChurchActivity extends ListActivity {
 	if (v.getId() == android.R.id.list) {
 	    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 	    Map<String, String> item = list.get(info.position);
-	    menu.setHeaderTitle(item.get(Church.NOM));
+	    menu.setHeaderTitle(item.get(Church.NAME));
 	    menu.add(Menu.NONE, MENU_DETAIL, Menu.NONE, R.string.menu_context_detail);
 	    menu.add(Menu.NONE, MENU_SCHEDULE, Menu.NONE, R.string.menu_context_schedules);
 	    menu.add(Menu.NONE, MENU_CENTER, Menu.NONE, R.string.menu_context_center);
@@ -155,7 +155,7 @@ public class SearchChurchActivity extends ListActivity {
 	AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuItem.getMenuInfo();
 	int menuItemIndex = menuItem.getItemId();
 	Map<String, String> item = list.get(info.position);
-	String code = item.get(Church.CODE);
+	String code = item.get(Church.ID);
 	switch (menuItemIndex) {
 	case MENU_DETAIL:
 	    ChurchActivity.activityStart(this, code);
@@ -164,11 +164,11 @@ public class SearchChurchActivity extends ListActivity {
 	    ChurchActivity.activityStartSchedule(this, code);
 	    break;
 	case MENU_CENTER:
-	    NearMapActivity.activityStart(this, item.get(Church.LAT), item.get(Church.LON));
+	    NearMapActivity.activityStart(this, item.get(Church.LAT), item.get(Church.LNG));
 	    break;
 	case MENU_NEAR:
-	    searchText.setText("> " + item.get(Church.CP));
-	    search("> " + item.get(Church.LAT) + ":" + item.get(Church.LON));
+	    searchText.setText("> " + item.get(Church.ZIPCODE));
+	    search("> " + item.get(Church.LAT) + ":" + item.get(Church.LNG));
 	    break;
 	default:
 	    break;

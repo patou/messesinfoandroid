@@ -65,9 +65,9 @@ public class ChurchAdapter extends BaseAdapter {
 
         Map<String,String> item = list.get(position);
         holder.icon.setImageResource(R.drawable.church1);
-        holder.nom.setText(item.get(Church.NOM));
-        holder.paroisse.setText(item.get(Church.PAROISSE));
-        holder.commune.setText(item.get(Church.CP) +  " " + item.get(Church.COMMUNE));
+        holder.nom.setText(item.get(Church.NAME));
+        holder.paroisse.setText(item.get(Church.COMMUNITY));
+        holder.commune.setText(item.get(Church.ZIPCODE) +  " " + item.get(Church.CITY));
         return convertView;
     }
     
