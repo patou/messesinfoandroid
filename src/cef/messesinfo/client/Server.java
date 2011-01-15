@@ -27,7 +27,7 @@ public class Server {
     public List<Map<String, String>> searchLocation(String query, int start, int limit) throws XMLRPCException {
 
 	List<Map<String, String>> list = null;
-	list = (List<Map<String, String>>) client.call("massinfov2.searchLocation", query, start, limit);
+	list = (List<Map<String, String>>) client.call("massinfov21.searchLocation", query, start, limit);
 	return list;
     }
 
@@ -40,7 +40,7 @@ public class Server {
     public List<Map<String, Object>> searchSchedule(String query) throws XMLRPCException {
 
 	List<Map<String, Object>> list = null;
-	list = (List<Map<String, Object>>) client.call("massinfov2.searchSchedule", query, 0, 50);
+	list = (List<Map<String, Object>>) client.call("massinfov21.searchSchedule", query, 0, 50);
 	return list;
     }
 
@@ -56,7 +56,7 @@ public class Server {
     public List<Map<String, String>> getNearLocation(Double top_lat, Double top_lon, Double bottom_lat, Double bottom_lon) throws XMLRPCException {
 
 	List<Map<String, String>> list = null;
-	list = (List<Map<String, String>>) client.call("massinfov2.getNearLocation", top_lat, top_lon, bottom_lat, bottom_lon);
+	list = (List<Map<String, String>>) client.call("massinfov21.getNearLocation", top_lat, top_lon, bottom_lat, bottom_lon);
 	return list;
     }
 
@@ -69,7 +69,7 @@ public class Server {
     public List<Map<String, Object>> getLocationSchedule(String id, int start, int limit) throws XMLRPCException {
 
 	List<Map<String, Object>> list = null;
-	list = (List<Map<String, Object>>) client.call("massinfov2.getLocationSchedule", id, start, limit);
+	list = (List<Map<String, Object>>) client.call("massinfov21.getLocationSchedule", id, start, limit);
 	return list;
     }
 
@@ -81,7 +81,7 @@ public class Server {
      */
     public Map<String, String> getLocationInfo(String id) throws XMLRPCException {
 	Map<String, String> item = null;
-	item = (Map<String, String>) client.call("massinfov2.getLocationInfo", id);
+	item = (Map<String, String>) client.call("massinfov21.getLocationInfo", id);
 	return item;
     }
 

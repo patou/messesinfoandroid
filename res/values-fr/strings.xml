@@ -55,27 +55,57 @@
 	<string name="search_mass_loading_title">Recherche en cours ...</string>
 	<string name="search_mass_loading">La recherche et l\'affichage peut prendre du temps
 		en fonction de votre connexion. Merci de patienter...</string>
-	<string name="list_search_church_help">Cherchez votre lieu de culte par commune et/ou code
-		postal (ou le numéro de département), ou le nom d\'une église suivit de "à" (ou une virgule) et du nom de la commune.
-		\nPour les villes de Paris, Lyon et Marseille, il est possible
-		de chercher par arrondissement en faisant suivre le nom de la ville
-		par le numéro de l\'arrondissement (ou en chiffre romain).\n\nExemples :\n- paris 19\n- st
-		malo\n- 94800\n- st ignace, Paris</string>
-	<string name="list_search_mass_help">Cherchez votre messe par commune et/ou code
-		postal (ou le numéro de département), ou le nom d\'une église suivit de "à" (ou une virgule) et du nom de la commune.
-		\nRechercher la messe par heure et jours, en entrant une heure (ie : 11h) et une date (7-11-2010) ou le jour dimanche (dim) ou samedi (sam).\nPour les villes de Paris, Lyon et Marseille, il est possible
-		de chercher par arrondissement en faisant suivre le nom de la ville
-		par le numéro de l\'arrondissement (ou en chiffre romain).\n\nExemples :\n- paris 19 11h\n- st
-		malo dim\n- 94800\n- nd à Marseille 7-11-2010</string>
+	<string name="list_search_church_help">Exemples de recherches:\n
+\n- 94800
+\n- st malo
+\n- 76 st etienne
+\n- villejuif dim
+\n- paris 19 11h
+\n- "Saint Charles" à Marseille
+\n- paroisse nd de paris
+\n\n
+Cherchez une église par commune et/ou code postal, ou le nom d\'une église suivi de \"à\" (ou d\'une virgule) et du nom de la commune.\n
+Pour une recherche par paroisse, indiquez \"paroisse\" suivit du nom de la paroisse.\n 
+\n
+Pour les villes de Paris, Lyon et Marseille, il est possible de chercher par arrondissement en faisant suivre 
+le nom de la ville du numéro de l\'arrondissement (écrit en chiffres romains ou arabe)\n
+La recherche est insensible à la casse, les accents sont ignorés et 
+les raccourcis généraux sont remplacés (st, ste, nd, etc.).\n
+Pour une recherche exacte,
+ entourez votre recherche par des doubles apostrophes (\")\n</string>
+	<string name="list_search_mass_help">Exemples de recherches:\n
+\n- 94800
+\n- st malo
+\n- 76 st etienne
+\n- villejuif dim
+\n- paris 19 11h
+\n- "Saint Charles" à Marseille
+\n- paroisse nd de paris
+\n\n
+Cherchez un horaire de messe par commune et/ou code postal, ou le nom d\'une église suivi de \"à\" (ou d\'une virgule) et du nom de la commune. Rechercher la messe par heure et jour, en entrant une heure (11h) et 
+une date (7-11-2010) ou le jour dimanche (dim) ou samedi (sam). 
+Pour les jours de fête, entrez son nom (Noël, Jeudi Saint, Vendredi Saint, 
+Veillée Pascale, Pâques, Ascension, Pentecôte, Assomption, Toussaint)\n
+Pour une recherche par paroisse, indiquez \"paroisse\" suivit du nom de la paroisse.\n
+\n
+Pour les villes de Paris, Lyon et Marseille, il est possible de chercher par arrondissement en faisant suivre 
+le nom de la ville du numéro de l\'arrondissement (écrit en chiffres romains ou arabe)\n
+La recherche est insensible à la casse, les accents sont ignorés et 
+les raccourcis généraux sont remplacés (st, ste, nd, etc.).\n
+Pour une recherche exacte,
+ entourez votre recherche par des doubles apostrophes (\")\n</string>
 	<string name="list_search_loading">Recherche en cours ...</string>
 	<string name="loading">Chargement ...</string>
 	<string name="church_tab_information">Information</string>
 	<string name="church_tab_schedule">Horaires</string>
 	<string name="church_see_map">Voir sur le plan</string>
 	<string name="church_send_mail">Envoyer un mail</string>
+	<string name="church_groupe_email_send_mail">Envoyer un mail au diocèse de %s</string>
+	<string name="church_groupe_internet_view_site">Voir le site du diocèse de %s</string>
 	<string name="church_view_site">Voir le site</string>
 	<string name="church_call_tel">Appeler</string>
 	<string name="church_send_fax">Fax</string>
+	<string name="church_groupe_name">Diocèse de %s</string>
 	<string name="schedules_empty">Pas d\'horaires disponible</string>
 	<string name="error_server">Le serveur de MessesInfo n\'est actuellement pas
 		disponible</string>
@@ -85,7 +115,7 @@
 	<string name="error_search_schedule">Une erreur empêche d\'afficher les horaires de messes</string>
 	<string name="contact_messesinfo">Contactez MessesInfo</string>
 	<string name="messesinfo_email_subject">Contact depuis l\'application Android</string>
-	<string name="messesinfo_share">voir les horaires des messes autour market//details?id=cef.messeinfo</string>
+	<string name="messesinfo_share">voir les horaires des messes autour market//details?id=cef.messesinfo</string>
 	<string name="messesinfo_share_subject">Messesinfo sur Android</string>
-	<string name="localisation_in_progress">géolocalisation en cours...</string>
+	<string name="localisation_in_progress">Géolocalisation en cours...</string>
 </resources>

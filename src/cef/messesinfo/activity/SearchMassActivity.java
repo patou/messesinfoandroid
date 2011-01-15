@@ -91,11 +91,16 @@ public class SearchMassActivity extends ExpandableListActivity {
 	    public void onClick(View v) {
 		empty.setText(getString(R.string.localisation_in_progress));
 		myLocation.getLocation(SearchMassActivity.this, new MyLocation.LocationResult() {
-		    
+
 		    @Override
-		    public void gotLocation(Location location) {
-			String search = searchText.getText().toString() + "> " + location.getLatitude() + ":" + location.getLongitude(); 
-			search(search);
+		    public void gotLocation(final Location location) {
+			runOnUiThread(new Runnable() {
+			    @Override
+			    public void run() {
+				String search = searchText.getText().toString() + " > " + location.getLatitude() + ":" + location.getLongitude();
+				search(search);
+			    }
+			});
 		    }
 		});
 	    }
@@ -261,7 +266,7 @@ public class SearchMassActivity extends ExpandableListActivity {
 	private ViewGroupHolder viewGroupHolder;
 	private ViewChildHolder viewChildHolder;
 	private Boolean dateDisplayType = true;
-	
+
 	public ScheduleExpandableListAdapter(Context context) {
 	    mInflater = LayoutInflater.from(context);
 	}
@@ -311,8 +316,7 @@ public class SearchMassActivity extends ExpandableListActivity {
 	    viewChildHolder.color.setBackgroundColor(getLiturgicalColor(color));
 	    if (dateDisplayType) {
 		viewChildHolder.title.setText((String) block.get(Schedule.TIME));
-	    }
-	    else {
+	    } else {
 		viewChildHolder.title.setText((String) block.get(Schedule.FDATE) + " - " + block.get(Schedule.TIME));
 	    }
 	    viewChildHolder.name.setText((String) block.get(Church.NAME));
@@ -401,8 +405,7 @@ public class SearchMassActivity extends ExpandableListActivity {
 	    if (list != null) {
 		if (list.size() > 0 && !list.get(0).containsKey(Schedule.DATE)) {
 		    dateDisplayType = false;
-		}
-		else {
+		} else {
 		    dateDisplayType = true;
 		}
 	    }

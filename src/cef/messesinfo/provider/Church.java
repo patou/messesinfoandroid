@@ -24,4 +24,7 @@ public class Church implements BaseColumns {
     public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.messesinfo.church_favorite";
     public static final String CONTENT_URI_NAME = "church_favorite";
     public static final Uri CONTENT_URI = Uri.parse("content://" + MessesInfo.AUTHORITY + "/" + CONTENT_URI_NAME);
+    public static final String GROUPE_EMAIL = "groupe_email";
+    public static final String GROUPE_NAME = "groupe_name";
+    public static final String GROUPE_URL = "groupe_url";
 }

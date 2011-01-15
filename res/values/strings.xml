@@ -62,9 +62,12 @@
 	<string name="church_tab_schedule">Schedules</string>
 	<string name="church_see_map">See in a maps</string>
 	<string name="church_send_mail">Send an email</string>
+	<string name="church_groupe_email_send_mail">Send an email to the diocese %s</string>
+	<string name="church_groupe_internet_view_site">Go to the website of the diocese %s</string>
 	<string name="church_view_site">Go to the website</string>
 	<string name="church_call_tel">Call</string>
 	<string name="church_send_fax">Send a Fax</string>
+	<string name="church_groupe_name">Diocese of %s</string>
 	<string name="schedules_empty">No schedules available</string>
 	<string name="zoom_in_for_display">Zoom in to see church</string>
 	<string name="error_server">The server MessesInfo didn\'t response</string>

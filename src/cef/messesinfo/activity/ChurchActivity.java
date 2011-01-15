@@ -210,6 +210,35 @@ public class ChurchActivity extends TabActivity {
 					entry.actionIcon = R.drawable.sym_note;
 					entries.add(entry);
 				    }
+				    String groupe_name = item.get(Church.GROUPE_NAME);
+				    if (!TextUtils.isEmpty(groupe_name)) {
+					entry = new ViewEntry();
+					entry.label = getString(R.string.church_groupe_name, groupe_name);
+					entry.data = "";
+					entry.actionIcon = R.drawable.sym_action_organization;
+					entries.add(entry);
+				    }
+				    String groupe_email = item.get(Church.GROUPE_EMAIL);
+				    if (!TextUtils.isEmpty(groupe_email)) {
+					entry = new ViewEntry();
+					entry.label = groupe_email;
+					entry.data = getString(R.string.church_groupe_email_send_mail, groupe_name);
+					entry.actionIcon = android.R.drawable.sym_action_email;
+					entry.intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", groupe_email, null));
+					entries.add(entry);
+				    }
+				    String groupe_internet = item.get(Church.GROUPE_URL);
+				    if (!TextUtils.isEmpty(groupe_internet)) {
+					entry = new ViewEntry();
+					entry.label = groupe_internet;
+					entry.data = getString(R.string.church_groupe_internet_view_site, groupe_name);
+					entry.actionIcon = R.drawable.sym_action_organization;
+					String url = groupe_internet;
+					if (!groupe_internet.startsWith("http://"))
+					    url = "http://" + groupe_internet;
+					entry.intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+					entries.add(entry);
+				    }
 				    list.setAdapter(new ViewAdapter(getApplicationContext(), entries));
 				}
 			    });
