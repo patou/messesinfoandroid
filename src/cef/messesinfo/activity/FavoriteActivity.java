@@ -14,6 +14,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import cef.messesinfo.MessesInfo;
 import cef.messesinfo.R;
 import cef.messesinfo.provider.Church;
 
@@ -71,6 +72,12 @@ public class FavoriteActivity extends ListActivity {
 	    menu.add(Menu.NONE, MENU_CENTER, Menu.NONE, R.string.menu_context_center);
 	    menu.add(Menu.NONE, MENU_REMOVE_FAVORY, Menu.NONE, R.string.menu_remove_favory);
 	}
+    }
+    
+    public void goHome(View v) {
+	final Intent intent = new Intent(this, MessesInfo.class);
+	intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	startActivity(intent);
     }
 
     @Override

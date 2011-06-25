@@ -301,7 +301,7 @@ public class XMLRPCClient {
 			// prepare POST body
 			StringWriter bodyWriter = new StringWriter();
 			serializer.setOutput(bodyWriter);
-			serializer.startDocument(null, null);
+			//serializer.startDocument(null, null);
 			serializer.startTag(null, TAG_METHOD_CALL);
 			// set method nom
 			serializer.startTag(null, TAG_METHOD_NAME).text(method).endTag(null, TAG_METHOD_NAME);

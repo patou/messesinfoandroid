@@ -30,5 +30,11 @@
 			android:padding="0px"
 			android:layout_margin="0px"
  />
+		 <TextView android:id="@+id/next_mass" android:layout_width="fill_parent"
+					android:layout_height="wrap_content" android:layout_marginLeft="5dip"
+					android:singleLine="true" android:ellipsize="marquee"
+					android:padding="0px"
+					android:layout_margin="0px"
+		 />
 	</LinearLayout>
 </LinearLayout>

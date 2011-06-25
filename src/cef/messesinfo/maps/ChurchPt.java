@@ -1,7 +1,11 @@
 package cef.messesinfo.maps;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
+import cef.messesinfo.R;
 import cef.messesinfo.provider.Church;
 
 import com.google.android.maps.GeoPoint;
@@ -31,7 +35,17 @@ public class ChurchPt extends ManagedOverlayItem {
      * @return
      */
     private static String buildSnippet(Map<String, String> data) {
-	return data.get(Church.ADDRESS) + " " + data.get(Church.CITY);
+	String snippet = data.get(Church.COMMUNITY) + "\n" + data.get(Church.ZIPCODE) + " " + data.get(Church.CITY);
+	String next_mass = data.get(Church.NEXT_MASS);
+	if (next_mass != null) {
+	    try {
+		Date date_next_mass = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(next_mass.substring(0, 16));
+		snippet += "\nProchaine messe : " + new SimpleDateFormat("EEE d 'à' HH'h'mm").format(date_next_mass);//TODO Translate this string
+	    } catch (ParseException e) {
+		e.printStackTrace();
+	    }
+	}
+	return snippet;
     }
 
     /**

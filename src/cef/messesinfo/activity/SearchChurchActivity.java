@@ -8,120 +8,196 @@ import org.xmlrpc.android.XMLRPCException;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.ContextMenu;
-import android.view.KeyEvent;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
+import android.widget.Toast;
+import android.widget.AbsListView.OnScrollListener;
 import cef.messesinfo.MessesInfo;
 import cef.messesinfo.R;
 import cef.messesinfo.client.Server;
 import cef.messesinfo.maps.MyLocation;
 import cef.messesinfo.provider.Church;
 
-public class SearchChurchActivity extends ListActivity {
+public class SearchChurchActivity extends ListActivity implements OnScrollListener {
     private static final int MENU_DETAIL = 0;
     private static final int MENU_SCHEDULE = 1;
     private static final int MENU_CENTER = 2;
     private static final int MENU_NEAR = 3;
+    private static final int MENU_SCHEDULE_NEAR = 4;
     List<Map<String, String>> list = null;
     MyLocation myLocation = new MyLocation();
     private ChurchAdapter mAdapter;
     private EditText searchText;
     private TextView empty;
+    private String search;
+    private boolean isLoading = false;
+    private boolean isSearchEnd = false;
+    private int start = 0;
+    private TextView loadMoreView;
 
     /**
      * Start the Activity
      * 
      * @param context
      */
-    public static void activityStart(Context context) {
-	context.startActivity(new Intent(context, SearchChurchActivity.class));
+    public static void activityStart(Context context, String search) {
+	Intent intent = new Intent(context, SearchChurchActivity.class);
+	intent.putExtra("search", search);
+	context.startActivity(intent);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.list);
+	empty = (TextView) findViewById(android.R.id.empty);
+	loadMoreView = new TextView(this);
+	loadMoreView.setText("Suite ...");
+	loadMoreView.setWidth(LayoutParams.FILL_PARENT);
+	loadMoreView.setHeight(50);
+	loadMoreView.setTextAppearance(this, android.R.attr.textAppearanceMedium);
+	loadMoreView.setGravity(Gravity.CENTER);
+	loadMoreView.setOnClickListener(new OnClickListener() {
+	    
+	    @Override
+	    public void onClick(View v) {
+		loadMore();
+	    }
+	});
+	getListView().addFooterView(loadMoreView);
 	mAdapter = new ChurchAdapter(this);
-
 	setListAdapter(mAdapter);
 
-	ImageButton button = (ImageButton) findViewById(R.id.searchButton);
-	ImageButton nearButton = (ImageButton) findViewById(R.id.nearButton);
-	empty = (TextView) findViewById(android.R.id.empty);
-	empty.setMovementMethod(ScrollingMovementMethod.getInstance());
-	empty.setText(getString(R.string.list_search_church_help));
-	searchText = (EditText) findViewById(R.id.searchField);
-	searchText.setImeOptions(DEFAULT_KEYS_SEARCH_LOCAL);
-	button.setOnClickListener(new OnClickListener() {
-	    @Override
-	    public void onClick(View v) {
-		search(searchText.getText().toString());
-	    }
-	});
-	nearButton.setOnClickListener(new OnClickListener() {
-	    @Override
-	    public void onClick(View v) {
-		empty.setText(getString(R.string.localisation_in_progress));
-		myLocation.getLocation(SearchChurchActivity.this, new MyLocation.LocationResult() {
-		    
-		    @Override
-		    public void gotLocation(Location location) {
-			String search = searchText.getText().toString() + "> " + location.getLatitude() + ":" + location.getLongitude(); 
-			search(search);
-		    }
-		});
-	    }
-	});
-	searchText.setOnEditorActionListener(new OnEditorActionListener() {
-	    @Override
-	    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-		search(searchText.getText().toString());
-		return true;
-	    }
-	});
 	registerForContextMenu(getListView());
+	getListView().setOnScrollListener(this);
+	final RetainNonConfigurationValue data = (RetainNonConfigurationValue) getLastNonConfigurationInstance();
+	if (data != null) {
+	    mAdapter.setList(data.list);
+	    search = data.search;
+	    searchText.setText(data.search);
+	} else {
+	    mAdapter.setList(null);
+	}
+	search = getIntent().getStringExtra("search");
+	if (search != null)
+	    search(search);
+    }
+
+    public void goHome(View v) {
+	final Intent intent = new Intent(this, MessesInfo.class);
+	intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	startActivity(intent);
+    }
+    
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+	RetainNonConfigurationValue value = new RetainNonConfigurationValue();
+	value.list = mAdapter.getList();
+	value.search = search;
+	return value;
+    }
+    
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+	boolean loadMore = /* maybe add a padding */
+	firstVisibleItem + visibleItemCount >= totalItemCount - 1;
+	Log.d("MESSESINFO onScroll:", "f=" + firstVisibleItem + ", vc=" + visibleItemCount + ", tc=" + totalItemCount);
+	if (loadMore) {
+	    Log.d("MESSESINFO onScroll:", "loadMore");
+	    loadMore();
+	}
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+
     }
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
-	Map<String, String> item = list.get(position);
-	String code = item.get(Church.ID);
-	ChurchActivity.activityStart(this, code);
+	if (position < mAdapter.getCount()) {
+        	Map<String, String> item = (Map<String, String>) mAdapter.getItem(position);
+        	String code = item.get(Church.ID);
+        	ChurchActivity.activityStart(this, code);
+	}
     }
 
     private void search(final String search) {
-	empty.setText(getString(R.string.list_search_loading));
-	mAdapter.setList(null);
-	new Thread(new Runnable() {
+	search(search, false);
+    }
 
+    
+    public void onRefreshClick(View v) {
+	search(search);
+    }
+    
+    private void setLoading(boolean loading) {
+	isLoading = loading;
+	findViewById(R.id.title_refresh_progress).setVisibility(loading ? View.VISIBLE : View.GONE);
+	findViewById(R.id.btn_title_refresh).setVisibility(loading ? View.GONE : View.VISIBLE);
+    }
+    
+    private void loadMore() {
+	if (search != null && !isLoading && !isSearchEnd) {
+	    Toast.makeText(this, R.string.loading, Toast.LENGTH_SHORT).show();
+	    search(this.search, true);
+	}
+    }
+
+    private void search(final String search, final boolean loadMore) {
+	this.search = search;
+	setLoading(true);
+	empty.setText(getString(R.string.list_search_loading));
+	if (!loadMore) {
+	    mAdapter.setList(null);
+	    isSearchEnd = false;
+	}
+	loadMoreView.setText("Chargement ...");
+	new Thread(new Runnable() {
 	    @Override
 	    public void run() {
 		MessesInfo.getTracker(SearchChurchActivity.this).trackEvent("Application", "SearchChurch", search, 1);
 		try {
-		    list = new Server(getString(R.string.server_url)).searchLocation(search, 0, 25);
+		    int pageSize = 10;
+		    if (!loadMore) {
+			start = 0;
+		    }
+		    list = new Server(getString(R.string.server_url)).searchLocation(search, start, pageSize);
+		    if (list != null) {
+			start += list.size();
+			isSearchEnd = list.size() < pageSize;
+		    }
 		    runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-			    if (list != null && list.size() > 0) {
-				mAdapter.setList(list);
+			    if (list != null && list.size() > 1) {
+
+				if (loadMore) {
+				    mAdapter.appendList(list);
+				    loadMoreView.setText(list.size() == 0 ? "" : "Suite ...");
+				} else {
+				    mAdapter.setList(list);
+				}
 			    } else {
 				empty.setText(getString(R.string.list_empty));
 			    }
+			    setLoading(false);
 			}
+
+			
 		    });
 		} catch (XMLRPCException e) {
 		    e.printStackTrace();
@@ -129,24 +205,41 @@ public class SearchChurchActivity extends ListActivity {
 			@Override
 			public void run() {
 			    empty.setText(R.string.error_church_book);
+			    setLoading(false);
 			}
 		    });
 		}
 
 	    }
 	}).start();
+	
     }
+ 
+
+  
+    
+//    private void showSelectionDepartementDialog() {
+//	    new AlertDialog.Builder( this )
+//	       .setTitle( "Départements" )
+//	       .setItems(, , new DialogSelectionClickHandler() )
+//	       .setPositiveButton( "OK", new DialogButtonClickHandler() )
+//	       .create();
+//    }
+    
+
+
     
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 	if (v.getId() == android.R.id.list) {
 	    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-	    Map<String, String> item = list.get(info.position);
+	    Map<String, String> item = (Map<String, String>) mAdapter.getItem(info.position);
 	    menu.setHeaderTitle(item.get(Church.NAME));
 	    menu.add(Menu.NONE, MENU_DETAIL, Menu.NONE, R.string.menu_context_detail);
 	    menu.add(Menu.NONE, MENU_SCHEDULE, Menu.NONE, R.string.menu_context_schedules);
 	    menu.add(Menu.NONE, MENU_CENTER, Menu.NONE, R.string.menu_context_center);
 	    menu.add(Menu.NONE, MENU_NEAR, Menu.NONE, R.string.menu_context_near);
+	    menu.add(Menu.NONE, MENU_SCHEDULE_NEAR, Menu.NONE, R.string.menu_context_schedule_near);
 	}
     }
 
@@ -154,7 +247,7 @@ public class SearchChurchActivity extends ListActivity {
     public boolean onContextItemSelected(MenuItem menuItem) {
 	AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuItem.getMenuInfo();
 	int menuItemIndex = menuItem.getItemId();
-	Map<String, String> item = list.get(info.position);
+	Map<String, String> item = (Map<String, String>) mAdapter.getItem(info.position);
 	String code = item.get(Church.ID);
 	switch (menuItemIndex) {
 	case MENU_DETAIL:
@@ -170,10 +263,17 @@ public class SearchChurchActivity extends ListActivity {
 	    searchText.setText("> " + item.get(Church.ZIPCODE));
 	    search("> " + item.get(Church.LAT) + ":" + item.get(Church.LNG));
 	    break;
+	case MENU_SCHEDULE_NEAR:
+	    SearchScheduleActivity.activityStart(this, item.get(Church.LAT) + ":" + item.get(Church.LNG));
 	default:
 	    break;
 	}
 
 	return true;
+    }
+    
+    class RetainNonConfigurationValue {
+	String search;
+	List<Map<String, String>> list;
     }
 }

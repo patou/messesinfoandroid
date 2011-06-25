@@ -6,7 +6,7 @@
 	<string name="menu_favorite">Favorites churches</string>
 	<string name="menu_church_book">Book of churches</string>
 	<string name="menu_quit">Quit</string>
-	<string name="menu_lectio">Lectio divina</string>
+	<string name="menu_lectio">Others Applications</string>
 	<string name="main_menu_about">About</string>
 	<string name="main_menu_website">Website</string>
 	<string name="main_menu_contact">Contact us</string>
@@ -18,10 +18,13 @@
 	<string name="menu_context_schedules">Mass schedules</string>
 	<string name="menu_context_center">Center on maps</string>
 	<string name="menu_context_near">Search near this church</string>
+	<string name="menu_context_schedule_near">Search mass near this church</string>
 	<string name="menu_maps">View on maps</string>
 	<string name="menu_context_event">Add to calendar</string>
 	<string name="menu_context_event_share">Share this mass</string>
 	<string name="menu_remove_favory">Remove from favory</string>
+	<string name="description_home">Home</string>
+	<string name="description_share">Share</string>
 	<string name="about_title">Mass Info</string>
 	<string name="about_sub_title">Developed by: Patrice de Saint Steban</string>
 	<string name="about_copyright">A service given by the french\'s bishop conference
@@ -50,6 +53,10 @@
 	<string name="search_mass_submit_title">Search</string>
 	<string name="search_mass_reset_title">Reset</string>
 	<string name="search_mass_loading_title">Search in progress ...</string>
+	<string name="search_mass_choose_department">Choose the department</string>
+	<string name="search_mass_extension_search">There are no schedule for the given search, Choose the location to launch an extension search</string>
+	<string name="search_near_launch">Search around your position</string>
+	<string name="search_launch">Launch the search</string>
 	<string name="search_mass_loading">The search and the display can may take time.
 		Please wait...</string>
 	<string name="list_search_church_help">Search your church by the name, the city, the
@@ -81,4 +88,6 @@
 	<string name="messesinfo_share_subject">Messesinfo for Android</string>
 	<string name="share_with">Share with</string>
 	<string name="localisation_in_progress">geolocalisation in progress...</string>
+	<string name="church_next_mass">Next mass : </string>
+	<string name="need_help">Need help ?</string>
 </resources>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="cef.messesinfo" android:versionName="2.0.1" android:versionCode="15" android:installLocation="preferExternal" >
+	package="cef.messesinfo" android:versionName="3.0.0" android:versionCode="16" android:installLocation="preferExternal" >
 	<uses-sdk android:minSdkVersion="3"></uses-sdk>
 	<supports-screens android:smallScreens="true" android:normalScreens="true" android:largeScreens="true" android:anyDensity="true"></supports-screens>
-	<application android:icon="@drawable/icon" android:label="@string/app_name"
+	<application android:icon="@drawable/icon_messesinfo" android:label="@string/app_name"
 		android:theme="@style/MesseInfoTheme" android:debuggable="false">
 		<uses-library android:name="com.google.android.maps"></uses-library>
 		<activity android:name=".MessesInfo" android:label="@string/app_name">
@@ -14,12 +14,14 @@
 		</activity>
 		<activity android:name=".activity.NearMapActivity"></activity>
 		<activity android:name=".activity.NearListActivity"></activity>
-		<activity android:name=".activity.SearchMassActivity"></activity>
+		<activity android:name=".activity.SearchScheduleActivity"></activity>
+		<activity android:name=".activity.SearchActivity"></activity>
 		<activity android:name=".activity.FavoriteActivity"></activity>
 		<activity android:name=".activity.SearchChurchActivity"></activity>
 		<activity android:name=".activity.AboutActivity"></activity>
 		<activity android:name=".activity.ChurchActivity"></activity>
 		<activity android:name=".activity.ScheduleActivity"></activity>
+		<activity android:name="com.sfeir.android.friendapps.FriendListActivity"></activity>
 		<provider android:authorities="cef.messesinfo"
 			android:name=".provider.ChurchContentProvider"></provider>
 	</application>
@@ -28,4 +30,5 @@
 	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"></uses-permission>
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
 </manifest> 

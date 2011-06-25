@@ -16,11 +16,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.GestureDetector.OnGestureListener;
-import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
+import cef.messesinfo.MessesInfo;
 import cef.messesinfo.R;
 import cef.messesinfo.client.Server;
 import cef.messesinfo.maps.ChurchItemizedOverlay;
@@ -38,6 +37,7 @@ import de.android1.overlaymanager.ManagedOverlayItem;
 import de.android1.overlaymanager.OverlayManager;
 import de.android1.overlaymanager.lazyload.LazyLoadCallback;
 import de.android1.overlaymanager.lazyload.LazyLoadException;
+import de.android1.overlaymanager.lazyload.LazyLoadListener;
 
 public class NearMapActivity extends MapActivity {
     private static final int INITIAL_ZOOM = 15;
@@ -56,7 +56,6 @@ public class NearMapActivity extends MapActivity {
     private Server server;
     private LinearLayout panel;
     private Boolean load = true;
-    private cef.messesinfo.activity.NearMapActivity.ViewHolder holder;
     protected Map<String, String> selectedItem;
 
     /**
@@ -82,25 +81,10 @@ public class NearMapActivity extends MapActivity {
 	super.onCreate(savedInstanceState);
 
 	setContentView(R.layout.near_map);
-	setProgressBarIndeterminateVisibility(true);
 	initMap();
 	server = new Server(getString(R.string.server_url));
-	panel = (LinearLayout) findViewById(R.id.church_map_info);
-	panel.setVisibility(View.INVISIBLE);
-	panel.setClickable(true);
-	panel.setOnClickListener(new OnClickListener() {
-	    @Override
-	    public void onClick(View v) {
-		if (selectedItem != null) {
-		    ChurchActivity.activityStart(NearMapActivity.this, selectedItem.get(Church.ID));
-		}
-	    }
-	});
-	holder = new ViewHolder();
-	holder.nom = (TextView) findViewById(R.id.nom);
-	holder.commune = (TextView) findViewById(R.id.commune);
-	holder.paroisse = (TextView) findViewById(R.id.paroisse);
-	registerForContextMenu(panel);
+	
+	//registerForContextMenu(panel);
     }
     
     @Override
@@ -113,12 +97,7 @@ public class NearMapActivity extends MapActivity {
 	    if (getIntent().hasExtra(Church.LAT)) {
 		centerMap(ChurchPt.createGeoPt(getIntent().getStringExtra(Church.LAT), getIntent().getStringExtra(Church.LNG)));
 	    } else {
-		myLocationOverlay.enableMyLocation();
-		myLocationOverlay.runOnFirstFix(new Runnable() {
-		    public void run() {
-			centerMap(myLocationOverlay.getMyLocation());
-		    }
-		});
+		myPosition();
 	    }
 	    load = false;
 	}
@@ -132,16 +111,26 @@ public class NearMapActivity extends MapActivity {
 	myLocationOverlay.disableMyLocation();
     }
 
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-	if (selectedItem != null) {
-	    menu.setHeaderTitle(selectedItem.get(Church.NAME));
-	    menu.add(Menu.NONE, MENU_DETAIL, Menu.NONE, R.string.menu_context_detail);
-	    menu.add(Menu.NONE, MENU_SCHEDULE, Menu.NONE, R.string.menu_context_schedules);
-	    menu.add(Menu.NONE, MENU_CENTER, Menu.NONE, R.string.menu_context_center);
-	}
+    public void goHome(View v) {
+	final Intent intent = new Intent(this, MessesInfo.class);
+	intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	startActivity(intent);
     }
-
+    
+    public void onMapClick(View v) {
+	myPosition();
+    }
+    
+    public void onRefreshClick(View v) {
+	mOverlay.invokeLazyLoad(0L);
+    }
+    
+    private void setLoading(boolean loading) {
+	load = loading;
+	findViewById(R.id.title_refresh_progress).setVisibility(loading ? View.VISIBLE : View.GONE);
+	findViewById(R.id.btn_title_refresh).setVisibility(loading ? View.GONE : View.VISIBLE);
+    }
+    
     @Override
     public boolean onContextItemSelected(MenuItem menuItem) {
 	int menuItemIndex = menuItem.getItemId();
@@ -173,22 +162,27 @@ public class NearMapActivity extends MapActivity {
     }
 
     protected void createOverlayManager() {
-        ImageView loaderanim = (ImageView) findViewById(R.id.loader);
+        //ImageView loaderanim = (ImageView) findViewById(R.id.loader);
         mOverlay = new ChurchItemizedOverlay(overlayManager, "lazyOverlay", getResources().getDrawable(R.drawable.cross)) {
-            @Override
-            protected boolean onTap(int index) {
-        	ChurchPt pt = (ChurchPt) getItem(index);
-        	Map<String, String> item = pt.getData();
-        	selectedItem = item;
-        	panel.setVisibility(View.VISIBLE);
-        	String cp = item.get(Church.ZIPCODE);
-        	holder.nom.setText(item.get(Church.NAME));
-        	holder.commune.setText(cp + " " + item.get(Church.CITY));
-        	holder.paroisse.setText(item.get(Church.COMMUNITY));
+            
+            protected boolean onBalloonTap(int index, ManagedOverlayItem item) {
+        	selectedItem = ((ChurchPt) item).getData();
+        	ChurchActivity.activityStart(NearMapActivity.this, selectedItem.get(Church.ID));
         	return true;
             }
+
+	    @Override
+	    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		if (this.getCurrentFocussedItem() != null) {
+		    selectedItem = ((ChurchPt) getCurrentFocussedItem()).getData();
+		    menu.setHeaderTitle(selectedItem.get(Church.NAME));
+		    menu.add(Menu.NONE, MENU_DETAIL, Menu.NONE, R.string.menu_context_detail);
+		    menu.add(Menu.NONE, MENU_SCHEDULE, Menu.NONE, R.string.menu_context_schedules);
+		    menu.add(Menu.NONE, MENU_CENTER, Menu.NONE, R.string.menu_context_center);
+		}
+	    };
         };
-        mOverlay.enableLazyLoadAnimation(loaderanim).setAnimationDrawable((AnimationDrawable) getResources().getDrawable(R.anim.loader));
+        //mOverlay.enableLazyLoadAnimation(loaderanim).//setAnimationDrawable((AnimationDrawable) getResources().getDrawable(R.anim.loader));
         mOverlay.setLazyLoadCallback(new LazyLoadCallback() {
             @Override
             public List<ManagedOverlayItem> lazyload(GeoPoint topLeft, GeoPoint bottomRight, ManagedOverlay overlay) throws LazyLoadException {
@@ -220,37 +214,21 @@ public class NearMapActivity extends MapActivity {
         	return items;
             }
         });
-    
-        mOverlay.setOnGestureListener(new OnGestureListener() {
-    
+        mOverlay.setLazyLoadListener(new LazyLoadListener() {
+            
             @Override
-            public boolean onSingleTapUp(MotionEvent e) {
-        	panel.setVisibility(View.INVISIBLE);
-        	selectedItem = null;
-        	return false;
+            public void onSuccess(ManagedOverlay overlay) {
+        	setLoading(false);
             }
-    
+            
             @Override
-            public void onShowPress(MotionEvent e) {
+            public void onError(LazyLoadException exception, ManagedOverlay overlay) {
+        	setLoading(false);
             }
-    
+            
             @Override
-            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        	return false;
-            }
-    
-            @Override
-            public void onLongPress(MotionEvent e) {
-            }
-    
-            @Override
-            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        	return false;
-            }
-    
-            @Override
-            public boolean onDown(MotionEvent e) {
-        	return false;
+            public void onBegin(ManagedOverlay overlay) {
+        	setLoading(true);
             }
         });
     }
@@ -302,13 +280,7 @@ public class NearMapActivity extends MapActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 	switch (item.getItemId()) {
 	case MENU_MY_POSITION:
-	    myLocationOverlay.enableMyLocation();
-	    myLocationOverlay.runOnFirstFix(new Runnable() {
-		@Override
-		public void run() {
-		    centerMap(myLocationOverlay.getMyLocation());
-		}
-	    });
+	    myPosition();
 	    return true;
 	case MENU_LIST:
 	    NearListActivity.activityStart(this, listChurch);
@@ -319,9 +291,13 @@ public class NearMapActivity extends MapActivity {
 	return false;
     }
 
-    private static class ViewHolder {
-	TextView nom;
-	TextView paroisse;
-	TextView commune;
+    private void myPosition() {
+	myLocationOverlay.enableMyLocation();
+	myLocationOverlay.runOnFirstFix(new Runnable() {
+	@Override
+	public void run() {
+	    centerMap(myLocationOverlay.getMyLocation());
+	}
+	});
     }
 }

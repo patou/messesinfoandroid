@@ -6,7 +6,7 @@
 	<string name="menu_favorite">Mes églises favorites</string>
 	<string name="menu_church_book">Annuaire des églises</string>
 	<string name="menu_quit">Quitter</string>
-	<string name="menu_lectio">Lectio divina</string>
+	<string name="menu_lectio">Autres applications</string>
 	<string name="main_menu_about">A propos</string>
 	<string name="main_menu_website">Site web</string>
 	<string name="main_menu_share">Partager</string>
@@ -21,7 +21,10 @@
 	<string name="menu_context_detail">Détails de l\'église</string>
 	<string name="menu_context_center">Centrer sur la carte</string>
 	<string name="menu_context_near">Rechercher autour</string>
+	<string name="menu_context_schedule_near">Messes autour</string>
 	<string name="menu_context_schedules">Horaires des messes</string>
+	<string name="description_home">Accueil</string>
+	<string name="description_share">Partager</string>
 	<string name="about_title">Messes Info</string>
 	<string name="about_sub_title">Développé par : Patrice de Saint Steban</string>
 	<string name="about_copyright">Un service offert par la Conférence des évêques de
@@ -53,6 +56,10 @@
 	<string name="search_mass_submit_title">Rechercher</string>
 	<string name="search_mass_reset_title">Réinitialiser</string>
 	<string name="search_mass_loading_title">Recherche en cours ...</string>
+	<string name="search_mass_choose_department">Choisisez un départements</string>
+	<string name="search_mass_extension_search">Il n\'y a pas d\'horaires disponible, selectionner le lieu ci-dessous pour étendre la recherche autour</string>
+	<string name="search_near_launch">Rechercher autour de votre position</string>
+	<string name="search_launch">Lancer la recherche</string>
 	<string name="search_mass_loading">La recherche et l\'affichage peut prendre du temps
 		en fonction de votre connexion. Merci de patienter...</string>
 	<string name="list_search_church_help">Exemples de recherches:\n
@@ -118,4 +125,6 @@ Pour une recherche exacte,
 	<string name="messesinfo_share">voir les horaires des messes autour market//details?id=cef.messesinfo</string>
 	<string name="messesinfo_share_subject">Messesinfo sur Android</string>
 	<string name="localisation_in_progress">Géolocalisation en cours...</string>
+	<string name="church_next_mass">Prochaine messe : </string>
+	<string name="need_help">Besoin d\'aide ?</string>
 </resources>

@@ -1,5 +1,8 @@
 package cef.messesinfo.activity;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -17,9 +20,11 @@ public class ChurchAdapter extends BaseAdapter {
     List<Map<String,String>> list = null;
     private ViewHolder holder;
     private LayoutInflater mInflater;
+    private Context context;
     
     public ChurchAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
+        this.context = context;
     }
 
     public List<Map<String, String>> getList() {
@@ -29,6 +34,16 @@ public class ChurchAdapter extends BaseAdapter {
     public void setList(List<Map<String, String>> list) {
         this.list = list;
         notifyDataSetChanged();
+    }
+    
+    public void appendList(List<Map<String, String>> list) {
+	if (this.list == null) {
+	    setList(list);
+	}
+	else {
+	    this.list.addAll(list);
+	    notifyDataSetChanged();
+	}
     }
 
     @Override
@@ -57,6 +72,7 @@ public class ChurchAdapter extends BaseAdapter {
             holder.nom = (TextView) convertView.findViewById(R.id.nom);
             holder.commune = (TextView) convertView.findViewById(R.id.commune);
             holder.paroisse = (TextView) convertView.findViewById(R.id.paroisse);
+            holder.next_mass = (TextView) convertView.findViewById(R.id.next_mass);
 
             convertView.setTag(holder);
         } else {
@@ -68,11 +84,25 @@ public class ChurchAdapter extends BaseAdapter {
         holder.nom.setText(item.get(Church.NAME));
         holder.paroisse.setText(item.get(Church.COMMUNITY));
         holder.commune.setText(item.get(Church.ZIPCODE) +  " " + item.get(Church.CITY));
+        String next_mass = item.get(Church.NEXT_MASS);
+	if (next_mass != null) {
+	    try {
+		Date date_next_mass = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(next_mass.substring(0, 16));
+		holder.next_mass.setText(context.getString(R.string.church_next_mass) + new SimpleDateFormat("EEE d 'à' HH'h'mm").format(date_next_mass));
+		holder.next_mass.setVisibility(View.VISIBLE);
+	    } catch (ParseException e) {
+		e.printStackTrace();
+	    }
+	}
+	else {
+	    holder.next_mass.setVisibility(View.GONE);
+	}
         return convertView;
     }
     
     private static class ViewHolder {
-        ImageView icon;
+        public TextView next_mass;
+	ImageView icon;
         TextView nom;
         TextView paroisse;
         TextView commune;

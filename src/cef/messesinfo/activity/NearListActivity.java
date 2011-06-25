@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
+import cef.messesinfo.MessesInfo;
 import cef.messesinfo.R;
 import cef.messesinfo.provider.Church;
 
@@ -42,13 +44,21 @@ public class NearListActivity extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.list_favorite);
+	((TextView) findViewById(R.id.title_text)).setText(R.string.menu_maps);
+	((TextView) findViewById(android.R.id.empty)).setText(R.string.list_empty);
 	mAdapter = new ChurchAdapter(this);
 	list = (List<Map<String, String>>) getIntent().getSerializableExtra("list");
 	mAdapter.setList(list);
 	setListAdapter(mAdapter);
 	registerForContextMenu(getListView());
     }
-
+    
+    public void goHome(View v) {
+	final Intent intent = new Intent(this, MessesInfo.class);
+	intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	startActivity(intent);
+    }
+    
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 	if (v.getId() == android.R.id.list) {

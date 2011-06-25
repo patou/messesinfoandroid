@@ -1,13 +1,11 @@
 package cef.messesinfo;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.xmlrpc.android.XMLRPCException;
 
-import android.app.ListActivity;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -20,18 +18,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.Toast;
+import android.widget.TextView;
 import cef.messesinfo.activity.AboutActivity;
 import cef.messesinfo.activity.FavoriteActivity;
 import cef.messesinfo.activity.NearMapActivity;
-import cef.messesinfo.activity.SearchChurchActivity;
-import cef.messesinfo.activity.SearchMassActivity;
+import cef.messesinfo.activity.SearchActivity;
 import cef.messesinfo.client.Server;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+import com.sfeir.android.friendapps.FriendListActivity;
 
-public class MessesInfo extends ListActivity {
+public class MessesInfo extends Activity {
     /** Called when the activity is first created. */
 
     /** Attribute key for the list item text. */
@@ -53,37 +50,125 @@ public class MessesInfo extends ListActivity {
     public static final String AUTHORITY = "cef.messesinfo";
 
     static GoogleAnalyticsTracker tracker = null;
+    private String message;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
+	setContentView(R.layout.main);
 	if (tracker == null) {
-	   
 	    trackUserInformation();
+	}
+	
+	Object lastNonConfigurationInstance = getLastNonConfigurationInstance();
+	if (lastNonConfigurationInstance != null) {
+	    message = (String) lastNonConfigurationInstance;
+	    showMessage(message);
 	}
 
 	// Use an existing ListAdapter that will map an array
 	// of strings to TextViews
-	List<Map<String, Object>> menulist = buildList();
-	SimpleAdapter adapter = new SimpleAdapter(
-	// the Context
-		this,
-		// the data to display
-		menulist,
-		// The layout to use for each item
-		R.layout.main_menu_item,
-		// The list item attributes to display
-		new String[] { LABEL, ICON },
-		// And the ids of the views where they should be displayed (same
-		// order)
-		new int[] { android.R.id.text1, android.R.id.icon });
+	// setListAdapter(adapter);
+    }
 
-	setListAdapter(adapter);
-	setContentView(R.layout.main);
+    public void onRefreshClick(View v) {
+	// TODO
+    }
+
+    public void onShareClick(View v) {
+	String text = getString(R.string.messesinfo_share);
+	Intent i = new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, text).setType("text/plain").putExtra(Intent.EXTRA_SUBJECT,
+		getString(R.string.messesinfo_share_subject));
+	startActivityForResult(Intent.createChooser(i, getString(R.string.share_with)), 0);
+    }
+
+    public void onSearchMassClick(View v) {
+//	SearchScheduleActivity.activityStart(MessesInfo.this);
+	SearchActivity.activityStart(this, true);
+	tracker.trackPageView("/search_mass");
+    }
+
+    public void onNearChurchClick(View v) {
+	NearMapActivity.activityStart(MessesInfo.this);
+	tracker.trackPageView("/near_map");
+    }
+
+    public void onSearchLocationClick(View v) {
+//	SearchChurchActivity.activityStart(MessesInfo.this);
+	SearchActivity.activityStart(this, false);
+	tracker.trackPageView("/church_book");
+    }
+
+    public void onFavoriteClick(View v) {
+	FavoriteActivity.activityStart(MessesInfo.this);
+	tracker.trackPageView("/favorite");
+    }
+
+    public void onAboutClick(View v) {
+	    AboutActivity.activityStart(MessesInfo.this);
+	    tracker.trackPageView("/about");
+    }
+
+    public void onLectioClick(View v) {
+	Intent i = new Intent(this, FriendListActivity.class);
+	i.putExtra("mail", "patou.de.saint.steban@gmail.com");
+	i.putExtra("listId", "messesinfo");
+	startActivity(i);
+//	try {
+//	    Intent intent = getPackageManager().getLaunchIntentForPackage(getString(R.string.lectio_package));
+//	    startActivity(intent);
+//	    tracker.trackPageView("/lectio");
+//	} catch (Exception e) {
+//	    e.printStackTrace();
+//	    Intent intent = new Intent(Intent.ACTION_VIEW);
+//	    Uri uri = Uri.parse("market://details?id=" + getString(R.string.lectio_package));
+//	    intent.setData(uri);
+//	    startActivity(intent);
+//	}
+	
+    }
+
+    // @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+	switch (position) {
+	case MENULIST_NEXT_MASS:
+	    NearMapActivity.activityStart(MessesInfo.this);
+	    tracker.trackPageView("/near_map");
+	    break;
+	case MENULIST_SEARCH_MASS:
+	    //SearchScheduleActivity.activityStart(MessesInfo.this);
+	    tracker.trackPageView("/search_mass");
+	    break;
+	case MENULIST_FAVORITE:
+	    FavoriteActivity.activityStart(MessesInfo.this);
+	    tracker.trackPageView("/favorite");
+	    break;
+	case MENULIST_CHURCH_BOOK:
+	    //SearchChurchActivity.activityStart(MessesInfo.this);
+	    tracker.trackPageView("/church_book");
+	    break;
+	case MENULIST_QUIT:
+	    finish();
+	    break;
+	case MENULIST_LECTIO:
+//	    try {
+//		Intent intent = getPackageManager().getLaunchIntentForPackage(getString(R.string.lectio_package));
+//		startActivity(intent);
+//		tracker.trackPageView("/lectio");
+//	    } catch (Exception e) {
+//		e.printStackTrace();
+//		Intent intent = new Intent(Intent.ACTION_VIEW);
+//		Uri uri = Uri.parse("market://details?id=" + getString(R.string.lectio_package));
+//		intent.setData(uri);
+//		startActivity(intent);
+//	    }
+	default:
+	    break;
+	}
     }
 
     private void trackUserInformation() {
-
+	setLoading(true);
 	// Version
 	new Thread(new Runnable() {
 
@@ -118,8 +203,20 @@ public class MessesInfo extends ListActivity {
 		    Map<String, String> result;
 		    result = server.getMessage(map);
 		    if (result != null && result.containsKey("message")) {
-			String message = result.get("message");
+			message = result.get("message");
 			showMessage(message);
+		    }
+		    else {
+			runOnUiThread(new Runnable() {
+			    
+			    @Override
+			    public void run() {
+				View display = findViewById(R.id.now_mass_display);
+				if (display != null)
+				    display.setVisibility(View.GONE);
+				setLoading(false);
+			    }
+			});
 		    }
 		} catch (XMLRPCException e) {
 		    e.printStackTrace();
@@ -132,52 +229,29 @@ public class MessesInfo extends ListActivity {
 	}).start();
     }
 
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+        return message;
+    }
+    
+    private void setLoading(boolean loading) {
+	findViewById(R.id.title_refresh_progress).setVisibility(loading ? View.VISIBLE : View.GONE);
+	findViewById(R.id.btn_title_refresh).setVisibility(loading ? View.GONE : View.VISIBLE);
+    }
+
     private void showMessage(final String message) {
 	runOnUiThread(new Runnable() {
 	    @Override
 	    public void run() {
-		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+		//Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+		View loading = findViewById(R.id.now_mass_loading);
+		if (loading != null) {
+        		loading.setVisibility(View.GONE);
+        		((TextView) findViewById(R.id.now_mass_msg)).setText(message);
+		}
+		setLoading(false);
 	    }
 	});
-    }
-
-    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-	switch (position) {
-	case MENULIST_NEXT_MASS:
-	    NearMapActivity.activityStart(MessesInfo.this);
-	    tracker.trackPageView("/near_map");
-	    break;
-	case MENULIST_SEARCH_MASS:
-	    SearchMassActivity.activityStart(MessesInfo.this);
-	    tracker.trackPageView("/search_mass");
-	    break;
-	case MENULIST_FAVORITE:
-	    FavoriteActivity.activityStart(MessesInfo.this);
-	    tracker.trackPageView("/favorite");
-	    break;
-	case MENULIST_CHURCH_BOOK:
-	    SearchChurchActivity.activityStart(MessesInfo.this);
-	    tracker.trackPageView("/church_book");
-	    break;
-	case MENULIST_QUIT:
-	    finish();
-	    break;
-	case MENULIST_LECTIO:
-	    try {
-		Intent intent = getPackageManager().getLaunchIntentForPackage(getString(R.string.lectio_package));
-		startActivity(intent);
-		tracker.trackPageView("/lectio");
-	    } catch (Exception e) {
-		e.printStackTrace();
-		Intent intent = new Intent(Intent.ACTION_VIEW);
-		Uri uri = Uri.parse("market://details?id=" + getString(R.string.lectio_package));
-		intent.setData(uri);
-		startActivity(intent);
-	    }
-	default:
-	    break;
-	}
     }
 
     @Override
@@ -217,44 +291,12 @@ public class MessesInfo extends ListActivity {
 	case MENU_SHARE:
 	    String text = getString(R.string.messesinfo_share);
 	    Intent i = new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, text).setType("text/plain").putExtra(Intent.EXTRA_SUBJECT,
-		    getString(R.string.messesinfo_share_subject))
-	    ;
+		    getString(R.string.messesinfo_share_subject));
 	    startActivityForResult(Intent.createChooser(i, getString(R.string.share_with)), 0);
 	default:
 	    break;
 	}
 	return false;
-    }
-
-    private List<Map<String, Object>> buildList() {
-	// Resulting list...
-	List<Map<String, Object>> list = new ArrayList<Map<String, Object>>(5);
-
-	Map<String, Object> map1 = new HashMap<String, Object>();
-	map1.put(LABEL, getString(R.string.menu_next_mass));
-	map1.put(ICON, R.drawable.church2);
-	list.add(map1);
-	Map<String, Object> map2 = new HashMap<String, Object>();
-	map2.put(LABEL, getString(R.string.menu_search_mass));
-	map2.put(ICON, R.drawable.bible);
-	list.add(map2);
-	Map<String, Object> map3 = new HashMap<String, Object>();
-	map3.put(LABEL, getString(R.string.menu_favorite));
-	map3.put(ICON, R.drawable.favorites);
-	list.add(map3);
-	Map<String, Object> map4 = new HashMap<String, Object>();
-	map4.put(LABEL, getString(R.string.menu_church_book));
-	map4.put(ICON, R.drawable.church1);
-	list.add(map4);
-	Map<String, Object> map5 = new HashMap<String, Object>();
-	map5.put(LABEL, getString(R.string.menu_quit));
-	map5.put(ICON, R.drawable.cross_quit);
-	list.add(map5);
-	Map<String, Object> map6 = new HashMap<String, Object>();
-	map6.put(LABEL, getString(R.string.menu_lectio));
-	map6.put(ICON, R.drawable.lectio);
-	list.add(map6);
-	return list;
     }
 
     @Override

@@ -14,28 +14,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
-
-	<LinearLayout android:layout_height="wrap_content"
-		android:orientation="horizontal" android:id="@+id/searchBar"
-		android:layout_width="fill_parent" android:gravity="right"
-		android:layout_marginLeft="5dip" android:layout_marginTop="2dip">
-		<EditText android:layout_height="wrap_content" android:id="@+id/searchField"
-			android:hint="@string/search" android:singleLine="true"
-			android:layout_width="fill_parent"
-			android:layout_marginLeft="96dip"/>
-		<ImageButton android:layout_height="wrap_content"
-            android:id="@+id/nearButton" android:layout_width="48dip"
-            android:src="@drawable/target"></ImageButton>
-        <ImageButton android:layout_height="wrap_content"
-			android:id="@+id/searchButton" android:layout_width="48dip"
-			android:src="@drawable/search"></ImageButton>
+	<LinearLayout style="@style/TitleBar">
+		<ImageButton style="@style/TitleBarAction"
+			android:contentDescription="@string/description_home" android:src="@drawable/ic_title_home"
+			android:onClick="goHome" />
+		<ImageView style="@style/TitleBarSeparator" />
+		<TextView style="@style/TitleBarText" android:text="@string/menu_search_mass"/>
+		<ImageView style="@style/TitleBarSeparator" />
+		<ImageButton style="@style/TitleBarAction" android:id="@+id/btn_title_refresh"
+			android:src="@drawable/ic_title_refresh" android:onClick="onRefreshClick" />
+		<ProgressBar style="@style/TitleBarProgressIndicator"
+			android:id="@+id/title_refresh_progress" android:visibility="gone" />
 	</LinearLayout>
 	<FrameLayout android:layout_height="fill_parent"
 		android:layout_width="fill_parent">
-		<ExpandableListView android:id="@android:id/list"
+		<view class="cef.messesinfo.ExpandableView" android:id="@android:id/list"
 			android:layout_width="fill_parent" android:layout_height="fill_parent"
 			android:layout_weight="1" android:smoothScrollbar="false" />
-
 		<TextView android:id="@android:id/empty" android:isScrollContainer="true" android:scrollbars="vertical"
 			android:layout_width="fill_parent" android:layout_height="fill_parent"
 			android:gravity="left" android:layout_weight="1" android:text="@string/loading"

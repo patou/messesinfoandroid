@@ -9,14 +9,17 @@ import java.util.Map;
 
 import org.xmlrpc.android.XMLRPCException;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ExpandableListActivity;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.ContextMenu;
-import android.view.KeyEvent;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,21 +27,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.AbsListView;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.EditText;
 import android.widget.ExpandableListView;
-import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
-import android.widget.TextView.OnEditorActionListener;
+import cef.messesinfo.ExpandableView;
 import cef.messesinfo.MessesInfo;
 import cef.messesinfo.R;
 import cef.messesinfo.client.Server;
-import cef.messesinfo.maps.MyLocation;
 import cef.messesinfo.provider.Church;
 import cef.messesinfo.provider.Schedule;
 
-public class SearchMassActivity extends ExpandableListActivity {
+public class SearchScheduleActivity extends ExpandableListActivity implements OnScrollListener {
     private static final int MENU_DETAIL = 0;
     private static final int MENU_SCHEDULE = 1;
     private static final int MENU_CENTER = 2;
@@ -46,15 +49,21 @@ public class SearchMassActivity extends ExpandableListActivity {
     private static final int MENU_EVENT = 4;
     private static final int MENU_SHARE = 5;
 
+    private static final int CHOOSE_DEPARTMENT = 1;
+    private static final int CHOOSE_EXTENSION_SEARCH = 2;
+
     private Server server;
     private TextView empty;
-    private EditText searchText;
-    private View button;
-    private View nearButton;
+    private TextView titleText;
     private ScheduleExpandableListAdapter scheduleExpandableListAdapter;
-    MyLocation myLocation = new MyLocation();
+    int start;
+    private String search;
+    private boolean isSearchEnd = false;
+    private boolean isLoading;
+    private TextView loadMoreView;
+    private List<Map<String, Object>> listChoose;
 
-    public SearchMassActivity() {
+    public SearchScheduleActivity() {
 
     }
 
@@ -63,56 +72,113 @@ public class SearchMassActivity extends ExpandableListActivity {
      * 
      * @param context
      */
-    public static void activityStart(Context context) {
-	context.startActivity(new Intent(context, SearchMassActivity.class));
+    public static void activityStart(Context context, String search) {
+	Intent intent = new Intent(context, SearchScheduleActivity.class);
+	intent.putExtra("search", search);
+	context.startActivity(intent);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.search_expandable_list);
-	scheduleExpandableListAdapter = new ScheduleExpandableListAdapter(SearchMassActivity.this);
-	scheduleExpandableListAdapter.setList(null);
-	button = (ImageButton) findViewById(R.id.searchButton);
-	nearButton = (ImageButton) findViewById(R.id.nearButton);
-	empty = (TextView) findViewById(android.R.id.empty);
-	empty.setMovementMethod(ScrollingMovementMethod.getInstance());
-	empty.setText(getString(R.string.list_search_mass_help));
-	searchText = (EditText) findViewById(R.id.searchField);
-	searchText.setImeOptions(DEFAULT_KEYS_SEARCH_LOCAL);
-	button.setOnClickListener(new OnClickListener() {
-	    @Override
-	    public void onClick(View v) {
-		search(searchText.getText().toString());
-	    }
-	});
-	nearButton.setOnClickListener(new OnClickListener() {
-	    @Override
-	    public void onClick(View v) {
-		empty.setText(getString(R.string.localisation_in_progress));
-		myLocation.getLocation(SearchMassActivity.this, new MyLocation.LocationResult() {
+	loadMoreView = new TextView(this);
+	loadMoreView.setWidth(LayoutParams.FILL_PARENT);
+	loadMoreView.setText("Suite ...");
+	loadMoreView.setHeight(50);
+	loadMoreView.setTextAppearance(this, android.R.attr.textAppearanceMedium);
+	loadMoreView.setGravity(Gravity.CENTER);
+	loadMoreView.setOnClickListener(new OnClickListener() {
 
-		    @Override
-		    public void gotLocation(final Location location) {
-			runOnUiThread(new Runnable() {
-			    @Override
-			    public void run() {
-				String search = searchText.getText().toString() + " > " + location.getLatitude() + ":" + location.getLongitude();
-				search(search);
-			    }
-			});
-		    }
-		});
-	    }
-	});
-	searchText.setOnEditorActionListener(new OnEditorActionListener() {
 	    @Override
-	    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-		search(searchText.getText().toString());
-		return true;
+	    public void onClick(View v) {
+		loadMore();
 	    }
 	});
+	getExpandableListView().addFooterView(loadMoreView);
+	scheduleExpandableListAdapter = new ScheduleExpandableListAdapter(SearchScheduleActivity.this);
+	setListAdapter(scheduleExpandableListAdapter);
+	titleText = (TextView) findViewById(R.id.title_text);
+	empty = (TextView) findViewById(android.R.id.empty);
 	registerForContextMenu(getExpandableListView());
+	getExpandableListView().setOnScrollListener(this);
+	final RetainNonConfigurationValue data = (RetainNonConfigurationValue) getLastNonConfigurationInstance();
+	if (data != null) {
+	    scheduleExpandableListAdapter.setList(data.list);
+	    search = data.search;
+	    titleText.setText(search);
+	} else {
+	    scheduleExpandableListAdapter.setList(null);
+	}
+	search = getIntent().getStringExtra("search");
+	if (search != null)
+	    search(search);
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+	boolean loadMore = ((ExpandableView) view).getScrollPosition() >= 96;
+	Log.d("MESSESINFO onScroll:", "f=" + firstVisibleItem + ", vc=" + visibleItemCount + ", tc=" + totalItemCount);
+	if (loadMore) {
+	    Log.d("MESSESINFO onScroll:", "loadMore");
+	    loadMore();
+	}
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+    }
+
+    protected Dialog onCreateDialog(int id, Bundle args) {
+	switch (id) {
+	case CHOOSE_DEPARTMENT:
+	    DialogButtonClickHandler dialogButtonClickHandler = new DialogButtonClickHandler();
+	    Builder dialog = new AlertDialog.Builder(this).setTitle(R.string.search_mass_choose_department).setPositiveButton("OK", dialogButtonClickHandler).setNeutralButton("Cancel", null);
+	    String[] department = new String[listChoose.size()];
+	    int i = 0;
+	    for (Map<String, Object> item : listChoose) {
+		department[i++] = (String) item.get(Schedule.LABEL);
+	    }
+	    dialog.setItems(department, dialogButtonClickHandler);
+	    return dialog.create();
+	case CHOOSE_EXTENSION_SEARCH:
+	    DialogButtonClickHandler dialogExtButtonClickHandler = new DialogButtonClickHandler();
+	    Builder dialogExt = new AlertDialog.Builder(this).setTitle(R.string.search_mass_extension_search).setPositiveButton("OK", dialogExtButtonClickHandler).setNeutralButton("Cancel", null);
+	    String[] locations = new String[listChoose.size()];
+	    int j = 0;
+	    for (Map<String, Object> item : listChoose) {
+		locations[j++] = item.get(Church.NAME) + " à " + item.get(Church.CITY);
+	    }
+	    dialogExt.setItems(locations, dialogExtButtonClickHandler);
+	    return dialogExt.create();
+
+	default:
+	    break;
+	}
+	return null;
+    }
+
+    public class DialogButtonClickHandler implements DialogInterface.OnClickListener {
+	public void onClick(DialogInterface dialog, int clicked) {
+	    if (clicked >= 0) {
+		search((String) listChoose.get(clicked).get("query"));
+	    }
+	}
+    }
+
+    public void goHome(View v) {
+	final Intent intent = new Intent(this, MessesInfo.class);
+	intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	startActivity(intent);
+    }
+
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+	RetainNonConfigurationValue value = new RetainNonConfigurationValue();
+	value.list = scheduleExpandableListAdapter.getList();
+	value.search = search;
+	return value;
     }
 
     @SuppressWarnings("unchecked")
@@ -122,33 +188,92 @@ public class SearchMassActivity extends ExpandableListActivity {
 	if (child != null) {
 	    String code = (String) child.get(Church.ID);
 	    if (code != null)
-		ChurchActivity.activityStartSchedule(SearchMassActivity.this, code);
+		ChurchActivity.activityStartSchedule(SearchScheduleActivity.this, code);
 	}
 	return true;
     }
 
     private void search(final String search) {
-	scheduleExpandableListAdapter.setList(null);
+	search(search, false);
+    }
+
+    private void loadMore() {
+	if (search != null && !isLoading && !isSearchEnd) {
+	    search(search, true);
+	}
+    }
+    
+    public void onRefreshClick(View v) {
+	search(search);
+    }
+    
+    private void setLoading(boolean loading) {
+	isLoading = loading;
+	findViewById(R.id.title_refresh_progress).setVisibility(loading ? View.VISIBLE : View.GONE);
+	findViewById(R.id.btn_title_refresh).setVisibility(loading ? View.GONE : View.VISIBLE);
+    }
+
+    private void search(final String search, final boolean loadMore) {
+	this.search = search;
+	setLoading(true);
+	loadMoreView.setText("Chargement ...");
+	titleText.setText(search);
+	if (!loadMore) {
+	    scheduleExpandableListAdapter.setList(null);
+	    isSearchEnd = false;
+	}
 	empty.setText(getString(R.string.list_search_loading));
+	
 	new Thread(new Runnable() {
 
 	    @Override
 	    public void run() {
 		server = new Server(getString(R.string.server_url));
-		MessesInfo.getTracker(SearchMassActivity.this).trackEvent("Application", "SearchMass", search, 1);
+		MessesInfo.getTracker(SearchScheduleActivity.this).trackEvent("Application", "SearchMass", search, 1);
 		try {
-		    final List<Map<String, Object>> result = server.searchSchedule(search);
+		    int pageSize = 10;
+		    if (!loadMore) {
+			start = 0;
+			pageSize = 25;
+		    }
+		    final List<Map<String, Object>> result = server.searchSchedule(search, start, pageSize);
 		    if (result != null) {
+			final Map<String, Object> item = result.remove(0);
+			final int size = getSize(result);
+			start += size;
+			isSearchEnd = size < pageSize;
 			runOnUiThread(new Runnable() {
+
 			    @Override
 			    public void run() {
-				if (result != null && result.size() > 0) {
-				    scheduleExpandableListAdapter.setList(result);
+				if (loadMore) {
+				    scheduleExpandableListAdapter.appendList(result);
+				    loadMoreView.setText(size == 0 ? "" : "Suite ...");
 				} else {
-				    scheduleExpandableListAdapter.setList(null);
-				    empty.setText(getString(R.string.schedules_empty));
+				    if (size > 0) {
+					scheduleExpandableListAdapter.setList(result);
+					getExpandableListView().expandGroup(0);
+					if (result.size() > 1)
+					    getExpandableListView().expandGroup(1);
+				    } else {
+					if ("department".equals(item.get("queryType"))) {
+					    listChoose = result;
+					    showDialog(CHOOSE_DEPARTMENT);
+					} else if ("schedule".equals(item.get("queryType"))) {
+					    listChoose = result;
+					    showDialog(CHOOSE_EXTENSION_SEARCH);
+					} else {
+					    scheduleExpandableListAdapter.setList(null);
+					    String message = (String) item.get("errorMessage");
+					    empty.setText(message != null ? message : getString(R.string.schedules_empty));
+					}
+				    }
 				}
-				setListAdapter(scheduleExpandableListAdapter);
+				// setListAdapter(scheduleExpandableListAdapter);
+//				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//				imm.hideSoftInputFromWindow(getWindowToken(), 0);
+				
+				setLoading(false);
 			    }
 			});
 		    }
@@ -158,11 +283,25 @@ public class SearchMassActivity extends ExpandableListActivity {
 			@Override
 			public void run() {
 			    empty.setText(R.string.error_church_schedule);
+			    setLoading(false);
 			}
 		    });
 		}
 	    }
 	}).start();
+    }
+
+    private int getSize(final List<Map<String, Object>> result) {
+	int size = 0;
+	for (Map<String, Object> group : result) {
+	    if (group != null) {
+		List<Map<String, Object>> childs = (List<Map<String, Object>>) group.get(Schedule.CHILD);
+		if (childs != null) {
+		    size += childs.size();
+		}
+	    }
+	}
+	return size;
     }
 
     @Override
@@ -213,7 +352,7 @@ public class SearchMassActivity extends ExpandableListActivity {
 		break;
 	    case MENU_NEAR:
 		if (item.containsKey(Church.LAT) && item.containsKey(Church.LNG)) {
-		    searchText.setText("> " + item.get(Church.ID));
+//		    searchText.setText("> " + item.get(Church.ID));
 		    search("> " + item.get(Church.LAT) + ":" + item.get(Church.LNG));
 		}
 		break;
@@ -308,11 +447,7 @@ public class SearchMassActivity extends ExpandableListActivity {
 		viewChildHolder = (ViewChildHolder) convertView.getTag();
 	    }
 
-	    String c = (String) block.get(Schedule.LITURGICALTIMECODE);
-	    Integer color = 1;
-	    if (c != null) {
-		color = Integer.parseInt(c);
-	    }
+	    String color = (String) block.get(Schedule.LITURGICALTIMECODE);
 	    viewChildHolder.color.setBackgroundColor(getLiturgicalColor(color));
 	    if (dateDisplayType) {
 		viewChildHolder.title.setText((String) block.get(Schedule.TIME));
@@ -324,20 +459,20 @@ public class SearchMassActivity extends ExpandableListActivity {
 	    return convertView;
 	}
 
-	public int getLiturgicalColor(Integer massType) {
-	    // TODO Avent, Careme et temps après Pâques !
-	    switch (massType) {
-	    case 1: // Blanc
+	public int getLiturgicalColor(String massType) {
+	    if (massType == null)
 		return 0xFFFFFFFF; // Blanc
-	    case 2: // Violet
+	    if (massType.equals("white")) // Blanc
+		return 0xFFFFFFFF; // Blanc
+	    if (massType.equals("violet")) // Violet
 		return 0xFF990099; // Violet
-	    case 3: // Rouge
+	    if (massType.equals("red")) // Rouge
 		return 0xFFFF0000; // Rouge
-	    case 4: // Noir
+	    if (massType.equals("black")) // Noir
 		return 0xFF000000; // Noir
-	    default: // Vert
+	    if (massType.equals("green")) // Vert
 		return 0xFF006600; // Vert
-	    }
+	    return 0xFFFFFFFF;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -412,10 +547,45 @@ public class SearchMassActivity extends ExpandableListActivity {
 	    super.notifyDataSetChanged();
 	}
 
+	public void appendList(List<Map<String, Object>> list) {
+
+	    if (this.list == null) {
+		setList(list);
+	    } else {
+		boolean found = false;
+		String oldName, newName;
+		for (Map<String, Object> newGroup : list) {
+		    found = false;
+		    for (Map<String, Object> oldGroup : this.list) {
+			newName = (String) newGroup.get(Schedule.LABEL);
+			oldName = (String) oldGroup.get(Schedule.LABEL);
+			if (newName != null && oldName != null && newName.equals(oldName)) {
+			    found = true;
+			    List<Map<String, Object>> oldChilds = (List<Map<String, Object>>) oldGroup.get(Schedule.CHILD);
+			    List<Map<String, Object>> newChilds = (List<Map<String, Object>>) newGroup.get(Schedule.CHILD);
+			    if (oldChilds != null) {
+				oldChilds.addAll(newChilds);
+			    }
+			    break;
+			}
+		    }
+		    if (!found) {
+			this.list.add(newGroup);
+		    }
+		}
+		super.notifyDataSetChanged();
+	    }
+	}
+
 	public List<Map<String, Object>> getList() {
 	    return list;
 	}
 
+    }
+
+    class RetainNonConfigurationValue {
+	String search;
+	List<Map<String, Object>> list;
     }
 
 }

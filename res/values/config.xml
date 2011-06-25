@@ -4,12 +4,10 @@
 <!--	<string name="maps_api">0rpQsam0k5frbjyX65flUhlGGTw_ZIkf0rCd8Iw</string>-->
 	<!-- Release key -->
 	<string name="maps_api">099CwnXtBpF6cXa_D4a5DIhRMJCPvIoSGJcCspQ</string>
-	<string name="server_url">http://www.android.catholique.fr/server.php</string>
-	<string name="photo_url">http://www.android.catholique.fr/photo.php?code=</string>
+	<string name="server_url">http://0-2.eglise-catholique.appspot.com/api/xmlrpc</string>
+<!--	<string name="server_url">http://www.android.catholique.fr/server.php</string>-->
 	<string name="messeinfo_url">http://www.egliseinfo.catholique.fr</string>
 	<string name="webcatho_url">http://www.webcatho.fr</string>
 	<string name="messesinfo_email">android@cef.fr</string>
-	<string name="lectio_package">geniphone.lectio</string>
 <!--		<string name="server_url">http://192.168.0.9/android/server.php</string>-->
-<!--	<string name="photo_url">http://192.168.0.9/android/photo.php?code=</string>-->
 </resources>

@@ -2,9 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:layout_height="fill_parent" android:layout_gravity="center_horizontal">
+	<LinearLayout style="@style/TitleBar">
+		<ImageButton style="@style/TitleBarAction"
+			android:contentDescription="@string/description_home" android:src="@drawable/ic_title_home"
+			android:onClick="goHome" />
+		<ImageView style="@style/TitleBarSeparator" />
+		<TextView style="@style/TitleBarText" android:text="@string/menu_favorite"/>
+	</LinearLayout>
 	<ListView android:id="@android:id/list" android:layout_height="fill_parent"
-		android:layout_width="fill_parent"/>
+		android:layout_width="fill_parent" />
 	<TextView android:id="@android:id/empty"
-            android:layout_height="fill_parent" android:layout_width="fill_parent"
-            android:text="@string/list_favorites_empty" android:textSize="22dip" />
+		android:layout_height="fill_parent" android:layout_width="fill_parent"
+		android:text="@string/list_favorites_empty" android:textSize="22dip" />
 </LinearLayout>

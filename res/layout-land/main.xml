@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+	<!--
+
+		<LinearLayout
+		xmlns:android="http://schemas.android.com/apk/res/android"
+	-->
+	<!--
+		android:orientation="vertical" android:layout_width="fill_parent"
+	-->
+	<!--
+		android:layout_height="fill_parent"
+		android:layout_gravity="center_horizontal"
+	-->
+	<!--	 -->
+	<!--	>-->
+	<!--	<ImageView android:layout_height="wrap_content"-->
+	<!--		android:layout_width="fill_parent" android:src="@drawable/logo"-->
+	<!--
+		android:layout_gravity="center" android:layout_marginBottom="5dip" />
+	-->
+	<!--
+		<ListView android:id="@android:id/list"
+		android:layout_height="fill_parent"
+	-->
+	<!--		android:layout_width="fill_parent"/>-->
+	<!--</LinearLayout>-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/home_root" android:orientation="vertical"
+	android:layout_width="fill_parent" android:layout_height="fill_parent">
+	<LinearLayout style="@style/TitleBar">
+		<ImageView style="@style/TitleBarLogo"
+			android:contentDescription="@string/app_name" android:src="@drawable/logo_title" />
+
+		<View style="@style/TitleBarSpring" />
+
+		<ImageView style="@style/TitleBarSeparator" />
+		<ImageButton style="@style/TitleBarAction" android:id="@+id/btn_title_refresh"
+			android:src="@drawable/ic_title_refresh" android:onClick="onRefreshClick" />
+		<ProgressBar style="@style/TitleBarProgressIndicator"
+			android:id="@+id/title_refresh_progress" android:visibility="gone" />
+
+		<ImageView style="@style/TitleBarSeparator" />
+		<ImageButton style="@style/TitleBarAction"
+			android:contentDescription="@string/description_share" android:src="@drawable/ic_title_share"
+			android:onClick="onShareClick" />
+	</LinearLayout>
+
+	<LinearLayout android:orientation="vertical"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:layout_weight="1" android:padding="6dip">
+		<LinearLayout android:orientation="horizontal"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_weight="1">
+			<Button android:id="@+id/home_btn_map" style="@style/HomeButton"
+				android:onClick="onSearchMassClick" android:text="@string/menu_search_mass"
+				android:drawableTop="@drawable/home_btn_schedule" />
+			<Button android:id="@+id/home_btn_schedule" style="@style/HomeButton"
+				android:onClick="onNearChurchClick" android:text="@string/menu_next_mass"
+				android:drawableTop="@drawable/home_btn_map" />
+			<Button android:id="@+id/home_btn_sessions" style="@style/HomeButton"
+				android:onClick="onSearchLocationClick" android:text="@string/menu_church_book"
+				android:drawableTop="@drawable/home_btn_church" />
+		</LinearLayout>
+
+		<LinearLayout android:orientation="horizontal"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_weight="1">
+			<Button android:id="@+id/home_btn_starred" style="@style/HomeButton"
+				android:onClick="onFavoriteClick" android:text="@string/menu_favorite"
+				android:drawableTop="@drawable/home_btn_starred" />
+			<Button android:id="@+id/home_btn_vendors" style="@style/HomeButton"
+				android:onClick="onAboutClick" android:text="@string/main_menu_about"
+				android:drawableTop="@drawable/home_btn_sandbox" />
+			<Button android:id="@+id/home_btn_notes" style="@style/HomeButton"
+				android:onClick="onLectioClick" android:text="@string/menu_lectio"
+				android:drawableTop="@drawable/home_btn_office_hours" />
+		</LinearLayout>
+	</LinearLayout>
+</LinearLayout>

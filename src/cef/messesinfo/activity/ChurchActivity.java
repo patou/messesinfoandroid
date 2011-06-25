@@ -44,7 +44,9 @@ public class ChurchActivity extends TabActivity {
     private static final String HORAIRE = "horaire";
     private static final String INFORMATION = "information";
     private static final int MENU_MAPS = 0;
+    private static final int MENU_SCHEDULE_NEAR = 1;
     GoogleAnalyticsTracker tracker;
+    private String code;
     protected Map<String, String> selectedItem;
 
     public static void activityStart(Context context, String code) {
@@ -59,7 +61,7 @@ public class ChurchActivity extends TabActivity {
 	intent.putExtra(Schedule.HORAIRE, true);
 	context.startActivity(intent);
     }
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
@@ -67,188 +69,128 @@ public class ChurchActivity extends TabActivity {
 	final String code = getIntent().getStringExtra(Church.ID);
 	MessesInfo.getTracker(this).trackPageView("/church/" + code);
 	TabHost tabs = getTabHost();
-	tabs.addTab(tabs.newTabSpec(INFORMATION).setIndicator(getString(R.string.church_tab_information),
-	        getResources().getDrawable(R.drawable.sym_action_sms)).setContent(R.id.information_tab));
+	tabs.addTab(tabs.newTabSpec(INFORMATION).setIndicator(getString(R.string.church_tab_information), getResources().getDrawable(R.drawable.sym_action_sms)).setContent(
+		R.id.information_tab));
 	Intent intentHoraires = new Intent(getApplicationContext(), ScheduleActivity.class);
 	intentHoraires.putExtra(Church.ID, code);
-	tabs.addTab(tabs.newTabSpec(HORAIRE).setIndicator(getString(R.string.church_tab_schedule),
-	        getResources().getDrawable(R.drawable.sym_schedule)).setContent(intentHoraires));
+	tabs.addTab(tabs.newTabSpec(HORAIRE).setIndicator(getString(R.string.church_tab_schedule), getResources().getDrawable(R.drawable.sym_schedule)).setContent(intentHoraires));
 	if (getIntent().getBooleanExtra(Schedule.HORAIRE, false)) {
 	    tabs.setCurrentTab(1);
-	}
-	else {
+	} else {
 	    tabs.setCurrentTab(0);
 	}
 	if (code != null)
+	    loadData(code);
+    }
 
-	    new Thread(new Runnable() {
+    public void onRefreshClick(View v) {
+	if (code != null)
+	    loadData(code);
+    }
 
-		@Override
-		public void run() {
-		    try {
-			final Map<String, String> item = new Server(getString(R.string.server_url)).getLocationInfo(code);
-			ChurchActivity.this.selectedItem = item;
-			Cursor cursor = getContentResolver().query(Uri.withAppendedPath(Church.CONTENT_URI, code), null, null, null, null);
-			final Boolean starred = cursor.getCount() > 0;
-			cursor.close();
-			if (item != null) {
-			    runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-				    TextView nom = (TextView) findViewById(R.id.nom);
-				    TextView commune = (TextView) findViewById(R.id.commune);
-				    TextView paroisse = (TextView) findViewById(R.id.paroisse);
-				    CheckBox star = (CheckBox) findViewById(R.id.star);
-				    ListView list = (ListView) findViewById(R.id.list_contact);
-				    list.setEmptyView(findViewById(R.id.loading));
-				    list.setOnItemClickListener(new OnItemClickListener() {
+    private void loadData(final String code) {
+	this.code = code;
+	setLoading(true);
+	new Thread(new Runnable() {
 
-					@Override
-					public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-					    ListView listView = (ListView) parent;
-					    ViewAdapter adapter = (ViewAdapter) listView.getAdapter();
-					    ViewEntry entry = (ViewEntry) adapter.getItem(position);
-					    if (entry != null) {
-						Intent intent = entry.intent;
-						if (intent != null) {
-						    try {
-							startActivity(intent);
-						    } catch (ActivityNotFoundException e) {
-							Log.e("messeinfo", "No activity found for intent: " + intent);
-						    }
+	    @Override
+	    public void run() {
+		try {
+		    final Map<String, String> item = new Server(getString(R.string.server_url)).getLocationInfo(code);
+		    ChurchActivity.this.selectedItem = item;
+		    Cursor cursor = getContentResolver().query(Uri.withAppendedPath(Church.CONTENT_URI, code), null, null, null, null);
+		    final Boolean starred = cursor.getCount() > 0;
+		    cursor.close();
+		    if (item != null) {
+			runOnUiThread(new Runnable() {
+			    @Override
+			    public void run() {
+				TextView nom = (TextView) findViewById(R.id.nom);
+				TextView commune = (TextView) findViewById(R.id.commune);
+				TextView paroisse = (TextView) findViewById(R.id.paroisse);
+				CheckBox star = (CheckBox) findViewById(R.id.star);
+				ListView list = (ListView) findViewById(R.id.list_contact);
+				list.setEmptyView(findViewById(R.id.loading));
+
+				list.setOnItemClickListener(new OnItemClickListener() {
+
+				    @Override
+				    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+					ListView listView = (ListView) parent;
+					ViewAdapter adapter = (ViewAdapter) listView.getAdapter();
+					ViewEntry entry = (ViewEntry) adapter.getItem(position);
+					if (entry != null) {
+					    Intent intent = entry.intent;
+					    if (intent != null) {
+						try {
+						    startActivity(intent);
+						} catch (ActivityNotFoundException e) {
+						    Log.e("messeinfo", "No activity found for intent: " + intent);
 						}
 					    }
 					}
-				    });
-				    ArrayList<ViewEntry> entries = new ArrayList<ViewEntry>();
-				    TabHost tabs = getTabHost();
-				    star.setChecked(starred);
-				    final String city = item.get(Church.CITY);
-				    final String name = item.get(Church.NAME);
-				    final String paroisseName = item.get(Church.COMMUNITY);
-				    final String cp = item.get(Church.ZIPCODE);
-				    star.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+				    }
+				});
+				TabHost tabs = getTabHost();
+				star.setChecked(starred);
+				final String city = item.get(Church.CITY);
+				final String name = item.get(Church.NAME);
+				((TextView) findViewById(R.id.title_text)).setText(name);
+				final String paroisseName = item.get(Church.COMMUNITY);
+				final String cp = item.get(Church.ZIPCODE);
+				star.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
-					@Override
-					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-					    if (isChecked) {
-						ContentValues values = new ContentValues();
-						values.put(Church.ID, item.get(Church.ID));
-						values.put(Church.NAME, name);
-						values.put(Church.CITY, city);
-						values.put(Church.ZIPCODE, cp);
-						values.put(Church.COMMUNITY, paroisseName);
-						values.put(Church.LAT, item.get(Church.LAT));
-						values.put(Church.LNG, item.get(Church.LNG));
-						values.put(Church.FAVORITE, 1);
-						getContentResolver().insert(Church.CONTENT_URI, values);
-					    } else {
-						getContentResolver().delete(Uri.withAppendedPath(Church.CONTENT_URI, code), null, null);
-					    }
+				    @Override
+				    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					if (isChecked) {
+					    ContentValues values = new ContentValues();
+					    values.put(Church.ID, item.get(Church.ID));
+					    values.put(Church.NAME, name);
+					    values.put(Church.CITY, city);
+					    values.put(Church.ZIPCODE, cp);
+					    values.put(Church.COMMUNITY, paroisseName);
+					    values.put(Church.LAT, item.get(Church.LAT));
+					    values.put(Church.LNG, item.get(Church.LNG));
+					    values.put(Church.FAVORITE, 1);
+					    getContentResolver().insert(Church.CONTENT_URI, values);
+					} else {
+					    getContentResolver().delete(Uri.withAppendedPath(Church.CONTENT_URI, code), null, null);
 					}
-				    });
-				    nom.setText(name);
-				    commune.setText(cp + " " + city);
-				    paroisse.setText(paroisseName);
+				    }
+				});
+				nom.setText(name);
+				commune.setText(cp + " " + city);
+				paroisse.setText(paroisseName);
 
-				    ViewEntry entry = new ViewEntry();
-				    String adresse = item.get(Church.ADDRESS);
-				    if (TextUtils.isEmpty(adresse)) {
-					adresse = cp + " " + city;
-				    } else {
-					adresse += " " + cp + " " + city;
-				    }
-				    entry.label = adresse;
-				    entry.data = getString(R.string.church_see_map);
-				    entry.actionIcon = R.drawable.sym_action_map;
-				    entry.intent = new Intent(Intent.ACTION_VIEW, Uri.fromParts("geo", item.get(Church.LAT) + ","
-					    + item.get(Church.LNG) + "?z=12", null));
-				    entries.add(entry);
-				    String email = item.get(Church.EMAIL);
-				    if (!TextUtils.isEmpty(email)) {
-					entry = new ViewEntry();
-					entry.label = email;
-					entry.data = getString(R.string.church_send_mail);
-					entry.actionIcon = android.R.drawable.sym_action_email;
-					entry.intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", email, null));
-					entries.add(entry);
-				    }
-				    String internet = item.get(Church.URL);
-				    if (!TextUtils.isEmpty(internet)) {
-					entry = new ViewEntry();
-					entry.label = internet;
-					entry.data = getString(R.string.church_view_site);
-					entry.actionIcon = R.drawable.sym_action_organization;
-					String url = internet;
-					if (!internet.startsWith("http://"))
-					    url = "http://" + internet;
-					entry.intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-					entries.add(entry);
-				    }
-				    String tel = item.get(Church.PHONE);
-				    if (!TextUtils.isEmpty(tel)) {
-					entry = new ViewEntry();
-					entry.label = tel;
-					entry.data = getString(R.string.church_call_tel);
-					entry.actionIcon = android.R.drawable.sym_action_call;
-					entry.intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", tel.replaceAll("[^0-9()+]+", ""), null));
-					entries.add(entry);
-				    }
-				    String fax = item.get(Church.FAX);
-				    if (!TextUtils.isEmpty(fax)) {
-					entry = new ViewEntry();
-					entry.label = fax;
-					entry.data = getString(R.string.church_send_fax);
-					entry.actionIcon = android.R.drawable.sym_action_call;
-					entries.add(entry);
-				    }
-				    String libre = item.get(Church.MISCELLANEOUS);
-				    if (!TextUtils.isEmpty(libre)) {
-					entry = new ViewEntry();
-					entry.label = libre;
-					entry.data = "";
-					entry.actionIcon = R.drawable.sym_note;
-					entries.add(entry);
-				    }
-				    String groupe_name = item.get(Church.GROUPE_NAME);
-				    if (!TextUtils.isEmpty(groupe_name)) {
-					entry = new ViewEntry();
-					entry.label = getString(R.string.church_groupe_name, groupe_name);
-					entry.data = "";
-					entry.actionIcon = R.drawable.sym_action_organization;
-					entries.add(entry);
-				    }
-				    String groupe_email = item.get(Church.GROUPE_EMAIL);
-				    if (!TextUtils.isEmpty(groupe_email)) {
-					entry = new ViewEntry();
-					entry.label = groupe_email;
-					entry.data = getString(R.string.church_groupe_email_send_mail, groupe_name);
-					entry.actionIcon = android.R.drawable.sym_action_email;
-					entry.intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", groupe_email, null));
-					entries.add(entry);
-				    }
-				    String groupe_internet = item.get(Church.GROUPE_URL);
-				    if (!TextUtils.isEmpty(groupe_internet)) {
-					entry = new ViewEntry();
-					entry.label = groupe_internet;
-					entry.data = getString(R.string.church_groupe_internet_view_site, groupe_name);
-					entry.actionIcon = R.drawable.sym_action_organization;
-					String url = groupe_internet;
-					if (!groupe_internet.startsWith("http://"))
-					    url = "http://" + groupe_internet;
-					entry.intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-					entries.add(entry);
-				    }
-				    list.setAdapter(new ViewAdapter(getApplicationContext(), entries));
-				}
-			    });
-			}
-		    } catch (XMLRPCException e1) {
-			e1.printStackTrace();
-			displayErrorMessage();
+				ArrayList<ViewEntry> entries = buildListEntries(item, city, cp);
+				list.setAdapter(new ViewAdapter(getApplicationContext(), entries));
+				setLoading(false);
+			    }
+			});
 		    }
+		} catch (XMLRPCException e1) {
+		    e1.printStackTrace();
+		    displayErrorMessage();
 		}
-	    }).start();
+	    }
+	}).start();
+    }
+
+    private void setLoading(boolean loading) {
+	findViewById(R.id.title_refresh_progress).setVisibility(loading ? View.VISIBLE : View.GONE);
+	findViewById(R.id.btn_title_refresh).setVisibility(loading ? View.GONE : View.VISIBLE);
+    }
+
+    public void goHome(View v) {
+	final Intent intent = new Intent(this, MessesInfo.class);
+	intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	startActivity(intent);
+    }
+
+    public void onMapClick(View v) {
+	String lat = selectedItem.get(Church.LAT);
+	String lng = selectedItem.get(Church.LNG);
+	NearMapActivity.activityStart(this, lat, lng);
     }
 
     protected void displayErrorMessage() {
@@ -260,11 +202,11 @@ public class ChurchActivity extends TabActivity {
 	    }
 	});
     }
-    
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 	menu.add(0, MENU_MAPS, 0, getString(R.string.menu_maps)).setIcon(android.R.drawable.ic_menu_mapmode);
+	menu.add(0, MENU_SCHEDULE_NEAR, 0, getString(R.string.menu_context_schedule_near)).setIcon(android.R.drawable.ic_menu_more);
 	return true;
     }
 
@@ -276,12 +218,108 @@ public class ChurchActivity extends TabActivity {
 		NearMapActivity.activityStart(this, this.selectedItem.get(Church.LAT), this.selectedItem.get(Church.LNG));
 	    }
 	    return true;
+	case MENU_SCHEDULE_NEAR:
+	    if (selectedItem != null) {
+		SearchScheduleActivity.activityStart(this, this.selectedItem.get(Church.LAT)+":"+ this.selectedItem.get(Church.LNG));
+	    }
+	    return true;
 	default:
 	    break;
 	}
 	return false;
     }
 
+    private ArrayList<ViewEntry> buildListEntries(final Map<String, String> item, final String city, final String cp) {
+	ArrayList<ViewEntry> entries = new ArrayList<ViewEntry>();
+	ViewEntry entry = new ViewEntry();
+	String adresse = item.get(Church.ADDRESS);
+	if (TextUtils.isEmpty(adresse)) {
+	    adresse = cp + " " + city;
+	} else {
+	    adresse += " " + cp + " " + city;
+	}
+	entry.label = adresse;
+	entry.data = getString(R.string.church_see_map);
+	entry.actionIcon = R.drawable.sym_action_map;
+	entry.intent = new Intent(Intent.ACTION_VIEW, Uri.fromParts("geo", item.get(Church.LAT) + "," + item.get(Church.LNG) + "?z=12", null));
+	entries.add(entry);
+	String email = item.get(Church.EMAIL);
+	if (!TextUtils.isEmpty(email)) {
+	    entry = new ViewEntry();
+	    entry.label = email;
+	    entry.data = getString(R.string.church_send_mail);
+	    entry.actionIcon = android.R.drawable.sym_action_email;
+	    entry.intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", email, null));
+	    entries.add(entry);
+	}
+	String internet = item.get(Church.URL);
+	if (!TextUtils.isEmpty(internet)) {
+	    entry = new ViewEntry();
+	    entry.label = internet;
+	    entry.data = getString(R.string.church_view_site);
+	    entry.actionIcon = R.drawable.sym_action_organization;
+	    String url = internet;
+	    if (!internet.startsWith("http://"))
+		url = "http://" + internet;
+	    entry.intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+	    entries.add(entry);
+	}
+	String tel = item.get(Church.PHONE);
+	if (!TextUtils.isEmpty(tel)) {
+	    entry = new ViewEntry();
+	    entry.label = tel;
+	    entry.data = getString(R.string.church_call_tel);
+	    entry.actionIcon = R.drawable.sym_action_phone;
+	    entry.intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", tel.replaceAll("[^0-9()+]+", ""), null));
+	    entries.add(entry);
+	}
+	String fax = item.get(Church.FAX);
+	if (!TextUtils.isEmpty(fax)) {
+	    entry = new ViewEntry();
+	    entry.label = fax;
+	    entry.data = getString(R.string.church_send_fax);
+	    entry.actionIcon = R.drawable.sym_schedule;
+	    entries.add(entry);
+	}
+	String libre = item.get(Church.MISCELLANEOUS);
+	if (!TextUtils.isEmpty(libre)) {
+	    entry = new ViewEntry();
+	    entry.label = libre;
+	    entry.data = "";
+	    entry.actionIcon = R.drawable.sym_note;
+	    entries.add(entry);
+	}
+	String groupe_name = item.get(Church.GROUPE_NAME);
+	if (!TextUtils.isEmpty(groupe_name)) {
+	    entry = new ViewEntry();
+	    entry.label = getString(R.string.church_groupe_name, groupe_name);
+	    entry.data = "";
+	    entry.actionIcon = R.drawable.sym_action_organization;
+	    entries.add(entry);
+	}
+	String groupe_email = item.get(Church.GROUPE_EMAIL);
+	if (!TextUtils.isEmpty(groupe_email)) {
+	    entry = new ViewEntry();
+	    entry.label = groupe_email;
+	    entry.data = getString(R.string.church_groupe_email_send_mail, groupe_name);
+	    entry.actionIcon = android.R.drawable.sym_action_email;
+	    entry.intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", groupe_email, null));
+	    entries.add(entry);
+	}
+	String groupe_internet = item.get(Church.GROUPE_URL);
+	if (!TextUtils.isEmpty(groupe_internet)) {
+	    entry = new ViewEntry();
+	    entry.label = groupe_internet;
+	    entry.data = getString(R.string.church_groupe_internet_view_site, groupe_name);
+	    entry.actionIcon = R.drawable.sym_action_organization;
+	    String url = groupe_internet;
+	    if (!groupe_internet.startsWith("http://"))
+		url = "http://" + groupe_internet;
+	    entry.intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+	    entries.add(entry);
+	}
+	return entries;
+    }
 
     final static class ViewEntry {
 	public String label = "";
@@ -299,7 +337,7 @@ public class ChurchActivity extends TabActivity {
 	    public ImageView actionIcon;
 
 	    @SuppressWarnings("unused")
-            public ViewEntry entry;
+	    public ViewEntry entry;
 	}
 
 	private ArrayList<ViewEntry> mEntries = null;
