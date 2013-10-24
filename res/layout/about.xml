@@ -36,9 +36,4 @@
 		android:textSize="14sp" android:textStyle="bold"
 		android:layout_gravity="left" android:padding="10sp">
 	</TextView>
-	<TextView android:layout_width="wrap_content" android:id="@+id/about_webcatho"
-		android:layout_height="wrap_content" android:text="@string/about_webcatho"
-		android:textSize="12sp" android:textStyle="bold"
-		android:layout_gravity="left" android:padding="5sp">
-	</TextView>
 </LinearLayout>

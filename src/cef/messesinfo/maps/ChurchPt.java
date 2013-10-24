@@ -40,7 +40,7 @@ public class ChurchPt extends ManagedOverlayItem {
 	if (next_mass != null) {
 	    try {
 		Date date_next_mass = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(next_mass.substring(0, 16));
-		snippet += "\nProchaine messe : " + new SimpleDateFormat("EEE d 'à' HH'h'mm").format(date_next_mass);//TODO Translate this string
+		snippet += "\nProchaine messe : " + new SimpleDateFormat("EEE d 'Ã ' HH'h'mm").format(date_next_mass);//TODO Translate this string
 	    } catch (ParseException e) {
 		e.printStackTrace();
 	    }

@@ -6,7 +6,7 @@
 	<string name="menu_favorite">Mes églises favorites</string>
 	<string name="menu_church_book">Annuaire des églises</string>
 	<string name="menu_quit">Quitter</string>
-	<string name="menu_lectio">Autres applications</string>
+	<string name="menu_help">Nous soutenir</string>
 	<string name="main_menu_about">A propos</string>
 	<string name="main_menu_website">Site web</string>
 	<string name="main_menu_share">Partager</string>
@@ -29,11 +29,10 @@
 	<string name="about_sub_title">Développé par : Patrice de Saint Steban</string>
 	<string name="about_copyright">Un service offert par la Conférence des évêques de
 		France (CEF), plus d\'informations sur le site
-		http://www.messesinfo.catholique.fr
+		http://egliseinfo.catholique.fr
 	</string>
 	<string name="about_website">Plus d\'informations sur le site:
-		http://android.catholique.fr</string>
-	<string name="about_webcatho">http://www.webcatho.fr</string>
+		http://apps.catholique.fr</string>
 	<string name="search">Rechercher ...</string>
 	<string name="list_empty">Pas de résultat pour votre recherche</string>
 	<string name="list_favorites_empty">Vous n\'avez pas encore de favoris.\n\nAjoutez des églises à votre liste de favoris en appuyant sur l\'étoile sur la fiche d\'information d\'une église

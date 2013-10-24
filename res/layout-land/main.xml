@@ -72,7 +72,7 @@
 				android:onClick="onAboutClick" android:text="@string/main_menu_about"
 				android:drawableTop="@drawable/home_btn_sandbox" />
 			<Button android:id="@+id/home_btn_notes" style="@style/HomeButton"
-				android:onClick="onLectioClick" android:text="@string/menu_lectio"
+				android:onClick="onHelpUsClick" android:text="@string/menu_help"
 				android:drawableTop="@drawable/home_btn_office_hours" />
 		</LinearLayout>
 	</LinearLayout>

@@ -88,7 +88,7 @@ public class ChurchAdapter extends BaseAdapter {
 	if (next_mass != null) {
 	    try {
 		Date date_next_mass = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(next_mass.substring(0, 16));
-		holder.next_mass.setText(context.getString(R.string.church_next_mass) + new SimpleDateFormat("EEE d 'à' HH'h'mm").format(date_next_mass));
+		holder.next_mass.setText(context.getString(R.string.church_next_mass) + new SimpleDateFormat("EEE d 'Ã ' HH'h'mm").format(date_next_mass));
 		holder.next_mass.setVisibility(View.VISIBLE);
 	    } catch (ParseException e) {
 		e.printStackTrace();

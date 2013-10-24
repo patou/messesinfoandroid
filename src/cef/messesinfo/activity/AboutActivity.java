@@ -15,7 +15,6 @@ import cef.messesinfo.R;
 public class AboutActivity extends Activity {
     public static final int MENU_CONTACT = 1;
     public static final int MENU_WEBSITE = 2;
-    public static final int MENU_WEBCATHO = 3;
 
     /**
      * Start the Activity
@@ -35,14 +34,6 @@ public class AboutActivity extends Activity {
 	    @Override
 	    public void onClick(View arg0) {
 		Uri uri = Uri.parse(getString(R.string.messeinfo_url));
-		startActivity(new Intent(Intent.ACTION_VIEW, uri));
-	    }
-
-	});
-	findViewById(R.id.about_webcatho).setOnClickListener(new OnClickListener() {
-	    @Override
-	    public void onClick(View arg0) {
-		Uri uri = Uri.parse(getString(R.string.webcatho_url));
 		startActivity(new Intent(Intent.ACTION_VIEW, uri));
 	    }
 
@@ -76,7 +67,6 @@ public class AboutActivity extends Activity {
 
 	menu.add(0, MENU_CONTACT, 0, getString(R.string.main_menu_contact)).setIcon(R.drawable.contact);
 	menu.add(0, MENU_WEBSITE, 0, getString(R.string.main_menu_website)).setIcon(R.drawable.icon_mini);
-	menu.add(0, MENU_WEBCATHO, 0, getString(R.string.main_menu_webcatho)).setIcon(R.drawable.web);
 	return supRetVal;
     }
 
@@ -97,11 +87,6 @@ public class AboutActivity extends Activity {
 	    final Intent urlIntent = new Intent(android.content.Intent.ACTION_VIEW);
 	    urlIntent.setData(Uri.parse(getString(R.string.messeinfo_url)));
 	    startActivity(urlIntent);
-	    return true;
-	case MENU_WEBCATHO:
-	    final Intent urlWebcathoIntent = new Intent(android.content.Intent.ACTION_VIEW);
-	    urlWebcathoIntent.setData(Uri.parse(getString(R.string.webcatho_url)));
-	    startActivity(urlWebcathoIntent);
 	    return true;
 	default:
 	    break;

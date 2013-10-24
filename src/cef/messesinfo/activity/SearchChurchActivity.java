@@ -220,7 +220,7 @@ public class SearchChurchActivity extends ListActivity implements OnScrollListen
     
 //    private void showSelectionDepartementDialog() {
 //	    new AlertDialog.Builder( this )
-//	       .setTitle( "Départements" )
+//	       .setTitle( "DÃ©partements" )
 //	       .setItems(, , new DialogSelectionClickHandler() )
 //	       .setPositiveButton( "OK", new DialogButtonClickHandler() )
 //	       .create();
